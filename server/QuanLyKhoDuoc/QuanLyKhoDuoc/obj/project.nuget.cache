@@ -1,0 +1,136 @@
+{
+  "version": 2,
+  "dgSpecHash": "UwnX/0cZgZo=",
+  "success": true,
+  "projectFilePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thien\\.nuget\\packages\\dapper\\2.1.72\\dapper.2.1.72.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.aspnet.webapi.client\\4.0.20710\\microsoft.aspnet.webapi.client.4.0.20710.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.aspnet.webapi.core\\4.0.20710\\microsoft.aspnet.webapi.core.4.0.20710.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.aspnet.webapi.webhost\\4.0.20710\\microsoft.aspnet.webapi.webhost.4.0.20710.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.6\\microsoft.aspnetcore.openapi.10.0.6.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.extensions.apidescription.server\\10.0.0\\microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.net.http\\2.0.20710\\microsoft.net.http.2.0.20710.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.openapi\\2.4.1\\microsoft.openapi.2.4.1.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\microsoft.web.infrastructure\\1.0.0\\microsoft.web.infrastructure.1.0.0.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\newtonsoft.json\\7.0.1\\newtonsoft.json.7.0.1.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\swashbuckle\\5.6.0\\swashbuckle.5.6.0.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\swashbuckle.aspnetcore\\10.1.7\\swashbuckle.aspnetcore.10.1.7.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\10.1.7\\swashbuckle.aspnetcore.swagger.10.1.7.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\10.1.7\\swashbuckle.aspnetcore.swaggergen.10.1.7.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\swashbuckle.core\\5.6.0\\swashbuckle.core.5.6.0.nupkg.sha512",
+    "C:\\Users\\thien\\.nuget\\packages\\webactivatorex\\2.0.0\\webactivatorex.2.0.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "Package 'Newtonsoft.Json' 7.0.1 has a known high severity vulnerability, https://github.com/advisories/GHSA-5crp-9r3c-p9vr",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Newtonsoft.Json",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Microsoft.AspNet.WebApi.Client 4.0.20710' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Microsoft.AspNet.WebApi.Client",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Microsoft.AspNet.WebApi.Core 4.0.20710' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Microsoft.AspNet.WebApi.Core",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Microsoft.AspNet.WebApi.WebHost 4.0.20710' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Microsoft.AspNet.WebApi.WebHost",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Microsoft.Net.Http 2.0.20710' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Microsoft.Net.Http",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Microsoft.Web.Infrastructure 1.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Microsoft.Web.Infrastructure",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Newtonsoft.Json 7.0.1' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Newtonsoft.Json",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'Swashbuckle.Core 5.6.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "Swashbuckle.Core",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "message": "Package 'WebActivatorEx 2.0.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net10.0'. This package may not be fully compatible with your project.",
+      "projectPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj",
+      "libraryId": "WebActivatorEx",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
+}

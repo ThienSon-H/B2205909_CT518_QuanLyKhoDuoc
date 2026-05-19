@@ -37,10 +37,10 @@ C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\st
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\staticwebassets.development.json
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\swae.build.ex.cache
-C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKh.873AE723.Up2Date
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKhoDuoc.dll
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\refint\QuanLyKhoDuoc.dll
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKhoDuoc.pdb
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKhoDuoc.genruntimeconfig.cache
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\ref\QuanLyKhoDuoc.dll
+C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKhoDuoc.sourcelink.json

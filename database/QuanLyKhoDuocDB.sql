@@ -196,13 +196,56 @@ CREATE OR REPLACE FUNCTION fn_register(
 RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
+DECLARE
+    special_chars TEXT := '!@#$%^&*()_+-=[]{};:''",.<>/?\|';
+    has_special BOOLEAN;
 BEGIN
-    IF EXISTS (SELECT 1 FROM taikhoan WHERE username = p_username) THEN
-        RETURN 'LỖI: Tên đăng nhập đã tồn tại!';
+    -- 1. Kiểm tra username không được null hoặc rỗng
+    IF p_username IS NULL OR LENGTH(TRIM(p_username)) = 0 THEN
+        RETURN 'LỖI: Tên đăng nhập không được để trống';
     END IF;
 
-    INSERT INTO taikhoan (username, password_hash, is_active, created_at)
-    VALUES (p_username, crypt(p_password, gen_salt('bf')), true, NOW());
+    -- 2. Kiểm tra độ dài username (ít nhất 5 ký tự)
+    IF LENGTH(p_username) < 5 THEN
+        RETURN 'LỖI: Tên đăng nhập phải có ít nhất 5 ký tự';
+    END IF;
+
+    -- 3. Kiểm tra username chỉ chứa chữ cái và số (dùng regex an toàn)
+    IF p_username !~ '^[A-Za-z0-9]+$' THEN
+        RETURN 'LỖI: Tên đăng nhập chỉ được chứa chữ cái và số, không ký tự đặc biệt';
+    END IF;
+
+    -- 4. Kiểm tra mật khẩu không được null hoặc rỗng
+    IF p_password IS NULL OR LENGTH(TRIM(p_password)) = 0 THEN
+        RETURN 'LỖI: Mật khẩu không được để trống';
+    END IF;
+
+    -- 5. Kiểm tra độ dài mật khẩu (ít nhất 8 ký tự)
+    IF LENGTH(p_password) < 8 THEN
+        RETURN 'LỖI: Mật khẩu phải có ít nhất 8 ký tự';
+    END IF;
+
+    -- 6. Kiểm tra mật khẩu có ít nhất 1 ký tự đặc biệt (kiểm tra từng ký tự)
+    has_special := FALSE;
+    FOR i IN 1..LENGTH(p_password) LOOP
+        IF POSITION(SUBSTRING(p_password, i, 1) IN special_chars) > 0 THEN
+            has_special := TRUE;
+            EXIT;
+        END IF;
+    END LOOP;
+
+    IF NOT has_special THEN
+        RETURN 'LỖI: Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt (ví dụ: !@#$%^&*)';
+    END IF;
+
+    -- 7. Kiểm tra username đã tồn tại chưa
+    IF EXISTS (SELECT 1 FROM taikhoan WHERE username = p_username) THEN
+        RETURN 'LỖI: Tên đăng nhập đã tồn tại';
+    END IF;
+
+    -- 8. Nếu tất cả ok, thêm tài khoản mới
+    INSERT INTO taikhoan (username, password_hash, is_active, is_admin, created_at)
+    VALUES (p_username, crypt(p_password, gen_salt('bf')), true, false, NOW());
 
     RETURN 'Đăng ký thành công!';
 END;

@@ -1,7 +1,20 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,11 +22,48 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Services\\AuthService.cs",
+              "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Services\\AuthService.cs",
+              "RelativeToolTip": "QuanLyKhoDuoc\\Services\\AuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T12:56:58.324Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "QuanLyKhoDuoc\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T12:56:53.184Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Program.cs",
+              "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Program.cs",
+              "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Program.cs",
+              "RelativeToolTip": "QuanLyKhoDuoc\\Program.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-18T12:48:24.135Z"
             }
           ]
         }

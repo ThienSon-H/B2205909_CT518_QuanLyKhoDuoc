@@ -10,31 +10,62 @@ function RegisterPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setMessage('');
+  // Hàm kiểm tra đầu vào (client-side validation)
+  const validateInput = () => {
+    // 1. Username: ít nhất 5 ký tự, chỉ chữ và số
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    if (username.length < 5) {
+      setError('Tên đăng nhập phải có ít nhất 5 ký tự');
+      return false;
+    }
+    if (!usernameRegex.test(username)) {
+      setError('Tên đăng nhập chỉ được chứa chữ cái và số, không ký tự đặc biệt');
+      return false;
+    }
 
+    // 2. Password: ít nhất 8 ký tự, có ít nhất 1 ký tự đặc biệt
+    const passwordRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (password.length < 8) {
+      setError('Mật khẩu phải có ít nhất 8 ký tự');
+      return false;
+    }
+    if (!passwordRegex.test(password)) {
+      setError('Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt (ví dụ: !@#$%^&*)');
+      return false;
+    }
+
+    // 3. Xác nhận mật khẩu khớp
     if (password !== confirm) {
       setError('Mật khẩu xác nhận không khớp');
-      return;
+      return false;
     }
 
-    try {
-      const res = await axios.post('https://localhost:7122/api/Auth/register', {
-        username,
-        password
-      });
-      if (res.data.message.includes('thành công')) {
-        setMessage('Đăng ký thành công! Vui lòng đăng nhập.');
-        setTimeout(() => navigate('/login'), 2000);
-      } else {
-        setError(res.data.message);
-      }
-    } catch (err) {
-      setError('Lỗi kết nối server');
-    }
+    return true;
   };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setMessage('');
+
+  if (!validateInput()) return;
+
+  try {
+    const res = await axios.post('https://localhost:7122/api/Auth/register', {
+      username,
+      password
+    });
+    // Kiểm tra nếu message không bắt đầu bằng "LỖI" thì coi như thành công
+    if (!res.data.message.startsWith('LỖI')) {
+      setMessage('Đăng ký thành công! Vui lòng đăng nhập.');
+      setTimeout(() => navigate('/login'), 2000);
+    } else {
+      setError(res.data.message);
+    }
+  } catch (err) {
+    setError('Lỗi kết nối server');
+  }
+};
 
   return (
     <div className="container mt-5" style={{ maxWidth: '400px' }}>
@@ -55,6 +86,7 @@ function RegisterPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
+              <small className="text-muted">Ít nhất 5 ký tự, chỉ chữ và số</small>
             </div>
             <div className="mb-3">
               <label>Mật khẩu</label>
@@ -65,6 +97,7 @@ function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <small className="text-muted">Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt (!@#$%^&*)</small>
             </div>
             <div className="mb-3">
               <label>Xác nhận mật khẩu</label>

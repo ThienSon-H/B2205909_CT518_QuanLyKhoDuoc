@@ -102,7 +102,7 @@ function AccountManagementPage() {
                         {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
                       </button>
                     ) : (
-                      <span className="text-muted">(Chính bạn)</span>
+                      <span className="text-muted" style={{color: '#94a3b8'}}>(Chính bạn)</span>
                     )}
                   </td>
                 </tr>

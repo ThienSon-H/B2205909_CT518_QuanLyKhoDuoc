@@ -28,7 +28,7 @@ function Navbar() {
           <Link to="/nhap-lo" className="btn btn-outline-success btn-sm">
             ➕ Nhập Lô
           </Link>
-          <button onClick={logout} className="btn btn-outline-light btn-sm">
+          <button onClick={logout} className="btn btn-danger-custom btn-sm">
             🚪 Đăng xuất
           </button>
         </div>

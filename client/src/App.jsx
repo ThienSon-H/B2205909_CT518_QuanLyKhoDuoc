@@ -11,21 +11,25 @@ function Navbar() {
   const { user, logout } = useAuth();
   if (!user) return null;
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+    <nav className="navbar navbar-expand-lg navbar-custom">
       <div className="container-fluid">
-        <span className="navbar-brand">🏥 Quản lý Kho Dược</span>
-        <div className="ms-auto d-flex gap-3 align-items-center">
-          <span className="text-white">Xin chào, {user.username}</span>
+        <Link to="/" className="navbar-brand">
+          🏥 Quản lý Kho Dược
+        </Link>
+        <div className="ms-auto d-flex gap-2 align-items-center">
+          <span className="text-white me-2 fw-semibold">
+            👋 {user.username}
+          </span>
           {user.isAdmin && (
             <Link to="/admin/users" className="btn btn-outline-warning btn-sm">
-              QLTK
+              ⚙️ QLTK
             </Link>
           )}
           <Link to="/nhap-lo" className="btn btn-outline-success btn-sm">
-            + Nhập Lô
+            ➕ Nhập Lô
           </Link>
           <button onClick={logout} className="btn btn-outline-light btn-sm">
-            Đăng xuất
+            🚪 Đăng xuất
           </button>
         </div>
       </div>
@@ -35,17 +39,25 @@ function Navbar() {
 
 function AppRouter() {
   const { user, loading } = useAuth();
-  if (loading) return <div className="text-center mt-5">Đang tải ứng dụng...</div>;
+  if (loading) return (
+    <div className="text-center mt-5 pt-5">
+      <div className="spinner-border text-primary" role="status" />
+      <p className="mt-3 text-muted">Đang tải ứng dụng...</p>
+    </div>
+  );
+
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
-        <Route path="/admin/users" element={user?.isAdmin ? <AccountManagementPage /> : <Navigate to="/" />} />
-        <Route path="/nhap-lo" element={user ? <NhapLoPage /> : <Navigate to="/login" />} />
-        <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
-      </Routes>
+      <div className="container-fluid p-0">
+        <Routes>
+          <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
+          <Route path="/admin/users" element={user?.isAdmin ? <AccountManagementPage /> : <Navigate to="/" />} />
+          <Route path="/nhap-lo" element={user ? <NhapLoPage /> : <Navigate to="/login" />} />
+          <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
+        </Routes>
+      </div>
     </>
   );
 }

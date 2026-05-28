@@ -34,40 +34,41 @@ function LoginPage() {
   };
 
   return (
-    <div className="container mt-5" style={{ maxWidth: '400px' }}>
-      <div className="card shadow">
-        <div className="card-header bg-primary text-white text-center">
-          <h3>Đăng nhập hệ thống</h3>
+    <div className="auth-container fade-in">
+      <div className="auth-card">
+        <div className="card-header">
+          🔐 Đăng nhập hệ thống
         </div>
-        <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
+        <div className="p-4">
+          {error && <div className="alert alert-danger alert-custom">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
-              <label>Tên đăng nhập</label>
+              <label className="form-label fw-semibold">Tên đăng nhập</label>
               <input
                 type="text"
-                className="form-control"
+                className="form-control-custom w-100"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
             <div className="mb-3">
-              <label>Mật khẩu</label>
+              <label className="form-label fw-semibold">Mật khẩu</label>
               <input
                 type="password"
-                className="form-control"
+                className="form-control-custom w-100"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <button type="submit" className="btn btn-primary w-100">
+            <button type="submit" className="btn btn-primary-custom w-100 mt-3">
               Đăng nhập
             </button>
           </form>
-          <div className="text-center mt-3">
-            <Link to="/register">Chưa có tài khoản? Đăng ký</Link>
+          <div className="text-center mt-4">
+            <span className="text-muted">Chưa có tài khoản? </span>
+            <Link to="/register" className="fw-semibold">Đăng ký ngay</Link>
           </div>
         </div>
       </div>

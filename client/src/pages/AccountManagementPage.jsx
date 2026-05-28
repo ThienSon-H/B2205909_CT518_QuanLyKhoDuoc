@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function AccountManagementPage() {
   const { user, logout } = useAuth();
@@ -39,27 +39,33 @@ function AccountManagementPage() {
         { params: { adminUsername: user.username } }
       );
       alert(res.data.message);
-      fetchUsers(); // refresh
+      fetchUsers();
     } catch (err) {
       alert(err.response?.data?.message || 'Lỗi thao tác');
     }
   };
 
-  if (loading) return <div className="text-center mt-5">Đang tải...</div>;
-  if (error) return <div className="alert alert-danger">{error}</div>;
+  if (loading) return (
+    <div className="text-center mt-5 pt-5">
+      <div className="spinner-border text-primary" role="status" />
+      <p className="mt-3">Đang tải danh sách người dùng...</p>
+    </div>
+  );
+
+  if (error) return <div className="alert alert-danger m-4">{error}</div>;
 
   return (
-    <div className="container mt-4">
-      <div className="card shadow">
-        <div className="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">Quản lý tài khoản</h4>
-          <button className="btn btn-outline-light" onClick={() => navigate('/')}>
-            Quay lại Dashboard
-          </button>
+    <div className="container py-4 fade-in">
+      <div className="card-custom">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <h4 className="mb-0">👥 Quản lý tài khoản</h4>
+          <Link to="/" className="btn btn-outline-light btn-sm">
+            ← Quay lại Dashboard
+          </Link>
         </div>
-        <div className="card-body">
-          <table className="table table-bordered table-hover">
-            <thead className="table-light">
+        <div className="card-body p-0">
+          <table className="table-custom">
+            <thead>
               <tr>
                 <th>Tên đăng nhập</th>
                 <th>Trạng thái</th>
@@ -71,26 +77,31 @@ function AccountManagementPage() {
             <tbody>
               {users.map((u) => (
                 <tr key={u.username}>
-                  <td>{u.username}</td>
+                  <td><span className="fw-semibold">{u.username}</span></td>
                   <td>
                     {u.isActive ? (
-                      <span className="badge bg-success">Hoạt động</span>
+                      <span className="badge bg-success badge-custom">Hoạt động</span>
                     ) : (
-                      <span className="badge bg-danger">Vô hiệu hóa</span>
+                      <span className="badge bg-danger badge-custom">Vô hiệu hóa</span>
                     )}
                   </td>
-                  <td>{u.isAdmin ? <span className="badge bg-warning">Admin</span> : 'Người dùng'}</td>
-                  <td>{new Date(u.createdAt).toLocaleDateString()}</td>
                   <td>
-                    {u.username !== user.username && (
+                    {u.isAdmin ? (
+                      <span className="badge bg-warning text-dark badge-custom">Admin</span>
+                    ) : (
+                      <span className="text-muted">Người dùng</span>
+                    )}
+                  </td>
+                  <td>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
+                  <td>
+                    {u.username !== user.username ? (
                       <button
-                        className="btn btn-sm btn-outline-danger"
+                        className="btn btn-sm btn-danger-custom"
                         onClick={() => toggleUser(u.username)}
                       >
-                        {u.isActive ? 'Vô hiệu hóa' : 'Mở khóa'}
+                        {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
                       </button>
-                    )}
-                    {u.username === user.username && (
+                    ) : (
                       <span className="text-muted">(Chính bạn)</span>
                     )}
                   </td>

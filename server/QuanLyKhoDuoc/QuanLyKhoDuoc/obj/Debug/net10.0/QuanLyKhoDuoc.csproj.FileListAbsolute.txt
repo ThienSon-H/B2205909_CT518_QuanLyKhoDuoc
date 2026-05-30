@@ -44,3 +44,4 @@ C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\Qu
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKhoDuoc.genruntimeconfig.cache
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\ref\QuanLyKhoDuoc.dll
 C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\QuanLyKhoDuoc.sourcelink.json
+C:\ThucTap\QuanLyKhoDuoc\server\QuanLyKhoDuoc\QuanLyKhoDuoc\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

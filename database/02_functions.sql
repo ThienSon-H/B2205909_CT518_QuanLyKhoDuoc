@@ -56,8 +56,11 @@ BEGIN
 END;
 $$;
 
--- Dashboard kho (FEFO)
-CREATE OR REPLACE FUNCTION fn_get_dashboard_kho()
+-- Cập nhật function fn_get_dashboard_kho hỗ trợ tìm kiếm và lọc
+CREATE OR REPLACE FUNCTION fn_get_dashboard_kho(
+    p_search VARCHAR DEFAULT NULL,
+    p_trang_thai VARCHAR DEFAULT NULL
+)
 RETURNS TABLE (
     out_ma_thuoc VARCHAR,
     out_ten_thuoc TEXT,
@@ -68,7 +71,14 @@ RETURNS TABLE (
     out_han_su_dung DATE,
     out_ngay_con_lai INTEGER
 ) LANGUAGE plpgsql AS $$
+DECLARE
+    v_search_pattern VARCHAR;
 BEGIN
+    -- Chuẩn bị pattern tìm kiếm (không phân biệt hoa thường)
+    IF p_search IS NOT NULL AND LENGTH(TRIM(p_search)) > 0 THEN
+        v_search_pattern := '%' || TRIM(p_search) || '%';
+    END IF;
+
     RETURN QUERY
     SELECT 
         t.ma_thuoc,
@@ -78,12 +88,25 @@ BEGIN
         COALESCE(ncc.ten_ncc, 'Khác'),
         l.so_luong,
         l.han_su_dung,
-        (l.han_su_dung - CURRENT_DATE)::INTEGER
+        (l.han_su_dung - CURRENT_DATE)::INTEGER AS out_ngay_con_lai
     FROM lo_thuoc l
     JOIN thuoc t ON l.ma_thuoc = t.ma_thuoc
     LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
     LEFT JOIN nha_cung_cap ncc ON l.ma_ncc = ncc.ma_ncc
-    ORDER BY (l.han_su_dung - CURRENT_DATE) ASC;
+    WHERE 
+        -- Điều kiện tìm kiếm (nếu có)
+        (v_search_pattern IS NULL 
+         OR t.ma_thuoc ILIKE v_search_pattern 
+         OR t.ten_thuoc ILIKE v_search_pattern 
+         OR l.ma_lo ILIKE v_search_pattern)
+        -- Điều kiện lọc theo trạng thái (nếu có)
+        AND (
+            p_trang_thai IS NULL OR p_trang_thai = '' OR
+            (p_trang_thai = 'con_han' AND (l.han_su_dung - CURRENT_DATE) >= 180) OR
+            (p_trang_thai = 'can_date' AND (l.han_su_dung - CURRENT_DATE) BETWEEN 0 AND 179) OR
+            (p_trang_thai = 'het_han' AND (l.han_su_dung - CURRENT_DATE) < 0)
+        )
+    ORDER BY out_ngay_con_lai ASC;
 END;
 $$;
 
@@ -284,3 +307,6 @@ BEGIN
            ' tài khoản ' || p_target_username;
 END;
 $$;
+
+-- DROP FUNCTION IF EXISTS fn_get_dashboard_kho();
+

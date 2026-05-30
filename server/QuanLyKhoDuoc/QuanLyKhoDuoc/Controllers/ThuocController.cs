@@ -17,10 +17,11 @@ namespace QuanLyKhoDuoc.Controllers
 
         // GET: api/Thuoc/dashboard
         [HttpGet("dashboard")]
-        public async Task<IActionResult> GetDashboard()
+        public async Task<IActionResult> GetDashboard(
+            [FromQuery] string search = null,
+            [FromQuery] string trangThai = null)
         {
-            // Controller không quan tâm đến SQL hay ConnectionString nữa
-            var data = await _service.GetDashboardData();
+            var data = await _service.GetDashboardData(search, trangThai);
             return Ok(data);
         }
 

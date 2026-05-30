@@ -15,23 +15,27 @@ namespace QuanLyKhoDuoc.Services
         }
 
         // 1. Hàm lấy dữ liệu Dashboard
-        public async Task<IEnumerable<ChiTietKho>> GetDashboardData()
+        public async Task<IEnumerable<ChiTietKho>> GetDashboardData(string search = null, string trangThai = null)
         {
             using var db = new NpgsqlConnection(_connString);
-
-            // Lưu ý: Thêm ::TIMESTAMP để tránh lỗi ép kiểu DateOnly nếu bạn dùng DateTime trong Model
-            var sql = @"SELECT 
-                            out_ma_thuoc as MaThuoc, 
-                            out_ten_thuoc as TenThuoc, 
-                            out_ten_nhom as TenNhom, 
-                            out_ma_lo as MaLo, 
-                            out_ten_ncc as TenNcc, 
-                            out_so_luong as SoLuong, 
-                            out_han_su_dung as HanSuDung, 
-                            out_ngay_con_lai as NgayConLai 
-                        FROM fn_get_dashboard_kho()";
-
-            return await db.QueryAsync<ChiTietKho>(sql);
+            var sql = @"SELECT
+                            out_ma_thuoc as MaThuoc,
+                            out_ten_thuoc as TenThuoc,
+                            out_ten_nhom as TenNhom,
+                            out_ma_lo as MaLo,
+                            out_ten_ncc as TenNcc,
+                            out_so_luong as SoLuong,
+                            out_han_su_dung as HanSuDung,
+                            out_ngay_con_lai as NgayConLai
+                        FROM fn_get_dashboard_kho(@Search, @TrangThai)";
+            
+            var parameters = new
+            {
+                Search = string.IsNullOrWhiteSpace(search) ? null : search,
+                TrangThai = string.IsNullOrWhiteSpace(trangThai) ? null : trangThai
+            };
+            
+            return await db.QueryAsync<ChiTietKho>(sql, parameters);
         }
 
         // 2. Hàm Upsert thuốc (đã làm ở bước trước)

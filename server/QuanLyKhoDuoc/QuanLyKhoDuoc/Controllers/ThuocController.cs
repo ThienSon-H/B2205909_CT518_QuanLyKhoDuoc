@@ -46,5 +46,12 @@ namespace QuanLyKhoDuoc.Controllers
             var result = await _service.XuatLoThuoc(maLo);
             return Ok(new { message = result });
         }
+
+        [HttpGet("bao-cao-ton-kho")]
+        public async Task<IActionResult> GetBaoCaoTonKho()
+        {
+            var data = await _service.GetBaoCaoTonKho();
+            return Ok(data);
+        }
     }
 }

@@ -102,6 +102,16 @@
   },
   {
     "ContainingType": "QuanLyKhoDuoc.Controllers.ThuocController",
+    "Method": "GetBaoCaoTonKho",
+    "RelativePath": "api/Thuoc/bao-cao-ton-kho",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.ThuocController",
     "Method": "GetDashboard",
     "RelativePath": "api/Thuoc/dashboard",
     "HttpMethod": "GET",

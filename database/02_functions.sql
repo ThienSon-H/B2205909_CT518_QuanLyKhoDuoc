@@ -310,3 +310,31 @@ $$;
 
 -- DROP FUNCTION IF EXISTS fn_get_dashboard_kho();
 
+Function báo cáo tổng tồn kho theo thuốc
+CREATE OR REPLACE FUNCTION fn_bao_cao_ton_kho()
+RETURNS TABLE (
+    out_ma_thuoc VARCHAR,
+    out_ten_thuoc TEXT,
+    out_ten_nhom TEXT,
+    out_tong_so_luong BIGINT,
+    out_so_lo INTEGER,
+    out_han_som_nhat DATE,
+    out_ngay_con_lai INTEGER
+) LANGUAGE plpgsql AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        t.ma_thuoc,
+        t.ten_thuoc,
+        COALESCE(nt.ten_nhom, 'Chưa phân nhóm'),
+        COALESCE(SUM(l.so_luong), 0)::BIGINT AS tong_so_luong,
+        COUNT(l.ma_lo)::INTEGER AS so_lo,
+        MIN(l.han_su_dung) AS han_som_nhat,
+        (MIN(l.han_su_dung) - CURRENT_DATE)::INTEGER AS ngay_con_lai
+    FROM thuoc t
+    LEFT JOIN lo_thuoc l ON t.ma_thuoc = l.ma_thuoc
+    LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
+    GROUP BY t.ma_thuoc, t.ten_thuoc, nt.ten_nhom
+    ORDER BY ngay_con_lai ASC NULLS LAST; -- Ưu tiên thuốc có lô sắp hết hạn
+END;
+$$;

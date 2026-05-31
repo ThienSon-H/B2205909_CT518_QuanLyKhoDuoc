@@ -261,6 +261,18 @@
           }
         }
       }
+    },
+    "/api/Thuoc/bao-cao-ton-kho": {
+      "get": {
+        "tags": [
+          "Thuoc"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {

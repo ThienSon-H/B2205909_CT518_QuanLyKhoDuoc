@@ -1,6 +1,7 @@
-﻿using QuanLyKhoDuoc.Models;
-using Dapper;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using Npgsql;
+using QuanLyKhoDuoc.Models;
 
 namespace QuanLyKhoDuoc.Services
 {
@@ -71,6 +72,21 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_xuat_lo_thuoc(@MaLo)";
             // Dapper sẽ tự động map tham số MaLo vào @MaLo
             return await db.ExecuteScalarAsync<string>(sql, new { MaLo = maLo });
+        }
+        
+        public async Task<IEnumerable<BaoCaoTonKho>> GetBaoCaoTonKho()
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = @"SELECT
+                            out_ma_thuoc as MaThuoc,
+                            out_ten_thuoc as TenThuoc,
+                            out_ten_nhom as TenNhom,
+                            out_tong_so_luong as TongSoLuong,
+                            out_so_lo as SoLo,
+                            out_han_som_nhat as HanSomNhat,
+                            out_ngay_con_lai as NgayConLai
+                        FROM fn_bao_cao_ton_kho()";
+            return await db.QueryAsync<BaoCaoTonKho>(sql);
         }
     }
 }

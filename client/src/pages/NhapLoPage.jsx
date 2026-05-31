@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const IMPORT_URL = 'https://localhost:7122/api/Thuoc/nhap-lo';
 
 function NhapLoPage() {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
@@ -13,14 +15,19 @@ function NhapLoPage() {
     tenThuoc: '',
     maNcc: 'DHG',
     soLuong: '',
-    hanSuDung: ''
+    hanSuDung: '',
+    nguoiThucHien: user?.username || '' // khởi tạo sẵn
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const res = await axios.post(IMPORT_URL, form);
+      const payload = {
+        ...form,
+        nguoiThucHien: user?.username // đảm bảo gửi kèm username
+      };
+      const res = await axios.post(IMPORT_URL, payload);
       if (res.data.message.includes('LỖI')) alert(res.data.message);
       else {
         alert(res.data.message);

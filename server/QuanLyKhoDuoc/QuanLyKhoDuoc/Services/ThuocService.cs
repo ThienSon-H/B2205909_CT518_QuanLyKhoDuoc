@@ -46,13 +46,11 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_upsert_thuoc(@MaThuoc, @TenThuoc, @SoLuongTon, @DonViTinh)";
             return await db.ExecuteScalarAsync<string>(sql, thuoc);
         }
+        
         public async Task<string> NhapLoThuoc(LoThuocInput input)
         {
             using var db = new NpgsqlConnection(_connString);
-
-            // THÊM ::DATE VÀO SAU @HanSuDung Ở DÒNG NÀY
-            var sql = "SELECT fn_nhap_lo_thuoc(@MaLo, @MaThuoc, @TenThuoc, @MaNcc, @SoLuong, @HanSuDung::DATE)";
-
+            var sql = "SELECT fn_nhap_lo_thuoc(@MaLo, @MaThuoc, @TenThuoc, @MaNcc, @SoLuong, @HanSuDung::DATE, @NguoiThucHien)";
             var parameters = new
             {
                 input.MaLo,
@@ -60,18 +58,17 @@ namespace QuanLyKhoDuoc.Services
                 input.TenThuoc,
                 input.MaNcc,
                 input.SoLuong,
-                // Vẫn giữ nguyên việc ép kiểu để "chiều" Dapper ở phía C#
-                HanSuDung = input.HanSuDung.ToDateTime(TimeOnly.MinValue)
+                HanSuDung = input.HanSuDung.ToDateTime(TimeOnly.MinValue),
+                NguoiThucHien = input.NguoiThucHien
             };
-
             return await db.ExecuteScalarAsync<string>(sql, parameters);
         }
-        public async Task<string> XuatLoThuoc(string maLo)
+
+        public async Task<string> XuatLoThuoc(string maLo, string nguoiThucHien = null)
         {
             using var db = new NpgsqlConnection(_connString);
-            var sql = "SELECT fn_xuat_lo_thuoc(@MaLo)";
-            // Dapper sẽ tự động map tham số MaLo vào @MaLo
-            return await db.ExecuteScalarAsync<string>(sql, new { MaLo = maLo });
+            var sql = "SELECT fn_xuat_lo_thuoc(@MaLo, @NguoiThucHien)";
+            return await db.ExecuteScalarAsync<string>(sql, new { MaLo = maLo, NguoiThucHien = nguoiThucHien });
         }
         
         public async Task<IEnumerable<BaoCaoTonKho>> GetBaoCaoTonKho()
@@ -87,6 +84,22 @@ namespace QuanLyKhoDuoc.Services
                             out_ngay_con_lai as NgayConLai
                         FROM fn_bao_cao_ton_kho()";
             return await db.QueryAsync<BaoCaoTonKho>(sql);
+        }
+
+        public async Task<IEnumerable<LichSuItem>> GetLichSu()
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = @"SELECT 
+                            out_id as Id,
+                            out_ma_lo as MaLo,
+                            out_ma_thuoc as MaThuoc,
+                            out_loai_giao_dich as LoaiGiaoDich,
+                            out_so_luong_thay_doi as SoLuongThayDoi,
+                            out_nguoi_thuc_hien as NguoiThucHien,
+                            out_thoi_gian as ThoiGian,
+                            out_ghi_chu as GhiChu
+                        FROM fn_get_lich_su_nhap_xuat()";
+            return await db.QueryAsync<LichSuItem>(sql);
         }
     }
 }

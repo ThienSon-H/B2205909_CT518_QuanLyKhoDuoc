@@ -46,6 +46,18 @@ CREATE TABLE taikhoan (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+-- Tạo bảng lịch sử nhập xuất
+CREATE TABLE IF NOT EXISTS lich_su_nhap_xuat (
+    id SERIAL PRIMARY KEY,
+    ma_lo VARCHAR(50),
+    ma_thuoc VARCHAR(20),
+    loai_giao_dich VARCHAR(10) NOT NULL, -- 'NHAP' hoặc 'XUAT'
+    so_luong_thay_doi INTEGER NOT NULL,
+    nguoi_thuc_hien VARCHAR(50),
+    thoi_gian TIMESTAMP DEFAULT NOW(),
+    ghi_chu TEXT
+);
+
 -- 3. Dữ liệu mẫu
 INSERT INTO nhom_thuoc (ma_nhom, ten_nhom) VALUES
 ('KS', 'Kháng sinh'),

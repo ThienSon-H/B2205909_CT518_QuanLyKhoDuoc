@@ -231,6 +231,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "nguoiThucHien",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -253,6 +260,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "nguoiThucHien",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -263,6 +277,18 @@
       }
     },
     "/api/Thuoc/bao-cao-ton-kho": {
+      "get": {
+        "tags": [
+          "Thuoc"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Thuoc/lich-su": {
       "get": {
         "tags": [
           "Thuoc"
@@ -303,6 +329,10 @@
           "hanSuDung": {
             "type": "string",
             "format": "date"
+          },
+          "nguoiThucHien": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false

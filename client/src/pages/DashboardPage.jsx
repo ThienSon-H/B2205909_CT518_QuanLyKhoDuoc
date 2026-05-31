@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const DASHBOARD_URL = 'https://localhost:7122/api/Thuoc/dashboard';
 const EXPORT_URL = 'https://localhost:7122/api/Thuoc/xuat-lo';
 
 function DashboardPage() {
+  const { user } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [trangThai, setTrangThai] = useState(''); // '', 'con_han', 'can_date', 'het_han'
+  const [trangThai, setTrangThai] = useState('');
 
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
@@ -29,7 +31,6 @@ function DashboardPage() {
   }, [search, trangThai]);
 
   useEffect(() => {
-    // Debounce tìm kiếm: chỉ gọi API sau khi người dùng dừng gõ 300ms
     const timer = setTimeout(() => {
       fetchDashboard();
     }, 300);
@@ -39,7 +40,9 @@ function DashboardPage() {
   const handleExport = async (maLo) => {
     if (!window.confirm(`⚠️ Xuất (xóa) lô ${maLo}? Không thể hoàn tác.`)) return;
     try {
-      const res = await axios.delete(`${EXPORT_URL}/${maLo}`);
+      const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
+        params: { nguoiThucHien: user?.username }
+      });
       if (res.data.message.includes('LỖI')) alert(res.data.message);
       else { alert(res.data.message); fetchDashboard(); }
     } catch (err) { alert("Lỗi kết nối server khi xuất kho!"); }
@@ -54,7 +57,6 @@ function DashboardPage() {
         </Link>
       </div>
 
-      {/* Thanh tìm kiếm và lọc */}
       <div className="card-custom mb-4">
         <div className="card-body p-3">
           <div className="row g-3 align-items-center">

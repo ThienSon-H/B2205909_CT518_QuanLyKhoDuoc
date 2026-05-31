@@ -41,9 +41,9 @@ namespace QuanLyKhoDuoc.Controllers
         // DELETE: api/Thuoc/LO-001
         [HttpDelete("{maLo}")]
         [HttpDelete("xuat-lo/{maLo}")]
-        public async Task<IActionResult> XuatLo(string maLo)
+        public async Task<IActionResult> XuatLo(string maLo, [FromQuery] string nguoiThucHien = null)
         {
-            var result = await _service.XuatLoThuoc(maLo);
+            var result = await _service.XuatLoThuoc(maLo, nguoiThucHien);
             return Ok(new { message = result });
         }
 
@@ -51,6 +51,13 @@ namespace QuanLyKhoDuoc.Controllers
         public async Task<IActionResult> GetBaoCaoTonKho()
         {
             var data = await _service.GetBaoCaoTonKho();
+            return Ok(data);
+        }
+
+        [HttpGet("lich-su")]
+        public async Task<IActionResult> GetLichSu()
+        {
+            var data = await _service.GetLichSu();
             return Ok(data);
         }
     }

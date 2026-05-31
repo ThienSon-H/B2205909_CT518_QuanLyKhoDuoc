@@ -310,7 +310,7 @@ $$;
 
 -- DROP FUNCTION IF EXISTS fn_get_dashboard_kho();
 
-Function báo cáo tổng tồn kho theo thuốc
+-- Function báo cáo tổng tồn kho theo thuốc
 CREATE OR REPLACE FUNCTION fn_bao_cao_ton_kho()
 RETURNS TABLE (
     out_ma_thuoc VARCHAR,
@@ -336,5 +336,98 @@ BEGIN
     LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
     GROUP BY t.ma_thuoc, t.ten_thuoc, nt.ten_nhom
     ORDER BY ngay_con_lai ASC NULLS LAST; -- Ưu tiên thuốc có lô sắp hết hạn
+END;
+$$;
+
+-- Cập nhật function nhập lô: thêm tham số người thực hiện, ghi log
+CREATE OR REPLACE FUNCTION fn_nhap_lo_thuoc(
+    p_ma_lo VARCHAR,
+    p_ma_thuoc VARCHAR,
+    p_ten_thuoc TEXT,
+    p_ma_ncc VARCHAR,
+    p_so_luong INTEGER,
+    p_han_su_dung DATE,
+    p_nguoi_thuc_hien VARCHAR DEFAULT NULL
+) RETURNS TEXT LANGUAGE plpgsql AS $$
+DECLARE
+    v_so_luong_cu INTEGER;
+BEGIN
+    IF p_so_luong <= 0 THEN
+        RETURN 'LỖI: Số lượng phải > 0';
+    END IF;
+    
+    -- Tự động thêm thuốc nếu chưa có
+    IF NOT EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
+        INSERT INTO thuoc (ma_thuoc, ten_thuoc) VALUES (p_ma_thuoc, p_ten_thuoc);
+    END IF;
+
+    -- Xử lý lô
+    IF EXISTS (SELECT 1 FROM lo_thuoc WHERE ma_lo = p_ma_lo) THEN
+        SELECT so_luong INTO v_so_luong_cu FROM lo_thuoc WHERE ma_lo = p_ma_lo;
+        UPDATE lo_thuoc SET so_luong = so_luong + p_so_luong WHERE ma_lo = p_ma_lo;
+        
+        -- Ghi log
+        INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+        VALUES (p_ma_lo, p_ma_thuoc, 'NHAP', p_so_luong, p_nguoi_thuc_hien, 'Cộng dồn vào lô hiện có');
+        
+        RETURN 'Thành công: Đã cộng dồn thêm ' || p_so_luong || ' vào lô ' || p_ma_lo;
+    ELSE
+        INSERT INTO lo_thuoc (ma_lo, ma_thuoc, ma_ncc, so_luong, han_su_dung)
+        VALUES (p_ma_lo, p_ma_thuoc, COALESCE(p_ma_ncc, 'DHG'), p_so_luong, p_han_su_dung);
+        
+        -- Ghi log
+        INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+        VALUES (p_ma_lo, p_ma_thuoc, 'NHAP', p_so_luong, p_nguoi_thuc_hien, 'Tạo lô mới');
+        
+        RETURN 'Thành công: Đã tạo lô mới ' || p_ma_lo;
+    END IF;
+END;
+$$;
+
+-- Cập nhật function xuất lô: thêm tham số người thực hiện, ghi log trước khi xóa
+CREATE OR REPLACE FUNCTION fn_xuat_lo_thuoc(p_ma_lo VARCHAR, p_nguoi_thuc_hien VARCHAR DEFAULT NULL)
+RETURNS TEXT LANGUAGE plpgsql AS $$
+DECLARE
+    v_so_luong INTEGER;
+    v_ma_thuoc VARCHAR;
+BEGIN
+    -- Lấy thông tin lô trước khi xóa
+    SELECT so_luong, ma_thuoc INTO v_so_luong, v_ma_thuoc
+    FROM lo_thuoc WHERE ma_lo = p_ma_lo;
+    
+    IF NOT FOUND THEN
+        RETURN 'LỖI: Không tìm thấy mã lô này trong kho!';
+    END IF;
+
+    -- Ghi log trước
+    INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+    VALUES (p_ma_lo, v_ma_thuoc, 'XUAT', v_so_luong, p_nguoi_thuc_hien, 'Xuất toàn bộ lô');
+
+    -- Xóa lô
+    DELETE FROM lo_thuoc WHERE ma_lo = p_ma_lo;
+    
+    RETURN 'Thành công: Đã xuất (xóa) toàn bộ lô ' || p_ma_lo;
+END;
+$$;
+
+
+-- Function lấy lịch sử nhập xuất (mới nhất trước)
+CREATE OR REPLACE FUNCTION fn_get_lich_su_nhap_xuat()
+RETURNS TABLE (
+    out_id INTEGER,
+    out_ma_lo VARCHAR,
+    out_ma_thuoc VARCHAR,
+    out_loai_giao_dich VARCHAR,
+    out_so_luong_thay_doi INTEGER,
+    out_nguoi_thuc_hien VARCHAR,
+    out_thoi_gian TIMESTAMP,
+    out_ghi_chu TEXT
+) LANGUAGE plpgsql AS $$
+BEGIN
+    RETURN QUERY
+    SELECT id, ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi,
+           nguoi_thuc_hien, thoi_gian, ghi_chu
+    FROM lich_su_nhap_xuat
+    ORDER BY thoi_gian DESC;
 END;
 $$;

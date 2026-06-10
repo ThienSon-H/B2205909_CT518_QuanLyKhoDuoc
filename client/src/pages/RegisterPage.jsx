@@ -76,7 +76,7 @@ function RegisterPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 required
               />
-              <small className="text-muted">Ít nhất 5 ký tự, chỉ chữ và số</small>
+              <small className="text-muted"><br />Ít nhất 5 ký tự, chỉ chữ và số</small>
             </div>
             <div className="mb-3">
               <label className="form-label fw-semibold">Mật khẩu</label>
@@ -87,7 +87,7 @@ function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <small className="text-muted">Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
+              <small className="text-muted"><br />Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
             </div>
             <div className="mb-3">
               <label className="form-label fw-semibold">Xác nhận mật khẩu</label>

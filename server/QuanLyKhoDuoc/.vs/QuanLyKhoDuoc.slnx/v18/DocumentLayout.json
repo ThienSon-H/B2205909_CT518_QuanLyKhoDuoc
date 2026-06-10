@@ -44,7 +44,7 @@
               "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
               "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
               "RelativeToolTip": "QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
-              "ViewState": "AgIAADIAAAAAAAAAAAAgwCsAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-31T11:47:57.22Z",
               "EditorCaption": ""
@@ -59,8 +59,7 @@
               "RelativeToolTip": "QuanLyKhoDuoc\\Services\\ThuocService.cs",
               "ViewState": "AgIAADoAAAAAAAAAAAAkwFoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-31T11:46:33.198Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-31T11:46:33.198Z"
             },
             {
               "$type": "Document",

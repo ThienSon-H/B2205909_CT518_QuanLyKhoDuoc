@@ -19,16 +19,18 @@ function DashboardPage() {
       const res = await axios.get(DASHBOARD_URL, {
         params: {
           search: search || undefined,
-          trangThai: trangThai || undefined
+          trangThai: trangThai || undefined,
+          username: user?.username  // gửi username để kiểm tra active
         }
       });
       setItems(res.data);
     } catch (err) {
       console.error(err);
+      // Có thể hiển thị lỗi nếu cần
     } finally {
       setLoading(false);
     }
-  }, [search, trangThai]);
+  }, [search, trangThai, user]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,7 +47,9 @@ function DashboardPage() {
       });
       if (res.data.message.includes('LỖI')) alert(res.data.message);
       else { alert(res.data.message); fetchDashboard(); }
-    } catch (err) { alert("Lỗi kết nối server khi xuất kho!"); }
+    } catch (err) {
+      alert("Lỗi kết nối server khi xuất kho!");
+    }
   };
 
   return (
@@ -62,9 +66,7 @@ function DashboardPage() {
           <div className="row g-3 align-items-center">
             <div className="col-md-6">
               <div className="input-group">
-                <span className="input-group-text bg-white border-end-0">
-                  🔍
-                </span>
+                <span className="input-group-text bg-white border-end-0">🔍</span>
                 <input
                   type="text"
                   className="form-control-custom border-start-0"
@@ -73,12 +75,7 @@ function DashboardPage() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
                 {search && (
-                  <button 
-                    className="btn btn-outline-secondary" 
-                    onClick={() => setSearch('')}
-                  >
-                    ✕
-                  </button>
+                  <button className="btn btn-outline-secondary" onClick={() => setSearch('')}>✕</button>
                 )}
               </div>
             </div>
@@ -95,10 +92,7 @@ function DashboardPage() {
               </select>
             </div>
             <div className="col-md-2">
-              <button 
-                className="btn btn-outline-primary-custom w-100"
-                onClick={fetchDashboard}
-              >
+              <button className="btn btn-outline-primary-custom w-100" onClick={fetchDashboard}>
                 🔄 Làm mới
               </button>
             </div>

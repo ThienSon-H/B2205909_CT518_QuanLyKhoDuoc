@@ -147,6 +147,13 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -156,30 +163,41 @@
         }
       }
     },
-    "/api/Thuoc": {
-      "post": {
+    "/api/Thuoc/bao-cao-ton-kho": {
+      "get": {
         "tags": [
           "Thuoc"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Thuoc"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Thuoc"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/Thuoc"
-              }
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Thuoc/lich-su": {
+      "get": {
+        "tags": [
+          "Thuoc"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -218,35 +236,6 @@
         }
       }
     },
-    "/api/Thuoc/{maLo}": {
-      "delete": {
-        "tags": [
-          "Thuoc"
-        ],
-        "parameters": [
-          {
-            "name": "maLo",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "nguoiThucHien",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/Thuoc/xuat-lo/{maLo}": {
       "delete": {
         "tags": [
@@ -276,23 +265,30 @@
         }
       }
     },
-    "/api/Thuoc/bao-cao-ton-kho": {
-      "get": {
+    "/api/Thuoc": {
+      "post": {
         "tags": [
           "Thuoc"
         ],
-        "responses": {
-          "200": {
-            "description": "OK"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Thuoc"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Thuoc"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Thuoc"
+              }
+            }
           }
-        }
-      }
-    },
-    "/api/Thuoc/lich-su": {
-      "get": {
-        "tags": [
-          "Thuoc"
-        ],
+        },
         "responses": {
           "200": {
             "description": "OK"

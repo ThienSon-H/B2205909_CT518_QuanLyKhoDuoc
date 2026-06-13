@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const BAO_CAO_URL = 'https://localhost:7122/api/Thuoc/bao-cao-ton-kho';
 
 function BaoCaoPage() {
+  const { user } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(BAO_CAO_URL)
+    axios.get(BAO_CAO_URL, {
+      params: { username: user?.username }
+    })
       .then(res => { setData(res.data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
-  }, []);
+  }, [user]);
 
   if (loading) return (
     <div className="text-center mt-5 pt-5">
@@ -29,7 +33,6 @@ function BaoCaoPage() {
           ← Quay lại Dashboard
         </Link>
       </div>
-
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Tổng hợp số lượng tồn, số lô và hạn sớm nhất</span>
@@ -54,16 +57,12 @@ function BaoCaoPage() {
               <tbody>
                 {data.map((item, idx) => (
                   <tr key={idx} className={item.ngayConLai != null && item.ngayConLai < 180 ? "table-danger" : ""}>
-                    <td className="text-center">
-                      <span className="badge bg-secondary badge-custom">{item.maThuoc}</span>
-                    </td>
+                    <td className="text-center"><span className="badge bg-secondary badge-custom">{item.maThuoc}</span></td>
                     <td><strong>{item.tenThuoc}</strong></td>
                     <td><small className="text-muted">{item.tenNhom}</small></td>
                     <td className="text-center fw-bold text-success">{item.tongSoLuong}</td>
                     <td className="text-center">{item.soLo}</td>
-                    <td className="text-center">
-                      {item.hanSomNhat ? new Date(item.hanSomNhat).toLocaleDateString('vi-VN') : '—'}
-                    </td>
+                    <td className="text-center">{item.hanSomNhat ? new Date(item.hanSomNhat).toLocaleDateString('vi-VN') : '—'}</td>
                     <td className="text-center">
                       {item.ngayConLai == null ? (
                         <span className="badge bg-secondary badge-custom">Chưa có lô</span>

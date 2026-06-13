@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const LICH_SU_URL = 'https://localhost:7122/api/Thuoc/lich-su';
 
 function LichSuPage() {
+  const { user } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get(LICH_SU_URL)
+    axios.get(LICH_SU_URL, {
+      params: { username: user?.username }
+    })
       .then(res => { setData(res.data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
-  }, []);
+  }, [user]);
 
   if (loading) return (
     <div className="text-center mt-5 pt-5">
@@ -29,7 +33,6 @@ function LichSuPage() {
           ← Quay lại Dashboard
         </Link>
       </div>
-
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between">
           <span>Danh sách giao dịch gần đây</span>

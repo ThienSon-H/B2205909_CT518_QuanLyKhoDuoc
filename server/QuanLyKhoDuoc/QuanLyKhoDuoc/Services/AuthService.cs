@@ -52,10 +52,14 @@ namespace QuanLyKhoDuoc.Services
         public async Task<IEnumerable<UserInfo>> GetAllUsers(string adminUsername)
         {
             using var db = new NpgsqlConnection(_connString);
-            var sql = "SELECT username, is_active AS IsActive, is_admin AS IsAdmin, created_at AS CreatedAt FROM fn_get_all_users(@AdminUsername)";
+            var sql = @"SELECT 
+                            out_username AS Username, 
+                            out_is_active AS IsActive, 
+                            out_is_admin AS IsAdmin, 
+                            out_created_at AS CreatedAt 
+                        FROM fn_get_all_users(@AdminUsername)";
             return await db.QueryAsync<UserInfo>(sql, new { AdminUsername = adminUsername });
         }
-
         // Vô hiệu hóa / mở khóa tài khoản
         public async Task<string> ToggleUserActive(string adminUsername, string targetUsername)
         {

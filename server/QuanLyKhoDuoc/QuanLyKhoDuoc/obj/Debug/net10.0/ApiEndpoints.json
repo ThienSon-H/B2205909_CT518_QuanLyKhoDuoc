@@ -86,33 +86,18 @@
   },
   {
     "ContainingType": "QuanLyKhoDuoc.Controllers.ThuocController",
-    "Method": "XuatLo",
-    "RelativePath": "api/Thuoc/{maLo}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "maLo",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "nguoiThucHien",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "QuanLyKhoDuoc.Controllers.ThuocController",
     "Method": "GetBaoCaoTonKho",
     "RelativePath": "api/Thuoc/bao-cao-ton-kho",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -132,6 +117,11 @@
         "Name": "trangThai",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
@@ -143,7 +133,13 @@
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
     "ReturnTypes": []
   },
   {

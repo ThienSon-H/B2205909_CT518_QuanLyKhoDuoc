@@ -53,7 +53,7 @@ function DashboardPage() {
   };
 
   return (
-    <div className="container-fluid py-4 px-3 px-md-4 fade-in">
+    <div className="page-wrapper fade-in">
       <div className="dashboard-header">
         <h2 className="text-primary fw-bold mb-0">📊 Bảng Tồn Kho Dược Phẩm</h2>
         <Link to="/nhap-lo" className="btn btn-success-custom">

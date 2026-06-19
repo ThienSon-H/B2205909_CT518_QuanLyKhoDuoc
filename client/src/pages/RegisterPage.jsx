@@ -67,7 +67,7 @@ function RegisterPage() {
           {message && <div className="alert alert-success alert-custom">{message}</div>}
           {error && <div className="alert alert-danger alert-custom">{error}</div>}
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
+            <div className="form-group-custom">
               <label className="form-label fw-semibold">Tên đăng nhập</label>
               <input
                 type="text"
@@ -78,7 +78,7 @@ function RegisterPage() {
               />
               <small className="text-muted"><br />Ít nhất 5 ký tự, chỉ chữ và số</small>
             </div>
-            <div className="mb-3">
+            <div className="form-group-custom">
               <label className="form-label fw-semibold">Mật khẩu</label>
               <input
                 type="password"
@@ -89,7 +89,7 @@ function RegisterPage() {
               />
               <small className="text-muted"><br />Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
             </div>
-            <div className="mb-3">
+            <div className="form-group-custom">
               <label className="form-label fw-semibold">Xác nhận mật khẩu</label>
               <input
                 type="password"

@@ -370,3 +370,92 @@ label {
 .table-custom strong {
   color: #1e293b;
 }
+
+/* ---------- Page Layout ---------- */
+.page-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 1rem;
+  }
+}
+
+/* ---------- Navbar adjustments ---------- */
+.navbar-custom .container-fluid {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navbar-custom .nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ---------- Card header border-radius fix ---------- */
+.card-custom .card-header {
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+/* ---------- Form groups spacing ---------- */
+.form-control-custom,
+.form-select-custom {
+  margin-bottom: 0.25rem;
+}
+
+/* ---------- Table responsive padding ---------- */
+.table-custom th:first-child,
+.table-custom td:first-child {
+  padding-left: 1.5rem;
+}
+.table-custom th:last-child,
+.table-custom td:last-child {
+  padding-right: 1.5rem;
+}
+
+/* ---------- Dashboard header responsive ---------- */
+.dashboard-header {
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ---------- Auth card fix ---------- */
+.auth-card {
+  margin: 1rem;
+}
+
+/* ---------- Buttons in navbar padding ---------- */
+.navbar-custom .btn {
+  padding: 0.4rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+/* ---------- Chuẩn hóa form-group ---------- */
+.form-group-custom {
+  margin-bottom: 1.25rem;
+}
+
+.form-group-custom .form-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-group-custom .form-control-custom,
+.form-group-custom .form-select-custom {
+  width: 100%;
+  padding-left: 1rem;       /* Căn trái cố định */
+  padding-right: 1rem;
+  margin-bottom: 0;
+}
+
+/* Loại bỏ margin lệch do row g-4 */
+.form-group-custom.row {
+  margin-left: 0;
+  margin-right: 0;
+}

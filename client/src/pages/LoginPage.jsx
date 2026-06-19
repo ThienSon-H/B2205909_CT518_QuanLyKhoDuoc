@@ -42,7 +42,7 @@ function LoginPage() {
         <div className="p-4">
           {error && <div className="alert alert-danger alert-custom">{error}</div>}
           <form onSubmit={handleSubmit}>
-            <div className="mb-3">
+            <div className="form-group-custom">
               <label className="form-label fw-semibold">Tên đăng nhập</label>
               <input
                 type="text"
@@ -52,7 +52,7 @@ function LoginPage() {
                 required
               />
             </div>
-            <div className="mb-3">
+            <div className="form-group-custom">
               <label className="form-label fw-semibold">Mật khẩu</label>
               <input
                 type="password"

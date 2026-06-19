@@ -15,37 +15,21 @@ function Navbar() {
   if (!user) return null;
   return (
     <nav className="navbar navbar-expand-lg navbar-custom">
-      <div className="container-fluid">
-        <Link to="/" className="navbar-brand">
-          🏥 Quản lý Kho Dược
-        </Link>
-        <div className="ms-auto d-flex gap-2 align-items-center">
-          <span className="text-white me-2 fw-semibold">
-            👋 {user.username}
-          </span>
-          {user.isAdmin && (
-            <Link to="/admin/users" className="btn btn-outline-warning btn-sm">
-              ⚙️ QLTK
-            </Link>
-          )}
-          <Link to="/nhap-lo" className="btn btn-outline-success btn-sm">
-            ➕ Nhập Lô
-          </Link>
-          <Link to="/bao-cao" className="btn btn-outline-info btn-sm">
-            📊 Báo cáo
-          </Link>
-          <Link to="/lich-su" className="btn btn-outline-info btn-sm">
-          🕒 Lịch sử
-        </Link>
-        <Link to="/doi-mat-khau" className="btn btn-outline-light btn-sm">
-          🔑 Đổi MK
-        </Link>
-          <button onClick={logout} className="btn btn-danger-custom btn-sm">
-            🚪 Đăng xuất
-          </button>
-        </div>
-      </div>
-    </nav>
+  <div className="container-fluid">
+    <Link to="/" className="navbar-brand">🏥 Quản lý Kho Dược</Link>
+    <div className="ms-auto d-flex gap-2 align-items-center">
+      <span className="text-white me-2 fw-semibold">👋 {user.username}</span>
+      {user.isAdmin && (
+        <Link to="/admin/users" className="btn btn-outline-warning btn-sm">⚙️ QLTK</Link>
+      )}
+      <Link to="/nhap-lo" className="btn btn-outline-success btn-sm">➕ Nhập Lô</Link>
+      <Link to="/bao-cao" className="btn btn-outline-info btn-sm">📊 Báo cáo</Link>
+      <Link to="/lich-su" className="btn btn-outline-info btn-sm">🕒 Lịch sử</Link>
+      <Link to="/doi-mat-khau" className="btn btn-outline-light btn-sm">🔑 Đổi MK</Link>
+      <button onClick={logout} className="btn btn-danger-custom btn-sm">🚪 Đăng xuất</button>
+    </div>
+  </div>
+</nav>
   );
 }
 

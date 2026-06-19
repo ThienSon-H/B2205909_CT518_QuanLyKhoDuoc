@@ -57,7 +57,7 @@ function ChangePasswordPage() {
   };
 
   return (
-    <div className="container py-4 fade-in">
+    <div className="page-wrapper fade-in">
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-5">
           <div className="card-custom">
@@ -68,7 +68,7 @@ function ChangePasswordPage() {
               {message && <div className="alert alert-success alert-custom">{message}</div>}
               {error && <div className="alert alert-danger alert-custom">{error}</div>}
               <form onSubmit={handleSubmit}>
-                <div className="mb-3">
+                <div className="form-group-custom">
                   <label className="form-label fw-semibold">Mật khẩu cũ</label>
                   <input
                     type="password"
@@ -78,7 +78,7 @@ function ChangePasswordPage() {
                     required
                   />
                 </div>
-                <div className="mb-3">
+                <div className="form-group-custom">
                   <label className="form-label fw-semibold">Mật khẩu mới</label>
                   <input
                     type="password"
@@ -89,7 +89,7 @@ function ChangePasswordPage() {
                   />
                   <small className="text-muted">Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
                 </div>
-                <div className="mb-3">
+                <div className="form-group-custom">
                   <label className="form-label fw-semibold">Xác nhận mật khẩu mới</label>
                   <input
                     type="password"

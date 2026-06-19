@@ -67,6 +67,17 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_toggle_user_active(@AdminUsername, @TargetUsername)";
             return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, TargetUsername = targetUsername });
         }
+            public async Task<string> ChangePassword(ChangePasswordRequest request)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = "SELECT fn_change_password(@Username, @OldPassword, @NewPassword)";
+            return await db.ExecuteScalarAsync<string>(sql, new 
+            { 
+                request.Username, 
+                request.OldPassword, 
+                request.NewPassword 
+            });
+        }
     }
 
     // Helper class cho kết quả đăng nhập

@@ -418,4 +418,63 @@ BEGIN
 END;
 $$;
 
+-- Function đổi mật khẩu
+CREATE OR REPLACE FUNCTION fn_change_password(
+    p_username VARCHAR,
+    p_old_password TEXT,
+    p_new_password TEXT
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_user taikhoan%ROWTYPE;
+    special_chars TEXT := '!@#$%^&*()_+-=[]{};:''",.<>/?\|';
+    has_special BOOLEAN;
+BEGIN
+    -- 1. Kiểm tra user tồn tại và đang active
+    SELECT * INTO v_user
+    FROM taikhoan
+    WHERE username = p_username AND is_active = true;
+    
+    IF NOT FOUND THEN
+        RETURN 'LỖI: Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+
+    -- 2. Xác thực mật khẩu cũ
+    IF NOT (v_user.password_hash = crypt(p_old_password, v_user.password_hash)) THEN
+        RETURN 'LỖI: Mật khẩu cũ không chính xác';
+    END IF;
+
+    -- 3. Validate mật khẩu mới (giống fn_register)
+    IF p_new_password IS NULL OR LENGTH(TRIM(p_new_password)) = 0 THEN
+        RETURN 'LỖI: Mật khẩu mới không được để trống';
+    END IF;
+
+    IF LENGTH(p_new_password) < 8 THEN
+        RETURN 'LỖI: Mật khẩu mới phải có ít nhất 8 ký tự';
+    END IF;
+
+    -- Kiểm tra ký tự đặc biệt
+    has_special := FALSE;
+    FOR i IN 1..LENGTH(p_new_password) LOOP
+        IF POSITION(SUBSTRING(p_new_password, i, 1) IN special_chars) > 0 THEN
+            has_special := TRUE;
+            EXIT;
+        END IF;
+    END LOOP;
+
+    IF NOT has_special THEN
+        RETURN 'LỖI: Mật khẩu mới phải chứa ít nhất 1 ký tự đặc biệt (!@#$%^&*)';
+    END IF;
+
+    -- 4. Cập nhật mật khẩu mới
+    UPDATE taikhoan
+    SET password_hash = crypt(p_new_password, gen_salt('bf'))
+    WHERE username = p_username;
+
+    RETURN 'Thành công: Đã đổi mật khẩu cho tài khoản ' || p_username;
+END;
+$$;
+
 -- DROP FUNCTION fn_get_all_users(p_admin_username VARCHAR)

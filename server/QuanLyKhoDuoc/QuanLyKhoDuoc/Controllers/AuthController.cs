@@ -60,5 +60,14 @@ namespace QuanLyKhoDuoc.Controllers
                 return BadRequest(new { message = result });
             return Ok(new { message = result });
         }
+
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var result = await _authService.ChangePassword(request);
+            if (result.StartsWith("LỖI"))
+                return BadRequest(new { message = result });
+            return Ok(new { message = result });
+        }
     }
 }

@@ -4,6 +4,7 @@ import { useAuth, AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountManagementPage from './pages/AccountManagementPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import NhapLoPage from './pages/NhapLoPage';
 import BaoCaoPage from './pages/BaoCaoPage';
@@ -36,6 +37,9 @@ function Navbar() {
           <Link to="/lich-su" className="btn btn-outline-info btn-sm">
           🕒 Lịch sử
         </Link>
+        <Link to="/doi-mat-khau" className="btn btn-outline-light btn-sm">
+          🔑 Đổi MK
+        </Link>
           <button onClick={logout} className="btn btn-danger-custom btn-sm">
             🚪 Đăng xuất
           </button>
@@ -66,6 +70,7 @@ function AppRouter() {
           <Route path="/bao-cao" element={user ? <BaoCaoPage /> : <Navigate to="/login" />} />
           <Route path="/lich-su" element={user ? <LichSuPage /> : <Navigate to="/login" />} />
           <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
+          <Route path="/doi-mat-khau" element={user ? <ChangePasswordPage /> : <Navigate to="/login" />} />
         </Routes>
       </div>
     </>

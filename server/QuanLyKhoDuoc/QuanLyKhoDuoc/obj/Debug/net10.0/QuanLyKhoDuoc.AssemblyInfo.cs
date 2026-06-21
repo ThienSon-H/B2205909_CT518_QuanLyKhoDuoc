@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QuanLyKhoDuoc")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+94ed888f970f24af2fab2b76365f2180da5f8497")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc7fb163f6de5cb59042f452cb4295972564a5e1")]
 [assembly: System.Reflection.AssemblyProductAttribute("QuanLyKhoDuoc")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QuanLyKhoDuoc")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

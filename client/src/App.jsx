@@ -9,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 import NhapLoPage from './pages/NhapLoPage';
 import BaoCaoPage from './pages/BaoCaoPage';
 import LichSuPage from './pages/LichSuPage';
+import DanhMucPage from './pages/DanhMucPage';
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -20,8 +21,9 @@ function Navbar() {
     <div className="ms-auto d-flex gap-2 align-items-center">
       <span className="text-white me-2 fw-semibold">👋 {user.username}</span>
       {user.isAdmin && (
-        <Link to="/admin/users" className="btn btn-outline-warning btn-sm">⚙️ QLTK</Link>
-      )}
+        <Link to="/admin/users" className="btn btn-outline-warning btn-sm">⚙️ QLTK</Link>,
+      <Link to="/admin/danh-muc" className="btn btn-outline-warning btn-sm">📋 Danh mục</Link>
+      )}    
       <Link to="/nhap-lo" className="btn btn-outline-success btn-sm">➕ Nhập Lô</Link>
       <Link to="/bao-cao" className="btn btn-outline-info btn-sm">📊 Báo cáo</Link>
       <Link to="/lich-su" className="btn btn-outline-info btn-sm">🕒 Lịch sử</Link>
@@ -55,6 +57,7 @@ function AppRouter() {
           <Route path="/lich-su" element={user ? <LichSuPage /> : <Navigate to="/login" />} />
           <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
           <Route path="/doi-mat-khau" element={user ? <ChangePasswordPage /> : <Navigate to="/login" />} />
+          <Route path="/admin/danh-muc" element={user?.isAdmin ? <DanhMucPage /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </>

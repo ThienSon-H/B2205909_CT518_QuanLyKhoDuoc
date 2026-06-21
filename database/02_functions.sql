@@ -266,6 +266,236 @@ END;
 $$;
 
 -- =============================================
+-- QUẢN LÝ NHÓM THUỐC
+-- =============================================
+
+-- Lấy danh sách nhóm thuốc (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_get_all_nhom_thuoc(p_admin_username VARCHAR)
+RETURNS TABLE(
+    out_ma_nhom VARCHAR,
+    out_ten_nhom TEXT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RAISE EXCEPTION 'Chỉ admin mới được xem danh sách nhóm thuốc';
+    END IF;
+
+    RETURN QUERY
+    SELECT ma_nhom, ten_nhom
+    FROM nhom_thuoc
+    ORDER BY ma_nhom;
+END;
+$$;
+
+-- Thêm nhóm thuốc mới
+CREATE OR REPLACE FUNCTION fn_insert_nhom_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_nhom VARCHAR,
+    p_ten_nhom TEXT
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền thêm nhóm thuốc';
+    END IF;
+
+    IF p_ma_nhom IS NULL OR LENGTH(TRIM(p_ma_nhom)) = 0 THEN
+        RETURN 'LỖI: Mã nhóm không được để trống';
+    END IF;
+
+    IF p_ten_nhom IS NULL OR LENGTH(TRIM(p_ten_nhom)) = 0 THEN
+        RETURN 'LỖI: Tên nhóm không được để trống';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM nhom_thuoc WHERE ma_nhom = p_ma_nhom) THEN
+        RETURN 'LỖI: Mã nhóm đã tồn tại';
+    END IF;
+
+    INSERT INTO nhom_thuoc (ma_nhom, ten_nhom)
+    VALUES (UPPER(p_ma_nhom), p_ten_nhom);
+
+    RETURN 'Thành công: Đã thêm nhóm ' || p_ten_nhom;
+END;
+$$;
+
+-- Cập nhật nhóm thuốc
+CREATE OR REPLACE FUNCTION fn_update_nhom_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_nhom VARCHAR,
+    p_ten_nhom TEXT
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền sửa nhóm thuốc';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM nhom_thuoc WHERE ma_nhom = p_ma_nhom) THEN
+        RETURN 'LỖI: Mã nhóm không tồn tại';
+    END IF;
+
+    IF p_ten_nhom IS NULL OR LENGTH(TRIM(p_ten_nhom)) = 0 THEN
+        RETURN 'LỖI: Tên nhóm không được để trống';
+    END IF;
+
+    UPDATE nhom_thuoc
+    SET ten_nhom = p_ten_nhom
+    WHERE ma_nhom = p_ma_nhom;
+
+    RETURN 'Thành công: Đã cập nhật nhóm ' || p_ten_nhom;
+END;
+$$;
+
+-- Xóa nhóm thuốc
+CREATE OR REPLACE FUNCTION fn_delete_nhom_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_nhom VARCHAR
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền xóa nhóm thuốc';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM thuoc WHERE ma_nhom = p_ma_nhom) THEN
+        RETURN 'LỖI: Không thể xóa nhóm vì vẫn còn thuốc thuộc nhóm này';
+    END IF;
+
+    DELETE FROM nhom_thuoc WHERE ma_nhom = p_ma_nhom;
+    IF NOT FOUND THEN
+        RETURN 'LỖI: Mã nhóm không tồn tại';
+    END IF;
+
+    RETURN 'Thành công: Đã xóa nhóm ' || p_ma_nhom;
+END;
+$$;
+
+-- =============================================
+-- QUẢN LÝ NHÀ CUNG CẤP
+-- =============================================
+
+-- Lấy danh sách nhà cung cấp (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_get_all_nha_cung_cap(p_admin_username VARCHAR)
+RETURNS TABLE(
+    out_ma_ncc VARCHAR,
+    out_ten_ncc TEXT,
+    out_so_dien_thoai VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RAISE EXCEPTION 'Chỉ admin mới được xem danh sách nhà cung cấp';
+    END IF;
+
+    RETURN QUERY
+    SELECT ma_ncc, ten_ncc, so_dien_thoai
+    FROM nha_cung_cap
+    ORDER BY ma_ncc;
+END;
+$$;
+
+-- Thêm nhà cung cấp mới
+CREATE OR REPLACE FUNCTION fn_insert_nha_cung_cap(
+    p_admin_username VARCHAR,
+    p_ma_ncc VARCHAR,
+    p_ten_ncc TEXT,
+    p_so_dien_thoai VARCHAR DEFAULT NULL
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền thêm nhà cung cấp';
+    END IF;
+
+    IF p_ma_ncc IS NULL OR LENGTH(TRIM(p_ma_ncc)) = 0 THEN
+        RETURN 'LỖI: Mã NCC không được để trống';
+    END IF;
+
+    IF p_ten_ncc IS NULL OR LENGTH(TRIM(p_ten_ncc)) = 0 THEN
+        RETURN 'LỖI: Tên NCC không được để trống';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM nha_cung_cap WHERE ma_ncc = p_ma_ncc) THEN
+        RETURN 'LỖI: Mã NCC đã tồn tại';
+    END IF;
+
+    INSERT INTO nha_cung_cap (ma_ncc, ten_ncc, so_dien_thoai)
+    VALUES (UPPER(p_ma_ncc), p_ten_ncc, p_so_dien_thoai);
+
+    RETURN 'Thành công: Đã thêm NCC ' || p_ten_ncc;
+END;
+$$;
+
+-- Cập nhật nhà cung cấp
+CREATE OR REPLACE FUNCTION fn_update_nha_cung_cap(
+    p_admin_username VARCHAR,
+    p_ma_ncc VARCHAR,
+    p_ten_ncc TEXT,
+    p_so_dien_thoai VARCHAR DEFAULT NULL
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền sửa NCC';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM nha_cung_cap WHERE ma_ncc = p_ma_ncc) THEN
+        RETURN 'LỖI: Mã NCC không tồn tại';
+    END IF;
+
+    IF p_ten_ncc IS NULL OR LENGTH(TRIM(p_ten_ncc)) = 0 THEN
+        RETURN 'LỖI: Tên NCC không được để trống';
+    END IF;
+
+    UPDATE nha_cung_cap
+    SET ten_ncc = p_ten_ncc,
+        so_dien_thoai = p_so_dien_thoai
+    WHERE ma_ncc = p_ma_ncc;
+
+    RETURN 'Thành công: Đã cập nhật NCC ' || p_ten_ncc;
+END;
+$$;
+
+-- Xóa nhà cung cấp
+CREATE OR REPLACE FUNCTION fn_delete_nha_cung_cap(
+    p_admin_username VARCHAR,
+    p_ma_ncc VARCHAR
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền xóa NCC';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM lo_thuoc WHERE ma_ncc = p_ma_ncc) THEN
+        RETURN 'LỖI: Không thể xóa NCC vì vẫn còn lô thuốc liên kết';
+    END IF;
+
+    DELETE FROM nha_cung_cap WHERE ma_ncc = p_ma_ncc;
+    IF NOT FOUND THEN
+        RETURN 'LỖI: Mã NCC không tồn tại';
+    END IF;
+
+    RETURN 'Thành công: Đã xóa NCC ' || p_ma_ncc;
+END;
+$$;
+
+-- =============================================
 -- B. QUẢN LÝ TÀI KHOẢN
 -- =============================================
 

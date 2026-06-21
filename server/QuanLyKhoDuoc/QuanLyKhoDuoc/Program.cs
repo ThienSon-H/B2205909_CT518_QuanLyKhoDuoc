@@ -12,6 +12,7 @@ builder.Services.AddOpenApi();
 // 1. Khai báo Service
 builder.Services.AddScoped<ThuocService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<DanhMucService>();
 
 // 2. Mở cổng cho React (CORS)
 builder.Services.AddCors(options => {

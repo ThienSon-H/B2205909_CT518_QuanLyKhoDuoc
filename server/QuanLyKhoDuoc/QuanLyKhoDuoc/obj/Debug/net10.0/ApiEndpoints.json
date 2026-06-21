@@ -85,6 +85,174 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "GetAllNhaCungCap",
+    "RelativePath": "api/DanhMuc/nha-cung-cap",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "InsertNhaCungCap",
+    "RelativePath": "api/DanhMuc/nha-cung-cap",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "input",
+        "Type": "QuanLyKhoDuoc.Controllers.NhaCungCapInput",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "UpdateNhaCungCap",
+    "RelativePath": "api/DanhMuc/nha-cung-cap/{maNcc}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "maNcc",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "input",
+        "Type": "QuanLyKhoDuoc.Controllers.NhaCungCapInput",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "DeleteNhaCungCap",
+    "RelativePath": "api/DanhMuc/nha-cung-cap/{maNcc}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "maNcc",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "GetAllNhomThuoc",
+    "RelativePath": "api/DanhMuc/nhom-thuoc",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "InsertNhomThuoc",
+    "RelativePath": "api/DanhMuc/nhom-thuoc",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "input",
+        "Type": "QuanLyKhoDuoc.Controllers.NhomThuocInput",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "UpdateNhomThuoc",
+    "RelativePath": "api/DanhMuc/nhom-thuoc/{maNhom}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "maNhom",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "input",
+        "Type": "QuanLyKhoDuoc.Controllers.NhomThuocInput",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "DeleteNhomThuoc",
+    "RelativePath": "api/DanhMuc/nhom-thuoc/{maNhom}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "adminUsername",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "maNhom",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "QuanLyKhoDuoc.Controllers.ThuocController",
     "Method": "Post",
     "RelativePath": "api/Thuoc",

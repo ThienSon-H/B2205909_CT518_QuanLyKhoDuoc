@@ -123,6 +123,22 @@
   },
   {
     "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "GetAllNhaCungCapPublic",
+    "RelativePath": "api/DanhMuc/nha-cung-cap-public",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
     "Method": "UpdateNhaCungCap",
     "RelativePath": "api/DanhMuc/nha-cung-cap/{maNcc}",
     "HttpMethod": "PUT",
@@ -201,6 +217,22 @@
         "Name": "input",
         "Type": "QuanLyKhoDuoc.Controllers.NhomThuocInput",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "QuanLyKhoDuoc.Controllers.DanhMucController",
+    "Method": "GetAllNhomThuocPublic",
+    "RelativePath": "api/DanhMuc/nhom-thuoc-public",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

@@ -427,6 +427,48 @@
         }
       }
     },
+    "/api/DanhMuc/nha-cung-cap-public": {
+      "get": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/DanhMuc/nhom-thuoc-public": {
+      "get": {
+        "tags": [
+          "DanhMuc"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Thuoc/dashboard": {
       "get": {
         "tags": [
@@ -644,6 +686,10 @@
             "format": "date"
           },
           "nguoiThucHien": {
+            "type": "string",
+            "nullable": true
+          },
+          "maNhom": {
             "type": "string",
             "nullable": true
           }

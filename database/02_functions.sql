@@ -141,12 +141,12 @@ CREATE OR REPLACE FUNCTION fn_nhap_lo_thuoc(
     p_ma_ncc VARCHAR,
     p_so_luong INTEGER,
     p_han_su_dung DATE,
-    p_nguoi_thuc_hien VARCHAR DEFAULT NULL
+    p_nguoi_thuc_hien VARCHAR DEFAULT NULL,
+    p_ma_nhom VARCHAR DEFAULT NULL  -- thêm tham số nhóm
 ) RETURNS TEXT LANGUAGE plpgsql AS $$
 DECLARE
     v_so_luong_cu INTEGER;
 BEGIN
-    -- Kiểm tra quyền
     IF p_nguoi_thuc_hien IS NOT NULL AND NOT fn_check_user_active(p_nguoi_thuc_hien) THEN
         RETURN 'LỖI: Tài khoản của bạn không tồn tại hoặc đã bị khóa';
     END IF;
@@ -155,10 +155,19 @@ BEGIN
         RETURN 'LỖI: Số lượng phải > 0';
     END IF;
     
+    -- Tự động thêm thuốc nếu chưa có
     IF NOT EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
-        INSERT INTO thuoc (ma_thuoc, ten_thuoc) VALUES (p_ma_thuoc, p_ten_thuoc);
+        INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom)
+        VALUES (p_ma_thuoc, p_ten_thuoc, p_ma_nhom);
+    ELSE
+        -- Nếu thuốc đã tồn tại và có truyền nhóm mới, cập nhật nhóm
+        IF p_ma_nhom IS NOT NULL THEN
+            UPDATE thuoc SET ma_nhom = p_ma_nhom, ten_thuoc = p_ten_thuoc
+            WHERE ma_thuoc = p_ma_thuoc;
+        END IF;
     END IF;
 
+    -- Xử lý lô
     IF EXISTS (SELECT 1 FROM lo_thuoc WHERE ma_lo = p_ma_lo) THEN
         SELECT so_luong INTO v_so_luong_cu FROM lo_thuoc WHERE ma_lo = p_ma_lo;
         UPDATE lo_thuoc SET so_luong = so_luong + p_so_luong WHERE ma_lo = p_ma_lo;
@@ -492,6 +501,36 @@ BEGIN
     END IF;
 
     RETURN 'Thành công: Đã xóa NCC ' || p_ma_ncc;
+END;
+$$;
+
+-- Function lấy danh sách nhà cung cấp (cho mọi user active)
+CREATE OR REPLACE FUNCTION fn_get_nha_cung_cap_public(p_username VARCHAR DEFAULT NULL)
+RETURNS TABLE(out_ma_ncc VARCHAR, out_ten_ncc TEXT, out_so_dien_thoai VARCHAR)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+    RETURN QUERY
+    SELECT ma_ncc, ten_ncc, so_dien_thoai
+    FROM nha_cung_cap
+    ORDER BY ma_ncc;
+END;
+$$;
+
+-- Function lấy danh sách nhóm thuốc (cho mọi user active)
+CREATE OR REPLACE FUNCTION fn_get_nhom_thuoc_public(p_username VARCHAR DEFAULT NULL)
+RETURNS TABLE(out_ma_nhom VARCHAR, out_ten_nhom TEXT)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+    RETURN QUERY
+    SELECT ma_nhom, ten_nhom
+    FROM nhom_thuoc
+    ORDER BY ma_nhom;
 END;
 $$;
 

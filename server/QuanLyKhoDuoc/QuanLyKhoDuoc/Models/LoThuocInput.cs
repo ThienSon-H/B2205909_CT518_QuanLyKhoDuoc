@@ -9,5 +9,6 @@
         public int SoLuong { get; set; }
         public DateOnly HanSuDung { get; set; }
         public string NguoiThucHien { get; set; }
+        public string MaNhom { get; set; }  // thêm
     }
 }

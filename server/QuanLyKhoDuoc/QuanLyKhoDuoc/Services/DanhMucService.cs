@@ -71,5 +71,22 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_delete_nha_cung_cap(@AdminUsername, @MaNcc)";
             return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, MaNcc = maNcc });
         }
+        // Lấy danh sách nhà cung cấp cho mọi user active
+        public async Task<IEnumerable<NhaCungCap>> GetAllNhaCungCapPublic(string username)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = @"SELECT out_ma_ncc AS MaNcc, out_ten_ncc AS TenNcc, out_so_dien_thoai AS SoDienThoai 
+                        FROM fn_get_nha_cung_cap_public(@Username)";
+            return await db.QueryAsync<NhaCungCap>(sql, new { Username = username });
+        }
+
+        // Lấy danh sách nhóm thuốc cho mọi user active
+        public async Task<IEnumerable<NhomThuoc>> GetAllNhomThuocPublic(string username)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = @"SELECT out_ma_nhom AS MaNhom, out_ten_nhom AS TenNhom 
+                        FROM fn_get_nhom_thuoc_public(@Username)";
+            return await db.QueryAsync<NhomThuoc>(sql, new { Username = username });
+        }
     }
 }

@@ -96,6 +96,35 @@ namespace QuanLyKhoDuoc.Controllers
                 return BadRequest(new { message = result });
             return Ok(new { message = result });
         }
+        // Endpoint công khai: lấy danh sách nhà cung cấp (chỉ cần active)
+        [HttpGet("nha-cung-cap-public")]
+        public async Task<IActionResult> GetAllNhaCungCapPublic([FromQuery] string username)
+        {
+            try
+            {
+                var data = await _service.GetAllNhaCungCapPublic(username);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // Endpoint công khai: lấy danh sách nhóm thuốc (chỉ cần active)
+        [HttpGet("nhom-thuoc-public")]
+        public async Task<IActionResult> GetAllNhomThuocPublic([FromQuery] string username)
+        {
+            try
+            {
+                var data = await _service.GetAllNhomThuocPublic(username);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 
     // Input models (có thể tạo file riêng nếu cần)

@@ -76,7 +76,7 @@ namespace QuanLyKhoDuoc.Services
         public async Task<string> NhapLoThuoc(LoThuocInput input)
         {
             using var db = new NpgsqlConnection(_connString);
-            var sql = "SELECT fn_nhap_lo_thuoc(@MaLo, @MaThuoc, @TenThuoc, @MaNcc, @SoLuong, @HanSuDung::DATE, @NguoiThucHien)";
+            var sql = "SELECT fn_nhap_lo_thuoc(@MaLo, @MaThuoc, @TenThuoc, @MaNcc, @SoLuong, @HanSuDung::DATE, @NguoiThucHien, @MaNhom)";
             var parameters = new
             {
                 input.MaLo,
@@ -85,7 +85,8 @@ namespace QuanLyKhoDuoc.Services
                 input.MaNcc,
                 input.SoLuong,
                 HanSuDung = input.HanSuDung.ToDateTime(TimeOnly.MinValue),
-                NguoiThucHien = input.NguoiThucHien
+                NguoiThucHien = input.NguoiThucHien,
+                MaNhom = input.MaNhom  // thêm dòng này
             };
             return await db.ExecuteScalarAsync<string>(sql, parameters);
         }
@@ -105,5 +106,6 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_upsert_thuoc(@MaThuoc, @TenThuoc, @SoLuongTon, @DonViTinh)";
             return await db.ExecuteScalarAsync<string>(sql, thuoc);
         }
+        
     }
 }

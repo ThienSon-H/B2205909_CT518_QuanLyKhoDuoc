@@ -46,69 +46,88 @@ function AccountManagementPage() {
   };
 
   if (loading) return (
-    <div className="text-center mt-5 pt-5">
+    <div className="loading-section">
       <div className="spinner-border text-primary" role="status" />
       <p className="mt-3">Đang tải danh sách người dùng...</p>
     </div>
   );
 
-  if (error) return <div className="alert alert-danger m-4">{error}</div>;
+  if (error) return (
+    <div className="page-wrapper fade-in">
+      <div className="alert alert-danger alert-custom m-4">{error}</div>
+    </div>
+  );
 
   return (
-    <div className="container py-4 fade-in">
+    <div className="page-wrapper fade-in">
+      <div className="dashboard-header">
+        <div>
+          <h2 className="fw-bold mb-1">👥 Quản lý tài khoản</h2>
+          <p className="dashboard-subtitle">Kiểm soát người dùng và phân quyền</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
+          ← Quay lại Dashboard
+        </Link>
+      </div>
+
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">👥 Quản lý tài khoản</h4>
-          <Link to="/" className="btn btn-outline-light btn-sm">
-            ← Quay lại Dashboard
-          </Link>
+          <span>Danh sách người dùng</span>
+          <span className="badge bg-info badge-custom">{users.length} tài khoản</span>
         </div>
         <div className="card-body p-0">
-          <table className="table-custom">
-            <thead>
-              <tr>
-                <th>Tên đăng nhập</th>
-                <th>Trạng thái</th>
-                <th>Quyền Admin</th>
-                <th>Ngày tạo</th>
-                <th>Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.username}>
-                  <td><span className="fw-semibold">{u.username}</span></td>
-                  <td>
-                    {u.isActive ? (
-                      <span className="badge bg-success badge-custom">Hoạt động</span>
-                    ) : (
-                      <span className="badge bg-danger badge-custom">Vô hiệu hóa</span>
-                    )}
-                  </td>
-                  <td>
-                    {u.isAdmin ? (
-                      <span className="badge bg-warning text-dark badge-custom">Admin</span>
-                    ) : (
-                      <span className="text-muted">Người dùng</span>
-                    )}
-                  </td>
-                  <td>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
-                  <td>
-                    {u.username !== user.username ? (
-                      <button
-                        className="btn btn-sm btn-danger-custom"
-                        onClick={() => toggleUser(u.username)}
-                      >
-                        {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
-                      </button>
-                    ) : (
-                      <span className="text-muted" style={{color: '#94a3b8'}}>(Chính bạn)</span>
-                    )}
-                  </td>
+          <div className="table-responsive">
+            <table className="table-custom">
+              <thead>
+                <tr>
+                  <th>Tên đăng nhập</th>
+                  <th>Trạng thái</th>
+                  <th>Quyền Admin</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.username}>
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <span className="user-avatar-circle">👤</span>
+                        <span className="fw-semibold">{u.username}</span>
+                      </div>
+                    </td>
+                    <td>
+                      {u.isActive ? (
+                        <span className="badge bg-success badge-custom">Hoạt động</span>
+                      ) : (
+                        <span className="badge bg-danger badge-custom">Vô hiệu hóa</span>
+                      )}
+                    </td>
+                    <td>
+                      {u.isAdmin ? (
+                        <span className="badge bg-warning text-dark badge-custom">Admin</span>
+                      ) : (
+                        <span className="text-muted">Người dùng</span>
+                      )}
+                    </td>
+                    <td>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
+                    <td>
+                      {u.username !== user.username ? (
+                        <button
+                          className="btn btn-sm btn-danger-custom ripple"
+                          onClick={() => toggleUser(u.username)}
+                        >
+                          {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
+                        </button>
+                      ) : (
+                        <span className="badge bg-light text-dark border">Chính bạn</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

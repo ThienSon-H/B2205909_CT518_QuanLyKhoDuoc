@@ -35,16 +35,13 @@ function ChangePasswordPage() {
     e.preventDefault();
     setError('');
     setMessage('');
-
     if (!validateForm()) return;
-
     try {
       const res = await axios.post(CHANGE_PASSWORD_URL, {
         username: user?.username,
         oldPassword,
         newPassword
       });
-
       if (res.data.message.startsWith('LỖI')) {
         setError(res.data.message);
       } else {
@@ -62,49 +59,89 @@ function ChangePasswordPage() {
         <div className="col-md-6 col-lg-5">
           <div className="card-custom">
             <div className="card-header">
-              🔑 Đổi mật khẩu
+              <span>🔑 Đổi mật khẩu</span>
             </div>
             <div className="card-body p-4">
-              {message && <div className="alert alert-success alert-custom">{message}</div>}
-              {error && <div className="alert alert-danger alert-custom">{error}</div>}
+              {message && (
+                <div className="alert alert-success alert-custom">
+                  <span className="alert-icon">✅</span>
+                  <span>{message}</span>
+                </div>
+              )}
+              {error && (
+                <div className="alert alert-danger alert-custom">
+                  <span className="alert-icon">⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit}>
                 <div className="form-group-custom">
-                  <label className="form-label fw-semibold">Mật khẩu cũ</label>
-                  <input
-                    type="password"
-                    className="form-control-custom w-100"
-                    value={oldPassword}
-                    onChange={(e) => setOldPassword(e.target.value)}
-                    required
-                  />
+                  <label className="form-label" htmlFor="old-password">
+                    <span className="label-icon">🔒</span> Mật khẩu cũ
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">🔑</span>
+                    <input
+                      id="old-password"
+                      type="password"
+                      className="form-control-custom"
+                      placeholder="Nhập mật khẩu hiện tại"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
+
                 <div className="form-group-custom">
-                  <label className="form-label fw-semibold">Mật khẩu mới</label>
-                  <input
-                    type="password"
-                    className="form-control-custom w-100"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required
-                  />
-                  <small className="text-muted">Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
+                  <label className="form-label" htmlFor="new-password">
+                    <span className="label-icon">🆕</span> Mật khẩu mới
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">✨</span>
+                    <input
+                      id="new-password"
+                      type="password"
+                      className="form-control-custom"
+                      placeholder="Ít nhất 8 ký tự, có ký tự đặc biệt"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <small className="form-hint">Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
                 </div>
+
                 <div className="form-group-custom">
-                  <label className="form-label fw-semibold">Xác nhận mật khẩu mới</label>
-                  <input
-                    type="password"
-                    className="form-control-custom w-100"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
+                  <label className="form-label" htmlFor="confirm-password">
+                    <span className="label-icon">✅</span> Xác nhận mật khẩu mới
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">🔐</span>
+                    <input
+                      id="confirm-password"
+                      type="password"
+                      className="form-control-custom"
+                      placeholder="Nhập lại mật khẩu mới"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
-                <button type="submit" className="btn btn-primary-custom w-100 mt-3">
-                  Cập nhật mật khẩu
+
+                <button
+                  type="submit"
+                  className="btn btn-primary-custom w-100 mt-4 ripple"
+                >
+                  <span className="btn-text">Cập nhật mật khẩu</span>
+                  <span className="btn-arrow">→</span>
                 </button>
               </form>
-              <div className="text-center mt-3">
-                <Link to="/" className="text-muted">← Quay lại Dashboard</Link>
+
+              <div className="text-center mt-4">
+                <Link to="/" className="auth-link">← Quay lại Dashboard</Link>
               </div>
             </div>
           </div>

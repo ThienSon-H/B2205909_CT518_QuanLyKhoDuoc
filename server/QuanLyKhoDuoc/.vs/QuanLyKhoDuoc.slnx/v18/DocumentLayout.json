@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\services\\thuocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\services\\thuocservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -13,10 +17,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\controllers\\thuoccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\controllers\\thuoccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|solutionrelative:quanlykhoduoc\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7967DB91-37FE-9668-0B0F-28ED05621F6A}|QuanLyKhoDuoc\\QuanLyKhoDuoc.csproj|c:\\thuctap\\quanlykhoduoc\\server\\quanlykhoduoc\\quanlykhoduoc\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -38,19 +38,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "ThuocController.cs",
-              "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
-              "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
-              "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
-              "RelativeToolTip": "QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-31T11:47:57.22Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "ThuocService.cs",
               "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Services\\ThuocService.cs",
               "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Services\\ThuocService.cs",
@@ -63,19 +51,32 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "AuthService.cs",
               "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Services\\AuthService.cs",
               "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Services\\AuthService.cs",
               "RelativeToolTip": "QuanLyKhoDuoc\\Services\\AuthService.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwBUAAABoAAAAAAAAAA==",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAgwDsAAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T12:56:58.324Z"
+              "WhenOpened": "2026-05-18T12:56:58.324Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
+              "Title": "ThuocController.cs",
+              "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
+              "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
+              "ToolTip": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
+              "RelativeToolTip": "QuanLyKhoDuoc\\Controllers\\ThuocController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-31T11:47:57.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "AuthController.cs",
               "DocumentMoniker": "C:\\ThucTap\\QuanLyKhoDuoc\\server\\QuanLyKhoDuoc\\QuanLyKhoDuoc\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "QuanLyKhoDuoc\\Controllers\\AuthController.cs",
@@ -83,8 +84,7 @@
               "RelativeToolTip": "QuanLyKhoDuoc\\Controllers\\AuthController.cs",
               "ViewState": "AgIAAA0AAAAAAAAAAAAewBcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-18T12:56:53.184Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-18T12:56:53.184Z"
             },
             {
               "$type": "Document",

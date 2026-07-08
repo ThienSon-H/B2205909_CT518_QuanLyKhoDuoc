@@ -1,0 +1,3083 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files and files not matching ignore patterns, combined into a single document by Repomix.
+The content has been processed where comments have been removed, empty lines have been removed.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: **/*.cs, **/*.js, **/*.jsx, **/*.sql, **/*.json, **/*.css, **/*.html
+- Files matching these patterns are excluded: **/bin/**, **/obj/**, **/wwwroot/lib/**, **/.vs/**, **/.vscode/**, **/Migrations/**, **/.git/**, *.db, *.sqlite, *.user, *.sln, *.slnx, *.csproj.user, package-lock.json, yarn.lock, pnpm-lock.yaml, node_modules/**, **/*.png, **/*.jpg, **/*.jpeg, **/*.gif, **/*.ico, **/*.svg, **/*.log, **/logs/**, **/*.tmp, **/*.temp, **/launchSettings.json, **/appsettings.Development.json, **/*.http, **/*.md, **/README.md
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Code comments have been removed from supported file types
+- Empty lines have been removed from all files
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+eslint.config.js
+index.html
+package.json
+repomix.config.json
+src/App.jsx
+src/context/AuthContext.jsx
+src/index.css
+src/main.jsx
+src/pages/AccountManagementPage.jsx
+src/pages/BaoCaoPage.jsx
+src/pages/ChangePasswordPage.jsx
+src/pages/DanhMucPage.jsx
+src/pages/DashboardPage.jsx
+src/pages/LichSuPage.jsx
+src/pages/LoginPage.jsx
+src/pages/NhapLoPage.jsx
+src/pages/RegisterPage.jsx
+vite.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Kho Dược</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="package.json">
+{
+  "name": "quan-ly-kho-duoc",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.15.2",
+    "bootstrap": "^5.3.8",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^7.15.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "vite": "^8.0.9"
+  }
+}
+</file>
+
+<file path="repomix.config.json">
+{
+  "output": {
+    "filePath": "repomix-output.xml",
+    "style": "xml",
+    "removeComments": true,
+    "removeEmptyLines": true,
+    "topFilesLength": 10,
+    "showLineNumbers": false,
+    "copyToClipboard": false
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "**/bin/**",
+      "**/obj/**",
+      "**/wwwroot/lib/**",
+      "**/.vs/**",
+      "**/.vscode/**",
+      "**/Migrations/**",
+      "**/.git/**",
+      "*.db",
+      "*.sqlite",
+      "*.user",
+      "*.sln",
+      "*.slnx",
+      "*.csproj.user",
+      "package-lock.json",
+      "yarn.lock",
+      "pnpm-lock.yaml",
+      "node_modules/**",
+      "**/*.png",
+      "**/*.jpg",
+      "**/*.jpeg",
+      "**/*.gif",
+      "**/*.ico",
+      "**/*.svg",
+      "**/*.log",
+      "**/logs/**",
+      "**/*.tmp",
+      "**/*.temp",
+      "**/launchSettings.json",
+      "**/appsettings.Development.json",
+      "**/*.http",
+      "**/*.md",
+      "**/README.md"
+    ]
+  },
+  "include": [
+    "**/*.cs",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.sql",
+    "**/*.json",
+    "**/*.css",
+    "**/*.html"
+  ],
+  "security": {
+    "enableShieldsCheck": true
+  }
+}
+</file>
+
+<file path="src/App.jsx">
+import React from 'react';
+import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useAuth, AuthProvider } from './context/AuthContext';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import AccountManagementPage from './pages/AccountManagementPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import DashboardPage from './pages/DashboardPage';
+import NhapLoPage from './pages/NhapLoPage';
+import BaoCaoPage from './pages/BaoCaoPage';
+import LichSuPage from './pages/LichSuPage';
+import DanhMucPage from './pages/DanhMucPage';
+function Navbar() {
+  const { user, logout } = useAuth();
+  if (!user) return null;
+  return (
+    <nav className="navbar-custom">
+      <div className="container-fluid">
+        <Link to="/" className="navbar-brand" aria-label="Trang chủ">
+          <span className="brand-icon">⚕️</span>
+          <span className="brand-text">Quản lý Kho Dược</span>
+        </Link>
+        <div className="nav-actions">
+          <div className="user-greeting">
+            <span className="user-avatar">👤</span>
+            <span className="user-name">{user.username}</span>
+          </div>
+          <div className="nav-links">
+            {user.isAdmin && (
+              <>
+                <Link to="/admin/users" className="btn btn-outline-warning btn-sm ripple">
+                  <span className="btn-icon">⚙️</span> QLTK
+                </Link>
+                <Link to="/admin/danh-muc" className="btn btn-outline-warning btn-sm ripple">
+                  <span className="btn-icon">📋</span> Danh mục
+                </Link>
+              </>
+            )}
+            <Link to="/nhap-lo" className="btn btn-outline-success btn-sm ripple">
+              <span className="btn-icon">➕</span> Nhập Lô
+            </Link>
+            <Link to="/bao-cao" className="btn btn-outline-info btn-sm ripple">
+              <span className="btn-icon">📊</span> Báo cáo
+            </Link>
+            <Link to="/lich-su" className="btn btn-outline-info btn-sm ripple">
+              <span className="btn-icon">🕒</span> Lịch sử
+            </Link>
+            <Link to="/doi-mat-khau" className="btn btn-outline-light btn-sm ripple">
+              <span className="btn-icon">🔑</span> Đổi MK
+            </Link>
+            <button onClick={logout} className="btn btn-danger-custom btn-sm ripple">
+              <span className="btn-icon">🚪</span> Đăng xuất
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
+function AppRouter() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-content">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Đang tải...</span>
+          </div>
+          <p className="loading-text">Đang tải ứng dụng...</p>
+          <div className="loading-bar">
+            <div className="loading-bar-fill"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <>
+      <Navbar />
+      <div className="app-container">
+        <Routes>
+          <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
+          <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
+          <Route path="/admin/users" element={user?.isAdmin ? <AccountManagementPage /> : <Navigate to="/" />} />
+          <Route path="/nhap-lo" element={user ? <NhapLoPage /> : <Navigate to="/login" />} />
+          <Route path="/bao-cao" element={user ? <BaoCaoPage /> : <Navigate to="/login" />} />
+          <Route path="/lich-su" element={user ? <LichSuPage /> : <Navigate to="/login" />} />
+          <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
+          <Route path="/doi-mat-khau" element={user ? <ChangePasswordPage /> : <Navigate to="/login" />} />
+          <Route path="/admin/danh-muc" element={user?.isAdmin ? <DanhMucPage /> : <Navigate to="/" />} />
+        </Routes>
+      </div>
+    </>
+  );
+}
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRouter />
+      </AuthProvider>
+    </BrowserRouter>
+  );
+}
+export default App;
+</file>
+
+<file path="src/context/AuthContext.jsx">
+import React, { createContext, useState, useContext, useEffect } from 'react';
+const AuthContext = createContext();
+export const useAuth = () => useContext(AuthContext);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+    setLoading(false);
+  }, []);
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem('user', JSON.stringify(userData));
+  };
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+  return (
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+</file>
+
+<file path="src/index.css">
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+:root {
+  --md-primary: #1e6f5c;
+  --md-primary-hover: #165a4a;
+  --md-primary-container: #d4f0e7;
+  --md-on-primary: #ffffff;
+  --md-primary-rgb: 30, 111, 92;
+  --md-secondary: #1a73e8;
+  --md-secondary-hover: #1557b0;
+  --md-secondary-container: #d3e3fd;
+  --md-on-secondary: #ffffff;
+  --md-secondary-rgb: 26, 115, 232;
+  --md-tertiary: #f9a825;
+  --md-tertiary-container: #fff3cd;
+  --md-on-tertiary-container: #856404;
+  --md-error: #c62828;
+  --md-error-container: #fce4ec;
+  --md-on-error: #ffffff;
+  --md-error-rgb: 198, 40, 40;
+  --md-surface: #ffffff;
+  --md-surface-variant: #f8fafc;
+  --md-background: #f1f5f9;
+  --md-surface-container-lowest: #f8fafc;
+  --md-surface-container-low: #f1f5f9;
+  --md-surface-container: #e8edf3;
+  --md-on-surface: #1e293b;
+  --md-on-surface-variant: #475569;
+  --md-outline: #cbd5e1;
+  --md-outline-variant: #94a3b8;
+  --md-elevation-1: 0px 1px 3px 0px rgba(0, 0, 0, 0.08), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+  --md-elevation-2: 0px 2px 6px 0px rgba(0, 0, 0, 0.08), 0px 1px 4px 0px rgba(0, 0, 0, 0.06);
+  --md-elevation-3: 0px 4px 12px 0px rgba(0, 0, 0, 0.10), 0px 2px 6px 0px rgba(0, 0, 0, 0.06);
+  --md-elevation-4: 0px 8px 24px 0px rgba(0, 0, 0, 0.12), 0px 4px 10px 0px rgba(0, 0, 0, 0.08);
+  --md-elevation-5: 0px 12px 32px 0px rgba(0, 0, 0, 0.14), 0px 6px 16px 0px rgba(0, 0, 0, 0.08);
+  --md-radius-sm: 8px;
+  --md-radius-md: 12px;
+  --md-radius-lg: 16px;
+  --md-radius-xl: 20px;
+  --md-radius-full: 9999px;
+  --md-typescale-display: 2rem;
+  --md-typescale-headline: 1.5rem;
+  --md-typescale-title: 1.25rem;
+  --md-typescale-body: 1rem;
+  --md-typescale-label: 0.875rem;
+  --md-typescale-caption: 0.75rem;
+  --md-duration-short: 0.2s;
+  --md-duration-medium: 0.3s;
+  --md-duration-long: 0.5s;
+  --md-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --md-easing-emphasized: cubic-bezier(0.4, 0.0, 0.2, 1.0);
+  --md-easing-decelerate: cubic-bezier(0.0, 0.0, 0.2, 1.0);
+  --md-font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  font-family: var(--md-font-family);
+  font-size: var(--md-typescale-body);
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--md-on-surface);
+  background-color: var(--md-background);
+  min-height: 100vh;
+}
+a {
+  text-decoration: none;
+  color: var(--md-secondary);
+  transition: color var(--md-duration-short) var(--md-easing-standard);
+}
+a:hover {
+  color: var(--md-secondary-hover);
+}
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+.ripple:active::after {
+  width: 300px;
+  height: 300px;
+}
+.ripple-dark::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+/* ============================================================
+   NAVBAR – Material Top App Bar
+   ============================================================ */
+.navbar-custom {
+  background: linear-gradient(135deg, var(--md-primary) 0%, #145a4a 100%);
+  box-shadow: var(--md-elevation-4);
+  padding: 0.75rem 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+.navbar-custom .navbar-brand {
+  font-weight: 700;
+  font-size: var(--md-typescale-title);
+  color: var(--md-on-primary) !important;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity var(--md-duration-short) var(--md-easing-standard);
+}
+.navbar-custom .navbar-brand:hover {
+  opacity: 0.85;
+  color: var(--md-on-primary) !important;
+}
+.navbar-custom .container-fluid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
+.navbar-custom .btn {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  font-size: var(--md-typescale-label);
+  letter-spacing: 0.2px;
+  transition: all var(--md-duration-short) var(--md-easing-emphasized);
+  color: #ffffff;
+  padding: 0.45rem 1.25rem;
+  border-width: 1.5px;
+}
+.navbar-custom .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--md-elevation-3);
+}
+.navbar-custom .btn:active {
+  transform: translateY(0);
+}
+.navbar-custom .btn-outline-warning {
+  color: #ffe082;
+  border-color: rgba(255, 224, 130, 0.5);
+}
+.navbar-custom .btn-outline-warning:hover {
+  background: rgba(255, 224, 130, 0.15);
+  border-color: #ffe082;
+  color: #ffe082;
+}
+.navbar-custom .btn-outline-success {
+  color: #a5d6a7;
+  border-color: rgba(165, 214, 167, 0.5);
+}
+.navbar-custom .btn-outline-success:hover {
+  background: rgba(165, 214, 167, 0.15);
+  border-color: #a5d6a7;
+  color: #a5d6a7;
+}
+.navbar-custom .btn-outline-info {
+  color: #81d4fa;
+  border-color: rgba(129, 212, 250, 0.5);
+}
+.navbar-custom .btn-outline-info:hover {
+  background: rgba(129, 212, 250, 0.15);
+  border-color: #81d4fa;
+  color: #81d4fa;
+}
+.navbar-custom .btn-outline-light {
+  color: #e2e8f0;
+  border-color: rgba(226, 232, 240, 0.5);
+}
+.navbar-custom .btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: #ffffff;
+  color: #ffffff;
+}
+.navbar-custom .text-white {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+.navbar-custom .btn-danger-custom {
+  background: var(--md-error);
+  border: 1.5px solid var(--md-error);
+  color: var(--md-on-error);
+  font-weight: 600;
+  box-shadow: var(--md-elevation-1);
+}
+.navbar-custom .btn-danger-custom:hover {
+  background: #b71c1c;
+  box-shadow: var(--md-elevation-3);
+  color: var(--md-on-error);
+}
+/* ============================================================
+   CARDS – Material Surface Container
+   ============================================================ */
+.card-custom {
+  background: var(--md-surface);
+  border: none;
+  border-radius: var(--md-radius-lg);
+  box-shadow: var(--md-elevation-1);
+  overflow: hidden;
+  transition: box-shadow var(--md-duration-medium) var(--md-easing-standard);
+}
+.card-custom:hover {
+  box-shadow: var(--md-elevation-2);
+}
+.card-custom .card-header {
+  background: linear-gradient(135deg, #0f2b3d 0%, #1a3a4f 100%);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: var(--md-typescale-title);
+  padding: 1rem 1.5rem;
+  border-bottom: none;
+  letter-spacing: 0.3px;
+  border-radius: var(--md-radius-lg) var(--md-radius-lg) 0 0;
+}
+.card-custom .card-header h4,
+.card-custom .card-header span {
+  color: #ffffff;
+  font-weight: 600;
+}
+.card-custom .card-header .btn-outline-light {
+  color: #e2e8f0;
+  border-color: rgba(226, 232, 240, 0.4);
+  border-radius: var(--md-radius-full);
+}
+.card-custom .card-header .btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+.card-custom .card-body {
+  padding: 1.5rem;
+}
+/* ============================================================
+   FORM FIELDS – Material Outlined Text Fields
+   ============================================================ */
+.form-control-custom,
+.form-select-custom {
+  display: block;
+  width: 100%;
+  border-radius: var(--md-radius-sm);
+  border: 1.5px solid var(--md-outline);
+  padding: 0.65rem 1rem;
+  font-size: var(--md-typescale-body);
+  font-family: var(--md-font-family);
+  color: var(--md-on-surface);
+  background: var(--md-surface);
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+  outline: none;
+  appearance: none;
+}
+.form-control-custom::placeholder {
+  color: var(--md-outline-variant);
+  opacity: 1;
+}
+.form-control-custom:hover,
+.form-select-custom:hover {
+  border-color: var(--md-on-surface-variant);
+}
+.form-control-custom:focus,
+.form-select-custom:focus {
+  border-color: var(--md-secondary);
+  box-shadow: 0 0 0 3px rgba(var(--md-secondary-rgb), 0.15);
+  outline: none;
+}
+.form-control-custom:disabled,
+.form-select-custom:disabled {
+  background: var(--md-surface-variant);
+  color: var(--md-outline-variant);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+/* Floating Label Group */
+.form-group-custom {
+  margin-bottom: 1.25rem;
+}
+.form-group-custom .form-label,
+.form-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  color: var(--md-on-surface-variant);
+  letter-spacing: 0.2px;
+}
+.form-group-custom .form-control-custom,
+.form-group-custom .form-select-custom {
+  margin-bottom: 0;
+}
+/* Input Group */
+.input-group {
+  display: flex;
+  align-items: stretch;
+}
+.input-group .input-group-text {
+  display: flex;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  font-size: var(--md-typescale-body);
+  font-weight: 400;
+  color: var(--md-on-surface-variant);
+  background: var(--md-surface-variant);
+  border: 1.5px solid var(--md-outline);
+  border-radius: var(--md-radius-sm);
+}
+.input-group > .input-group-text:first-child {
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.input-group > .form-control-custom:not(:first-child) {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.input-group > .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+/* ============================================================
+   BUTTONS – Material Filled & Outlined
+   ============================================================ */
+.btn-primary-custom {
+  background: var(--md-secondary);
+  border: none;
+  border-radius: var(--md-radius-full);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  padding: 0.65rem 2rem;
+  color: var(--md-on-secondary);
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.btn-primary-custom:hover {
+  background: var(--md-secondary-hover);
+  box-shadow: var(--md-elevation-3);
+  transform: translateY(-2px);
+  color: var(--md-on-secondary);
+}
+.btn-primary-custom:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-1);
+}
+.btn-primary-custom:focus-visible {
+  outline: 3px solid rgba(var(--md-secondary-rgb), 0.4);
+  outline-offset: 2px;
+}
+.btn-success-custom {
+  background: var(--md-primary);
+  border: none;
+  border-radius: var(--md-radius-full);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  padding: 0.65rem 2rem;
+  color: var(--md-on-primary);
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-1);
+  position: relative;
+  overflow: hidden;
+}
+.btn-success-custom:hover {
+  background: var(--md-primary-hover);
+  box-shadow: var(--md-elevation-3);
+  transform: translateY(-2px);
+  color: var(--md-on-primary);
+}
+.btn-success-custom:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-1);
+}
+.btn-success-custom:focus-visible {
+  outline: 3px solid rgba(var(--md-primary-rgb), 0.4);
+  outline-offset: 2px;
+}
+.btn-danger-custom {
+  background: var(--md-error);
+  border: none;
+  border-radius: var(--md-radius-full);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  padding: 0.5rem 1.5rem;
+  color: var(--md-on-error);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-1);
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.2px;
+}
+.btn-danger-custom:hover {
+  background: #b71c1c;
+  box-shadow: var(--md-elevation-3);
+  transform: translateY(-2px);
+  color: var(--md-on-error);
+}
+.btn-danger-custom:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-1);
+}
+.btn-outline-primary-custom {
+  background: transparent;
+  border: 1.5px solid var(--md-secondary);
+  border-radius: var(--md-radius-full);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  padding: 0.55rem 1.5rem;
+  color: var(--md-secondary);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-emphasized);
+  letter-spacing: 0.2px;
+}
+.btn-outline-primary-custom:hover {
+  background: var(--md-secondary-container);
+  color: var(--md-secondary-hover);
+  border-color: var(--md-secondary-hover);
+  transform: translateY(-1px);
+}
+.btn-outline-primary-custom:active {
+  transform: translateY(0);
+}
+/* ============================================================
+   TABLES – Material Data Table
+   ============================================================ */
+.table-custom {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  background: var(--md-surface);
+  border-radius: 0 0 var(--md-radius-lg) var(--md-radius-lg);
+  overflow: hidden;
+}
+.table-custom thead th {
+  background: var(--md-surface-container-lowest);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  color: var(--md-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--md-outline);
+  padding: 0.9rem 1rem;
+  white-space: nowrap;
+  text-align: left;
+}
+.table-custom thead th:first-child {
+  padding-left: 1.5rem;
+}
+.table-custom thead th:last-child {
+  padding-right: 1.5rem;
+}
+.table-custom tbody td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--md-surface-container);
+  vertical-align: middle;
+  color: var(--md-on-surface);
+  font-size: var(--md-typescale-body);
+}
+.table-custom tbody td:first-child {
+  padding-left: 1.5rem;
+}
+.table-custom tbody td:last-child {
+  padding-right: 1.5rem;
+}
+.table-custom tbody tr {
+  transition: background var(--md-duration-short) var(--md-easing-standard);
+}
+.table-custom tbody tr:hover {
+  background: var(--md-surface-container-lowest);
+}
+.table-custom tbody tr.table-danger {
+  background-color: var(--md-error-container);
+}
+.table-custom tbody tr.table-danger:hover {
+  background-color: #f8bbd0;
+}
+.table-custom strong {
+  color: var(--md-on-surface);
+  font-weight: 600;
+}
+.table-custom .text-muted {
+  color: var(--md-on-surface-variant) !important;
+}
+/* Badges – Material */
+.badge-custom {
+  border-radius: var(--md-radius-sm);
+  padding: 0.35em 0.75em;
+  font-weight: 600;
+  font-size: var(--md-typescale-caption);
+  letter-spacing: 0.3px;
+  display: inline-block;
+  line-height: 1.4;
+}
+.badge.bg-success {
+  background-color: var(--md-primary) !important;
+  color: var(--md-on-primary);
+}
+.badge.bg-danger {
+  background-color: var(--md-error) !important;
+  color: var(--md-on-error);
+}
+.badge.bg-dark {
+  background-color: #263238 !important;
+  color: #ffffff;
+}
+.badge.bg-secondary {
+  background-color: var(--md-on-surface-variant) !important;
+  color: #ffffff;
+}
+.badge.bg-warning {
+  background-color: var(--md-tertiary) !important;
+  color: #1e293b;
+}
+.badge.bg-info {
+  background-color: var(--md-secondary) !important;
+  color: var(--md-on-secondary);
+}
+.badge.border.text-dark {
+  color: var(--md-on-surface) !important;
+  background: var(--md-surface-variant) !important;
+  border: 1px solid var(--md-outline) !important;
+}
+.badge.bg-light {
+  background: var(--md-surface-container-low) !important;
+  color: var(--md-on-surface) !important;
+}
+/* ============================================================
+   AUTH PAGES – Login/Register
+   ============================================================ */
+.auth-container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: radial-gradient(ellipse at 50% 0%, var(--md-primary-container) 0%, var(--md-background) 70%);
+}
+.auth-card {
+  background: var(--md-surface);
+  border-radius: var(--md-radius-xl);
+  box-shadow: var(--md-elevation-5);
+  overflow: hidden;
+  max-width: 460px;
+  width: 100%;
+  transition: box-shadow var(--md-duration-medium) var(--md-easing-standard);
+}
+.auth-card .card-header {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%);
+  color: #ffffff;
+  padding: 2rem;
+  text-align: center;
+  font-size: var(--md-typescale-headline);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.auth-card .p-4 {
+  padding: 2rem;
+}
+/* ============================================================
+   DASHBOARD HEADER
+   ============================================================ */
+.dashboard-header {
+  background: var(--md-surface);
+  border-radius: var(--md-radius-lg);
+  padding: 1.25rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--md-elevation-1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  transition: box-shadow var(--md-duration-short) var(--md-easing-standard);
+}
+.dashboard-header:hover {
+  box-shadow: var(--md-elevation-2);
+}
+.dashboard-header h2 {
+  color: var(--md-on-surface);
+  font-weight: 700;
+  font-size: var(--md-typescale-headline);
+  margin-bottom: 0;
+  letter-spacing: 0.2px;
+}
+/* ============================================================
+   ALERTS – Material Snackbar style
+   ============================================================ */
+.alert-custom {
+  border-radius: var(--md-radius-md);
+  font-weight: 500;
+  font-size: var(--md-typescale-label);
+  padding: 1rem 1.25rem;
+  border: none;
+  box-shadow: var(--md-elevation-2);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.alert-danger {
+  background-color: var(--md-error-container);
+  color: var(--md-error);
+  border-left: 4px solid var(--md-error);
+}
+.alert-success {
+  background-color: var(--md-primary-container);
+  color: var(--md-primary-hover);
+  border-left: 4px solid var(--md-primary);
+}
+/* ============================================================
+   PAGE WRAPPER
+   ============================================================ */
+.page-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  animation: fadeSlideIn var(--md-duration-long) var(--md-easing-decelerate);
+}
+/* ============================================================
+   NAV TABS – Material Secondary Tabs
+   ============================================================ */
+.nav-tabs {
+  border-bottom: 2px solid var(--md-outline);
+  gap: 0.5rem;
+  display: flex;
+}
+.nav-tabs .nav-item .nav-link {
+  border: none;
+  background: transparent;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  font-size: var(--md-typescale-label);
+  color: var(--md-on-surface-variant);
+  border-radius: var(--md-radius-md) var(--md-radius-md) 0 0;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+  cursor: pointer;
+  position: relative;
+}
+.nav-tabs .nav-item .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--md-secondary);
+  border-radius: 3px 3px 0 0;
+  transform: scaleX(0);
+  transition: transform var(--md-duration-medium) var(--md-easing-emphasized);
+}
+.nav-tabs .nav-item .nav-link.active {
+  color: var(--md-secondary);
+  font-weight: 600;
+}
+.nav-tabs .nav-item .nav-link.active::after {
+  transform: scaleX(1);
+}
+.nav-tabs .nav-item .nav-link:hover {
+  color: var(--md-secondary);
+  background: var(--md-secondary-container);
+}
+.spinner-border.text-primary {
+  color: var(--md-secondary) !important;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-width: 0.2em;
+}
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.fade-in {
+  animation: fadeSlideIn var(--md-duration-long) var(--md-easing-decelerate);
+}
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 1rem;
+  }
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 1.25rem;
+  }
+  .dashboard-header h2 {
+    font-size: var(--md-typescale-title);
+  }
+  .navbar-custom .btn {
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+  }
+  .auth-card .card-header {
+    padding: 1.5rem;
+    font-size: var(--md-typescale-title);
+  }
+  .table-custom thead th,
+  .table-custom tbody td {
+    padding: 0.65rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 576px) {
+  .navbar-custom {
+    padding: 0.5rem 1rem;
+  }
+  .navbar-custom .container-fluid {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .form-control-custom,
+  .form-select-custom {
+    font-size: 0.9rem;
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--md-outline);
+  border-radius: var(--md-radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-outline-variant);
+}
+.text-primary {
+  color: var(--md-secondary) !important;
+}
+.text-muted {
+  color: var(--md-on-surface-variant) !important;
+}
+.fw-semibold {
+  font-weight: 600 !important;
+}
+.fw-bold {
+  font-weight: 700 !important;
+}
+.w-100 {
+  width: 100% !important;
+}
+.mt-3 {
+  margin-top: 1rem !important;
+}
+.mt-4 {
+  margin-top: 1.5rem !important;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+.text-center {
+  text-align: center !important;
+}
+.d-flex {
+  display: flex !important;
+}
+.gap-2 {
+  gap: 0.5rem !important;
+}
+.align-items-center {
+  align-items: center !important;
+}
+.justify-content-between {
+  justify-content: space-between !important;
+}
+.justify-content-center {
+  justify-content: center !important;
+}
+.me-2 {
+  margin-right: 0.5rem !important;
+}
+.ms-auto {
+  margin-left: auto !important;
+}
+.p-0 {
+  padding: 0 !important;
+}
+.p-3 {
+  padding: 1rem !important;
+}
+.p-4 {
+  padding: 1.5rem !important;
+}
+.py-4 {
+  padding-top: 1.5rem !important;
+  padding-bottom: 1.5rem !important;
+}
+.py-5 {
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+.pt-5 {
+  padding-top: 3rem !important;
+}
+.m-4 {
+  margin: 1.5rem !important;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+}
+.col-md-6, .col-md-4, .col-md-3, .col-md-2, .col-lg-8, .col-lg-5, .col-12 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  flex: 0 0 auto;
+}
+.col-12 {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .col-md-6 { width: 50%; }
+  .col-md-4 { width: 33.333%; }
+  .col-md-3 { width: 25%; }
+  .col-md-2 { width: 16.666%; }
+  .col-lg-8 { width: 66.666%; }
+  .col-lg-5 { width: 41.666%; }
+}
+.g-3 {
+  --bs-gutter-x: 1rem;
+  --bs-gutter-y: 1rem;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+.g-3 > * {
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-top: var(--bs-gutter-y);
+}
+.g-4 {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 1.5rem;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+.g-4 > * {
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-top: var(--bs-gutter-y);
+}
+.px-5 {
+  padding-left: 3rem !important;
+  padding-right: 3rem !important;
+}
+.border-start-0 {
+  border-left: none !important;
+}
+.border-end-0 {
+  border-right: none !important;
+}
+.btn-secondary {
+  background: var(--md-surface-container-low);
+  border: 1.5px solid var(--md-outline);
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  color: var(--md-on-surface);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+}
+.btn-secondary:hover {
+  background: var(--md-surface-container);
+  border-color: var(--md-on-surface-variant);
+}
+.btn-outline-secondary {
+  background: transparent;
+  border: 1.5px solid var(--md-outline);
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  color: var(--md-on-surface);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+}
+.btn-outline-secondary:hover {
+  background: var(--md-surface-container-lowest);
+  border-color: var(--md-on-surface-variant);
+}
+.btn-outline-primary {
+  background: transparent;
+  border: 1.5px solid var(--md-secondary);
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  padding: 0.4rem 1.25rem;
+  color: var(--md-secondary);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+}
+.btn-outline-primary:hover {
+  background: var(--md-secondary-container);
+  color: var(--md-secondary-hover);
+}
+.btn-sm {
+  padding: 0.35rem 1rem;
+  font-size: var(--md-typescale-caption);
+}
+.btn-outline-primary.me-2 {
+  margin-right: 0.5rem;
+}
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+.navbar-custom .brand-icon {
+  font-size: 1.5rem;
+  margin-right: 0.25rem;
+}
+.navbar-custom .brand-text {
+  font-weight: 700;
+}
+.navbar-custom .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.navbar-custom .user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--md-radius-full);
+  backdrop-filter: blur(4px);
+}
+.navbar-custom .user-avatar {
+  font-size: 1.2rem;
+}
+.navbar-custom .user-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  white-space: nowrap;
+}
+.navbar-custom .nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.navbar-custom .btn .btn-icon {
+  margin-right: 0.2rem;
+}
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--md-background);
+}
+.loading-content {
+  text-align: center;
+  padding: 2rem;
+}
+.loading-content .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25em;
+  margin-bottom: 1rem;
+}
+.loading-text {
+  font-size: var(--md-typescale-body);
+  color: var(--md-on-surface-variant);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background: var(--md-surface-container);
+  border-radius: var(--md-radius-full);
+  margin: 0 auto;
+  overflow: hidden;
+}
+.loading-bar-fill {
+  width: 40%;
+  height: 100%;
+  background: var(--md-secondary);
+  border-radius: var(--md-radius-full);
+  animation: loadingBar 1.2s ease-in-out infinite;
+}
+@keyframes loadingBar {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(-100%); }
+}
+.app-container {
+  min-height: calc(100vh - 60px);
+}
+@media (max-width: 992px) {
+  .navbar-custom .nav-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .navbar-custom .nav-links {
+    justify-content: flex-start;
+    gap: 0.3rem;
+  }
+}
+@media (max-width: 768px) {
+  .navbar-custom .container-fluid {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .navbar-custom .nav-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .navbar-custom .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+.auth-card .auth-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.auth-card .auth-title {
+  font-size: var(--md-typescale-headline);
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: #ffffff;
+}
+.auth-card .auth-subtitle {
+  font-size: var(--md-typescale-body);
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0;
+  font-weight: 400;
+}
+.auth-body {
+  padding: 2rem;
+}
+.auth-body .alert {
+  margin-bottom: 1.5rem;
+}
+.alert-icon {
+  font-size: 1.2rem;
+}
+.form-group-custom .label-icon {
+  margin-right: 0.3rem;
+}
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--md-outline-variant);
+  pointer-events: none;
+  transition: color var(--md-duration-short);
+}
+.input-with-icon .form-control-custom {
+  padding-left: 2.75rem;
+}
+.input-with-icon .form-control-custom:focus + .input-icon {
+  color: var(--md-secondary);
+}
+.btn-primary-custom .btn-text {
+  margin-right: 0.5rem;
+}
+.btn-primary-custom .btn-arrow {
+  transition: transform var(--md-duration-short);
+}
+.btn-primary-custom:hover .btn-arrow {
+  transform: translateX(4px);
+}
+.auth-footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: var(--md-typescale-label);
+}
+.auth-link {
+  color: var(--md-secondary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: all var(--md-duration-short);
+}
+.auth-link:hover {
+  color: var(--md-secondary-hover);
+  text-decoration: underline;
+}
+.form-hint {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: var(--md-typescale-caption);
+  color: var(--md-on-surface-variant);
+  line-height: 1.4;
+}
+.dashboard-subtitle {
+  color: var(--md-on-surface-variant);
+  font-size: var(--md-typescale-body);
+  margin-top: 0.2rem;
+  font-weight: 400;
+}
+.filter-card {
+  background: var(--md-surface);
+}
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-with-icon .input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--md-outline-variant);
+}
+.input-with-icon .form-control-custom {
+  padding-left: 2.75rem;
+  padding-right: 2.5rem;
+}
+.input-clear-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--md-on-surface-variant);
+  cursor: pointer;
+}
+.input-clear-btn:hover {
+  background: var(--md-surface-container);
+  color: var(--md-on-surface);
+}
+.loading-section {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: var(--md-surface);
+  border-radius: var(--md-radius-lg);
+  box-shadow: var(--md-elevation-1);
+}
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.empty-text {
+  color: var(--md-on-surface-variant);
+  font-size: var(--md-typescale-body);
+}
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+  border-width: 0.15em;
+}
+.user-avatar-circle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--md-surface-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+.badge.border {
+  border: 1px solid var(--md-outline) !important;
+  background: var(--md-surface) !important;
+  color: var(--md-on-surface) !important;
+  padding: 0.35em 0.75em;
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  font-size: var(--md-typescale-caption);
+}
+.tab-icon {
+  margin-right: 0.4rem;
+}
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.btn-outline-primary {
+  background: transparent;
+  border: 1.5px solid var(--md-secondary);
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  padding: 0.4rem 1.25rem;
+  color: var(--md-secondary);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+}
+.btn-outline-primary:hover {
+  background: var(--md-secondary-container);
+  color: var(--md-secondary-hover);
+}
+.btn-secondary {
+  background: var(--md-surface-container-low);
+  border: 1.5px solid var(--md-outline);
+  border-radius: var(--md-radius-full);
+  font-weight: 500;
+  padding: 0.5rem 1.5rem;
+  color: var(--md-on-surface);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+}
+.btn-secondary:hover {
+  background: var(--md-surface-container);
+  border-color: var(--md-on-surface-variant);
+}
+.table-custom .text-muted {
+  color: var(--md-on-surface-variant) !important;
+}
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path="src/pages/AccountManagementPage.jsx">
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import { useNavigate, Link } from 'react-router-dom';
+function AccountManagementPage() {
+  const { user, logout } = useAuth();
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user || !user.isAdmin) {
+      navigate('/');
+      return;
+    }
+    fetchUsers();
+  }, [user, navigate]);
+  const fetchUsers = async () => {
+    try {
+      const res = await axios.get('https:
+        params: { adminUsername: user.username }
+      });
+      setUsers(res.data);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Lỗi tải danh sách');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const toggleUser = async (targetUsername) => {
+    try {
+      const res = await axios.post(
+        'https://localhost:7122/api/Auth/toggle-user',
+        { targetUsername },
+        { params: { adminUsername: user.username } }
+      );
+      alert(res.data.message);
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi thao tác');
+    }
+  };
+  if (loading) return (
+    <div className="loading-section">
+      <div className="spinner-border text-primary" role="status" />
+      <p className="mt-3">Đang tải danh sách người dùng...</p>
+    </div>
+  );
+  if (error) return (
+    <div className="page-wrapper fade-in">
+      <div className="alert alert-danger alert-custom m-4">{error}</div>
+    </div>
+  );
+  return (
+    <div className="page-wrapper fade-in">
+      <div className="dashboard-header">
+        <div>
+          <h2 className="fw-bold mb-1">👥 Quản lý tài khoản</h2>
+          <p className="dashboard-subtitle">Kiểm soát người dùng và phân quyền</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
+          ← Quay lại Dashboard
+        </Link>
+      </div>
+      <div className="card-custom">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>Danh sách người dùng</span>
+          <span className="badge bg-info badge-custom">{users.length} tài khoản</span>
+        </div>
+        <div className="card-body p-0">
+          <div className="table-responsive">
+            <table className="table-custom">
+              <thead>
+                <tr>
+                  <th>Tên đăng nhập</th>
+                  <th>Trạng thái</th>
+                  <th>Quyền Admin</th>
+                  <th>Ngày tạo</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((u) => (
+                  <tr key={u.username}>
+                    <td>
+                      <div className="d-flex align-items-center gap-2">
+                        <span className="user-avatar-circle">👤</span>
+                        <span className="fw-semibold">{u.username}</span>
+                      </div>
+                    </td>
+                    <td>
+                      {u.isActive ? (
+                        <span className="badge bg-success badge-custom">Hoạt động</span>
+                      ) : (
+                        <span className="badge bg-danger badge-custom">Vô hiệu hóa</span>
+                      )}
+                    </td>
+                    <td>
+                      {u.isAdmin ? (
+                        <span className="badge bg-warning text-dark badge-custom">Admin</span>
+                      ) : (
+                        <span className="text-muted">Người dùng</span>
+                      )}
+                    </td>
+                    <td>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
+                    <td>
+                      {u.username !== user.username ? (
+                        <button
+                          className="btn btn-sm btn-danger-custom ripple"
+                          onClick={() => toggleUser(u.username)}
+                        >
+                          {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
+                        </button>
+                      ) : (
+                        <span className="badge bg-light text-dark border">Chính bạn</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default AccountManagementPage;
+</file>
+
+<file path="src/pages/BaoCaoPage.jsx">
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+const BAO_CAO_URL = 'https://localhost:7122/api/Thuoc/bao-cao-ton-kho';
+function BaoCaoPage() {
+  const { user } = useAuth();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios.get(BAO_CAO_URL, {
+      params: { username: user?.username }
+    })
+      .then(res => { setData(res.data); setLoading(false); })
+      .catch(err => { console.error(err); setLoading(false); });
+  }, [user]);
+  if (loading) return (
+    <div className="loading-section">
+      <div className="spinner-border text-primary" role="status" />
+      <p className="mt-3">Đang tải báo cáo tồn kho...</p>
+    </div>
+  );
+  return (
+    <div className="page-wrapper fade-in">
+      {}
+      <div className="dashboard-header">
+        <div>
+          <h2 className="fw-bold mb-1">📋 Báo cáo tổng tồn kho theo thuốc</h2>
+          <p className="dashboard-subtitle">Tổng hợp số lượng, số lô và hạn dùng sớm nhất</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
+          ← Quay lại Dashboard
+        </Link>
+      </div>
+      <div className="card-custom">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>Tổng hợp tồn kho</span>
+          <span className="badge bg-info badge-custom">{data.length} thuốc</span>
+        </div>
+        <div className="card-body p-0">
+          {data.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">📭</div>
+              <p className="empty-text">Chưa có dữ liệu tồn kho.</p>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table-custom">
+                <thead>
+                  <tr>
+                    <th>Mã Thuốc</th>
+                    <th>Tên Thuốc</th>
+                    <th>Nhóm</th>
+                    <th className="text-center">Tổng SL Tồn</th>
+                    <th className="text-center">Số Lô</th>
+                    <th className="text-center">Hạn Sớm Nhất</th>
+                    <th className="text-center">Tình Trạng</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item, idx) => (
+                    <tr key={idx} className={item.ngayConLai != null && item.ngayConLai < 180 ? "table-danger" : ""}>
+                      <td>
+                        <span className="badge bg-secondary badge-custom">{item.maThuoc}</span>
+                      </td>
+                      <td><strong>{item.tenThuoc}</strong></td>
+                      <td><small className="text-muted">{item.tenNhom}</small></td>
+                      <td className="text-center fw-bold text-success">{item.tongSoLuong}</td>
+                      <td className="text-center">{item.soLo}</td>
+                      <td className="text-center">
+                        {item.hanSomNhat ? new Date(item.hanSomNhat).toLocaleDateString('vi-VN') : '—'}
+                      </td>
+                      <td className="text-center">
+                        {item.ngayConLai == null ? (
+                          <span className="badge bg-secondary badge-custom">Chưa có lô</span>
+                        ) : item.ngayConLai < 0 ? (
+                          <span className="badge bg-dark badge-custom">Có lô hết hạn</span>
+                        ) : item.ngayConLai < 180 ? (
+                          <span className="badge bg-danger badge-custom">Cận date ({item.ngayConLai} ngày)</span>
+                        ) : (
+                          <span className="badge bg-success badge-custom">An toàn ({item.ngayConLai} ngày)</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+export default BaoCaoPage;
+</file>
+
+<file path="src/pages/ChangePasswordPage.jsx">
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+const CHANGE_PASSWORD_URL = 'https://localhost:7122/api/Auth/change-password';
+function ChangePasswordPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const validateForm = () => {
+    if (newPassword.length < 8) {
+      setError('Mật khẩu mới phải có ít nhất 8 ký tự');
+      return false;
+    }
+    const specialRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (!specialRegex.test(newPassword)) {
+      setError('Mật khẩu mới phải chứa ít nhất 1 ký tự đặc biệt');
+      return false;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Mật khẩu xác nhận không khớp');
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+    if (!validateForm()) return;
+    try {
+      const res = await axios.post(CHANGE_PASSWORD_URL, {
+        username: user?.username,
+        oldPassword,
+        newPassword
+      });
+      if (res.data.message.startsWith('LỖI')) {
+        setError(res.data.message);
+      } else {
+        setMessage('Đổi mật khẩu thành công!');
+        setTimeout(() => navigate('/'), 1500);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Lỗi kết nối server');
+    }
+  };
+  return (
+    <div className="page-wrapper fade-in">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-5">
+          <div className="card-custom">
+            <div className="card-header">
+              <span>🔑 Đổi mật khẩu</span>
+            </div>
+            <div className="card-body p-4">
+              {message && (
+                <div className="alert alert-success alert-custom">
+                  <span className="alert-icon">✅</span>
+                  <span>{message}</span>
+                </div>
+              )}
+              {error && (
+                <div className="alert alert-danger alert-custom">
+                  <span className="alert-icon">⚠️</span>
+                  <span>{error}</span>
+                </div>
+              )}
+              <form onSubmit={handleSubmit}>
+                <div className="form-group-custom">
+                  <label className="form-label" htmlFor="old-password">
+                    <span className="label-icon">🔒</span> Mật khẩu cũ
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">🔑</span>
+                    <input
+                      id="old-password"
+                      type="password"
+                      className="form-control-custom"
+                      placeholder="Nhập mật khẩu hiện tại"
+                      value={oldPassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-group-custom">
+                  <label className="form-label" htmlFor="new-password">
+                    <span className="label-icon">🆕</span> Mật khẩu mới
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">✨</span>
+                    <input
+                      id="new-password"
+                      type="password"
+                      className="form-control-custom"
+                      placeholder="Ít nhất 8 ký tự, có ký tự đặc biệt"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <small className="form-hint">Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
+                </div>
+                <div className="form-group-custom">
+                  <label className="form-label" htmlFor="confirm-password">
+                    <span className="label-icon">✅</span> Xác nhận mật khẩu mới
+                  </label>
+                  <div className="input-with-icon">
+                    <span className="input-icon">🔐</span>
+                    <input
+                      id="confirm-password"
+                      type="password"
+                      className="form-control-custom"
+                      placeholder="Nhập lại mật khẩu mới"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-primary-custom w-100 mt-4 ripple"
+                >
+                  <span className="btn-text">Cập nhật mật khẩu</span>
+                  <span className="btn-arrow">→</span>
+                </button>
+              </form>
+              <div className="text-center mt-4">
+                <Link to="/" className="auth-link">← Quay lại Dashboard</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default ChangePasswordPage;
+</file>
+
+<file path="src/pages/DanhMucPage.jsx">
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+const API_BASE = 'https://localhost:7122/api/DanhMuc';
+function DanhMucPage() {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('nhom');
+  const [nhomThuoc, setNhomThuoc] = useState([]);
+  const [nhaCungCap, setNhaCungCap] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  // Form state
+  const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState(null); // null = thêm mới
+  const [formData, setFormData] = useState({ ma: '', ten: '', soDienThoai: '' });
+  useEffect(() => {
+    fetchData();
+  }, [activeTab, user]);
+  const fetchData = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      if (activeTab === 'nhom') {
+        const res = await axios.get(`${API_BASE}/nhom-thuoc`, {
+          params: { adminUsername: user?.username }
+        });
+        setNhomThuoc(res.data);
+      } else {
+        const res = await axios.get(`${API_BASE}/nha-cung-cap`, {
+          params: { adminUsername: user?.username }
+        });
+        setNhaCungCap(res.data);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Lỗi tải dữ liệu');
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleAdd = () => {
+    setEditingItem(null);
+    setFormData({ ma: '', ten: '', soDienThoai: '' });
+    setShowForm(true);
+  };
+  const handleEdit = (item) => {
+    setEditingItem(item);
+    if (activeTab === 'nhom') {
+      setFormData({ ma: item.maNhom, ten: item.tenNhom, soDienThoai: '' });
+    } else {
+      setFormData({ ma: item.maNcc, ten: item.tenNcc, soDienThoai: item.soDienThoai || '' });
+    }
+    setShowForm(true);
+  };
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditingItem(null);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const adminUsername = user?.username;
+    try {
+      let res;
+      if (activeTab === 'nhom') {
+        if (editingItem) {
+          res = await axios.put(`${API_BASE}/nhom-thuoc/${formData.ma}`, { tenNhom: formData.ten }, { params: { adminUsername } });
+        } else {
+          res = await axios.post(`${API_BASE}/nhom-thuoc`, { maNhom: formData.ma, tenNhom: formData.ten }, { params: { adminUsername } });
+        }
+      } else {
+        if (editingItem) {
+          res = await axios.put(`${API_BASE}/nha-cung-cap/${formData.ma}`, { tenNcc: formData.ten, soDienThoai: formData.soDienThoai }, { params: { adminUsername } });
+        } else {
+          res = await axios.post(`${API_BASE}/nha-cung-cap`, { maNcc: formData.ma, tenNcc: formData.ten, soDienThoai: formData.soDienThoai }, { params: { adminUsername } });
+        }
+      }
+      if (res.data.message?.startsWith('LỖI')) {
+        alert(res.data.message);
+      } else {
+        alert(res.data.message);
+        setShowForm(false);
+        fetchData();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi kết nối server');
+    }
+  };
+  const handleDelete = async (ma) => {
+    if (!window.confirm(`Xóa ${activeTab === 'nhom' ? 'nhóm' : 'NCC'} "${ma}"?`)) return;
+    try {
+      const res = activeTab === 'nhom'
+        ? await axios.delete(`${API_BASE}/nhom-thuoc/${ma}`, { params: { adminUsername: user?.username } })
+        : await axios.delete(`${API_BASE}/nha-cung-cap/${ma}`, { params: { adminUsername: user?.username } });
+      if (res.data.message?.startsWith('LỖI')) {
+        alert(res.data.message);
+      } else {
+        alert(res.data.message);
+        fetchData();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi kết nối server');
+    }
+  };
+  return (
+    <div className="page-wrapper fade-in">
+      <div className="dashboard-header">
+        <div>
+          <h2 className="fw-bold mb-1">📋 Quản lý Danh mục</h2>
+          <p className="dashboard-subtitle">Nhóm thuốc và Nhà cung cấp</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
+          ← Quay lại Dashboard
+        </Link>
+      </div>
+      {}
+      <ul className="nav nav-tabs mb-4">
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === 'nhom' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('nhom'); setShowForm(false); }}
+          >
+            <span className="tab-icon">💊</span> Nhóm Thuốc
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === 'ncc' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('ncc'); setShowForm(false); }}
+          >
+            <span className="tab-icon">🚚</span> Nhà Cung Cấp
+          </button>
+        </li>
+      </ul>
+      {}
+      <button className="btn btn-success-custom mb-3 ripple" onClick={handleAdd}>
+        ➕ Thêm {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}
+      </button>
+      {}
+      {showForm && (
+        <div className="card-custom mb-4">
+          <div className="card-header">
+            <span>{editingItem ? 'Chỉnh sửa' : 'Thêm mới'} {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}</span>
+          </div>
+          <div className="card-body p-4">
+            <form onSubmit={handleSubmit} className="row g-3">
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">
+                  Mã {activeTab === 'nhom' ? 'nhóm' : 'NCC'}
+                </label>
+                <input
+                  type="text"
+                  className="form-control-custom"
+                  value={formData.ma}
+                  onChange={e => setFormData({ ...formData, ma: e.target.value.toUpperCase() })}
+                  required
+                  disabled={!!editingItem}
+                />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label fw-semibold">
+                  Tên {activeTab === 'nhom' ? 'nhóm' : 'NCC'}
+                </label>
+                <input
+                  type="text"
+                  className="form-control-custom"
+                  value={formData.ten}
+                  onChange={e => setFormData({ ...formData, ten: e.target.value })}
+                  required
+                />
+              </div>
+              {activeTab === 'ncc' && (
+                <div className="col-md-6">
+                  <label className="form-label fw-semibold">Số điện thoại</label>
+                  <input
+                    type="text"
+                    className="form-control-custom"
+                    value={formData.soDienThoai}
+                    onChange={e => setFormData({ ...formData, soDienThoai: e.target.value })}
+                  />
+                </div>
+              )}
+              <div className="col-12 d-flex justify-content-end gap-2 mt-3">
+                <button type="button" className="btn btn-secondary" onClick={handleCancel}>
+                  Hủy
+                </button>
+                <button type="submit" className="btn btn-primary-custom ripple">
+                  {editingItem ? 'Cập nhật' : 'Lưu'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      {}
+      {error && <div className="alert alert-danger alert-custom">{error}</div>}
+      {}
+      <div className="card-custom">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>{activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}</span>
+          <span className="badge bg-info badge-custom">
+            {activeTab === 'nhom' ? nhomThuoc.length : nhaCungCap.length} mục
+          </span>
+        </div>
+        <div className="card-body p-0">
+          {loading ? (
+            <div className="loading-section">
+              <div className="spinner-border text-primary" role="status" />
+              <p className="mt-2">Đang tải...</p>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table-custom">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Tên</th>
+                    {activeTab === 'ncc' && <th>Số điện thoại</th>}
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeTab === 'nhom' && nhomThuoc.map(item => (
+                    <tr key={item.maNhom}>
+                      <td><span className="badge bg-secondary badge-custom">{item.maNhom}</span></td>
+                      <td><strong>{item.tenNhom}</strong></td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                            ✏️ Sửa
+                          </button>
+                          <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNhom)}>
+                            🗑️ Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {activeTab === 'ncc' && nhaCungCap.map(item => (
+                    <tr key={item.maNcc}>
+                      <td><span className="badge bg-secondary badge-custom">{item.maNcc}</span></td>
+                      <td><strong>{item.tenNcc}</strong></td>
+                      <td>{item.soDienThoai || '—'}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                            ✏️ Sửa
+                          </button>
+                          <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNcc)}>
+                            🗑️ Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {((activeTab === 'nhom' && nhomThuoc.length === 0) ||
+                    (activeTab === 'ncc' && nhaCungCap.length === 0)) && (
+                    <tr>
+                      <td colSpan={activeTab === 'ncc' ? 4 : 3} className="text-center text-muted py-3">
+                        Chưa có dữ liệu.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+export default DanhMucPage;
+</file>
+
+<file path="src/pages/DashboardPage.jsx">
+import React, { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+const DASHBOARD_URL = 'https://localhost:7122/api/Thuoc/dashboard';
+const EXPORT_URL = 'https://localhost:7122/api/Thuoc/xuat-lo';
+function DashboardPage() {
+  const { user } = useAuth();
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [trangThai, setTrangThai] = useState('');
+  const fetchDashboard = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(DASHBOARD_URL, {
+        params: {
+          search: search || undefined,
+          trangThai: trangThai || undefined,
+          username: user?.username
+        }
+      });
+      setItems(res.data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, [search, trangThai, user]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchDashboard();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [fetchDashboard]);
+  const handleExport = async (maLo) => {
+    if (!window.confirm(`⚠️ Xuất (xóa) lô ${maLo}? Không thể hoàn tác.`)) return;
+    try {
+      const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
+        params: { nguoiThucHien: user?.username }
+      });
+      if (res.data.message.includes('LỖI')) alert(res.data.message);
+      else { alert(res.data.message); fetchDashboard(); }
+    } catch (err) {
+      alert("Lỗi kết nối server khi xuất kho!");
+    }
+  };
+  return (
+    <div className="page-wrapper fade-in">
+      {}
+      <div className="dashboard-header">
+        <div>
+          <h2 className="fw-bold mb-1">📊 Bảng Tồn Kho Dược Phẩm</h2>
+          <p className="dashboard-subtitle">Quản lý lô thuốc theo nguyên tắc FEFO</p>
+        </div>
+        <Link to="/nhap-lo" className="btn btn-success-custom ripple">
+          <span className="btn-icon">➕</span> Nhập Lô Mới
+        </Link>
+      </div>
+      {}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
+          <div className="row g-3 align-items-center">
+            <div className="col-md-6">
+              <div className="input-with-icon">
+                <span className="input-icon">🔍</span>
+                <input
+                  type="text"
+                  className="form-control-custom"
+                  placeholder="Tìm theo mã thuốc, tên thuốc hoặc mã lô..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  aria-label="Tìm kiếm"
+                />
+                {search && (
+                  <button
+                    className="btn btn-outline-secondary input-clear-btn"
+                    onClick={() => setSearch('')}
+                    aria-label="Xóa tìm kiếm"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="col-md-4">
+              <select
+                className="form-select-custom"
+                value={trangThai}
+                onChange={(e) => setTrangThai(e.target.value)}
+                aria-label="Lọc trạng thái"
+              >
+                <option value="">Tất cả trạng thái</option>
+                <option value="con_han">✅ Còn hạn (&gt; 180 ngày)</option>
+                <option value="can_date">⚠️ Cận date (&lt; 180 ngày)</option>
+                <option value="het_han">❌ Hết hạn</option>
+              </select>
+            </div>
+            <div className="col-md-2">
+              <button
+                className="btn btn-outline-primary-custom w-100 ripple"
+                onClick={fetchDashboard}
+              >
+                🔄 Làm mới
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Loading */}
+      {loading ? (
+        <div className="loading-section">
+          <div className="spinner-border text-primary" role="status" />
+          <p className="mt-3">Đang tải dữ liệu tồn kho...</p>
+        </div>
+      ) : (
+        <div className="card-custom">
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <span>Danh sách lô thuốc (FEFO) {items.length > 0 && `- ${items.length} lô`}</span>
+            <span className="badge bg-danger badge-custom">⚠️ Cận date &lt; 180 ngày</span>
+          </div>
+          <div className="card-body p-0">
+            {items.length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">📦</div>
+                <p className="empty-text">Không tìm thấy lô thuốc nào phù hợp.</p>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <table className="table-custom">
+                  <thead>
+                    <tr>
+                      <th>Mã Thuốc</th>
+                      <th>Tên Thuốc (Nhóm)</th>
+                      <th>Mã Lô</th>
+                      <th>Nhà Cung Cấp</th>
+                      <th className="text-center">Tồn Kho</th>
+                      <th className="text-center">Hạn Sử Dụng</th>
+                      <th className="text-center">Tình Trạng</th>
+                      <th className="text-center">Thao Tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map(i => (
+                      <tr key={i.maLo} className={i.ngayConLai < 180 ? "table-danger" : ""}>
+                        <td>
+                          <span className="badge bg-secondary badge-custom">{i.maThuoc}</span>
+                        </td>
+                        <td>
+                          <strong>{i.tenThuoc}</strong>
+                          <br />
+                          <small className="text-muted">{i.tenNhom}</small>
+                        </td>
+                        <td className="text-center">
+                          <span className="badge border text-dark bg-light">{i.maLo}</span>
+                        </td>
+                        <td>{i.tenNcc}</td>
+                        <td className="text-center fw-bold text-success">{i.soLuong}</td>
+                        <td className="text-center">{new Date(i.hanSuDung).toLocaleDateString('vi-VN')}</td>
+                        <td className="text-center">
+                          {i.ngayConLai < 0 ? (
+                            <span className="badge bg-dark badge-custom">Hết hạn</span>
+                          ) : i.ngayConLai < 180 ? (
+                            <span className="badge bg-danger badge-custom">Cận date ({i.ngayConLai} ngày)</span>
+                          ) : (
+                            <span className="badge bg-success badge-custom">An toàn ({i.ngayConLai} ngày)</span>
+                          )}
+                        </td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-sm btn-danger-custom ripple"
+                            onClick={() => handleExport(i.maLo)}
+                            title="Xuất kho lô này"
+                          >
+                            🗑️ Xuất Kho
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+export default DashboardPage;
+</file>
+
+<file path="src/pages/LichSuPage.jsx">
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+const LICH_SU_URL = 'https://localhost:7122/api/Thuoc/lich-su';
+function LichSuPage() {
+  const { user } = useAuth();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    axios.get(LICH_SU_URL, {
+      params: { username: user?.username }
+    })
+      .then(res => { setData(res.data); setLoading(false); })
+      .catch(err => { console.error(err); setLoading(false); });
+  }, [user]);
+  if (loading) return (
+    <div className="loading-section">
+      <div className="spinner-border text-primary" role="status" />
+      <p className="mt-3">Đang tải lịch sử giao dịch...</p>
+    </div>
+  );
+  return (
+    <div className="page-wrapper fade-in">
+      {}
+      <div className="dashboard-header">
+        <div>
+          <h2 className="fw-bold mb-1">📜 Lịch sử Nhập / Xuất Kho</h2>
+          <p className="dashboard-subtitle">Danh sách giao dịch gần đây nhất</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
+          ← Quay lại Dashboard
+        </Link>
+      </div>
+      <div className="card-custom">
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>Lịch sử giao dịch</span>
+          <span className="badge bg-info badge-custom">{data.length} giao dịch</span>
+        </div>
+        <div className="card-body p-0">
+          {data.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-icon">📭</div>
+              <p className="empty-text">Chưa có giao dịch nào.</p>
+            </div>
+          ) : (
+            <div className="table-responsive">
+              <table className="table-custom">
+                <thead>
+                  <tr>
+                    <th>Thời gian</th>
+                    <th>Loại</th>
+                    <th>Mã Lô</th>
+                    <th>Mã Thuốc</th>
+                    <th>SL Thay Đổi</th>
+                    <th>Người thực hiện</th>
+                    <th>Ghi chú</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((item) => (
+                    <tr key={item.id}>
+                      <td>{new Date(item.thoiGian).toLocaleString('vi-VN')}</td>
+                      <td>
+                        {item.loaiGiaoDich === 'NHAP' ? (
+                          <span className="badge bg-success badge-custom">NHẬP</span>
+                        ) : (
+                          <span className="badge bg-danger badge-custom">XUẤT</span>
+                        )}
+                      </td>
+                      <td className="text-center">{item.maLo}</td>
+                      <td className="text-center">{item.maThuoc}</td>
+                      <td className="text-center fw-bold">{item.soLuongThayDoi}</td>
+                      <td>{item.nguoiThucHien || '—'}</td>
+                      <td><small>{item.ghiChu}</small></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+export default LichSuPage;
+</file>
+
+<file path="src/pages/LoginPage.jsx">
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+function LoginPage() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      const res = await axios.post('https:
+        username,
+        password
+      });
+      if (res.data.success) {
+        login({
+          username: res.data.username,
+          isAdmin: res.data.isAdmin,
+          isActive: res.data.isActive
+        });
+        navigate('/');
+      } else {
+        setError('Đăng nhập thất bại, vui lòng kiểm tra lại');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Lỗi kết nối server');
+    }
+  };
+  return (
+    <div className="auth-container fade-in">
+      <div className="auth-card">
+        <div className="card-header">
+          <div className="auth-icon">🔐</div>
+          <h1 className="auth-title">Đăng nhập hệ thống</h1>
+          <p className="auth-subtitle">Quản lý kho dược thông minh</p>
+        </div>
+        <div className="auth-body">
+          {error && (
+            <div className="alert alert-danger alert-custom">
+              <span className="alert-icon">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+          <form onSubmit={handleSubmit}>
+            <div className="form-group-custom">
+              <label className="form-label" htmlFor="username">
+                <span className="label-icon">👤</span> Tên đăng nhập
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">@</span>
+                <input
+                  id="username"
+                  type="text"
+                  className="form-control-custom"
+                  placeholder="Nhập tên đăng nhập"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="form-group-custom">
+              <label className="form-label" htmlFor="password">
+                <span className="label-icon">🔒</span> Mật khẩu
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">🔑</span>
+                <input
+                  id="password"
+                  type="password"
+                  className="form-control-custom"
+                  placeholder="Nhập mật khẩu"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary-custom w-100 mt-4 ripple"
+            >
+              <span className="btn-text">Đăng nhập</span>
+              <span className="btn-arrow">→</span>
+            </button>
+          </form>
+          <div className="auth-footer">
+            <span className="text-muted">Chưa có tài khoản? </span>
+            <Link to="/register" className="auth-link">
+              Đăng ký ngay
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default LoginPage;
+</file>
+
+<file path="src/pages/NhapLoPage.jsx">
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+const IMPORT_URL = 'https://localhost:7122/api/Thuoc/nhap-lo';
+const NCC_PUBLIC_URL = 'https://localhost:7122/api/DanhMuc/nha-cung-cap-public';
+const NHOM_PUBLIC_URL = 'https://localhost:7122/api/DanhMuc/nhom-thuoc-public';
+function NhapLoPage() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [nhaCungCapList, setNhaCungCapList] = useState([]);
+  const [nhomThuocList, setNhomThuocList] = useState([]);
+  const [form, setForm] = useState({
+    maLo: '',
+    maThuoc: '',
+    tenThuoc: '',
+    maNcc: '',
+    maNhom: '',
+    soLuong: '',
+    hanSuDung: '',
+    nguoiThucHien: user?.username || ''
+  });
+  // Lấy danh sách nhà cung cấp và nhóm thuốc
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [nccRes, nhomRes] = await Promise.all([
+          axios.get(NCC_PUBLIC_URL, { params: { username: user?.username } }),
+          axios.get(NHOM_PUBLIC_URL, { params: { username: user?.username } })
+        ]);
+        setNhaCungCapList(nccRes.data);
+        setNhomThuocList(nhomRes.data);
+        // Đặt giá trị mặc định nếu có dữ liệu
+        if (nccRes.data.length > 0) {
+          setForm(prev => ({ ...prev, maNcc: nccRes.data[0].maNcc }));
+        }
+        if (nhomRes.data.length > 0) {
+          setForm(prev => ({ ...prev, maNhom: nhomRes.data[0].maNhom }));
+        }
+      } catch (err) {
+        console.error('Lỗi tải danh mục:', err);
+      }
+    };
+    if (user?.username) fetchData();
+  }, [user]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        ...form,
+        nguoiThucHien: user?.username
+      };
+      const res = await axios.post(IMPORT_URL, payload);
+      if (res.data.message.includes('LỖI')) alert(res.data.message);
+      else {
+        alert(res.data.message);
+        navigate('/');
+      }
+    } catch (err) {
+      alert("Lỗi kết nối server khi nhập kho!");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  return (
+    <div className="page-wrapper fade-in">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
+          <div className="card-custom">
+            <div className="card-header d-flex justify-content-between align-items-center">
+              <span>📦 Tạo Phiếu Nhập Lô Mới</span>
+              <Link to="/" className="btn btn-outline-light btn-sm ripple">
+                ← Quay lại Dashboard
+              </Link>
+            </div>
+            <div className="card-body p-4">
+              <form onSubmit={handleSubmit}>
+                {}
+                <div className="row g-4">
+                  <div className="col-md-6">
+                    <div className="form-group-custom">
+                      <label className="form-label">
+                        <span className="label-icon">🏷️</span> Mã Lô
+                      </label>
+                      <input
+                        className="form-control-custom"
+                        placeholder="VD: LO-005"
+                        value={form.maLo}
+                        onChange={e => setForm({...form, maLo: e.target.value.toUpperCase()})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group-custom">
+                      <label className="form-label">
+                        <span className="label-icon">💊</span> Mã Thuốc
+                      </label>
+                      <input
+                        className="form-control-custom"
+                        placeholder="VD: PARA"
+                        value={form.maThuoc}
+                        onChange={e => setForm({...form, maThuoc: e.target.value.toUpperCase()})}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                {}
+                <div className="form-group-custom">
+                  <label className="form-label">
+                    <span className="label-icon">📝</span> Tên Thuốc
+                  </label>
+                  <input
+                    className="form-control-custom"
+                    placeholder="Nhập tên thuốc..."
+                    value={form.tenThuoc}
+                    onChange={e => setForm({...form, tenThuoc: e.target.value})}
+                    required
+                  />
+                </div>
+                {}
+                <div className="row g-4">
+                  <div className="col-md-6">
+                    <div className="form-group-custom">
+                      <label className="form-label">
+                        <span className="label-icon">🚚</span> Nhà Cung Cấp
+                      </label>
+                      <select
+                        className="form-select-custom"
+                        value={form.maNcc}
+                        onChange={e => setForm({...form, maNcc: e.target.value})}
+                      >
+                        {nhaCungCapList.map(ncc => (
+                          <option key={ncc.maNcc} value={ncc.maNcc}>
+                            {ncc.tenNcc} ({ncc.maNcc})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="form-group-custom">
+                      <label className="form-label">
+                        <span className="label-icon">📂</span> Nhóm Thuốc
+                      </label>
+                      <select
+                        className="form-select-custom"
+                        value={form.maNhom}
+                        onChange={e => setForm({...form, maNhom: e.target.value})}
+                      >
+                        {nhomThuocList.map(nhom => (
+                          <option key={nhom.maNhom} value={nhom.maNhom}>
+                            {nhom.tenNhom} ({nhom.maNhom})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                {}
+                <div className="row g-4">
+                  <div className="col-md-3">
+                    <div className="form-group-custom">
+                      <label className="form-label">
+                        <span className="label-icon">🔢</span> Số Lượng
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control-custom"
+                        min="1"
+                        value={form.soLuong}
+                        onChange={e => setForm({...form, soLuong: parseInt(e.target.value) || ''})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-3">
+                    <div className="form-group-custom">
+                      <label className="form-label">
+                        <span className="label-icon">📅</span> Hạn Sử Dụng
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control-custom"
+                        value={form.hanSuDung}
+                        onChange={e => setForm({...form, hanSuDung: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                {}
+                <div className="d-flex justify-content-end mt-4">
+                  <button
+                    type="submit"
+                    className="btn btn-success-custom px-5 ripple"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" />
+                        Đang xử lý...
+                      </>
+                    ) : (
+                      <>
+                        <span className="btn-icon">💾</span> Lưu Phiếu Nhập
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default NhapLoPage;
+</file>
+
+<file path="src/pages/RegisterPage.jsx">
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+function RegisterPage() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const validateInput = () => {
+    const usernameRegex = /^[a-zA-Z0-9]+$/;
+    if (username.length < 5) {
+      setError('Tên đăng nhập phải có ít nhất 5 ký tự');
+      return false;
+    }
+    if (!usernameRegex.test(username)) {
+      setError('Tên đăng nhập chỉ được chứa chữ cái và số');
+      return false;
+    }
+    const passwordRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    if (password.length < 8) {
+      setError('Mật khẩu phải có ít nhất 8 ký tự');
+      return false;
+    }
+    if (!passwordRegex.test(password)) {
+      setError('Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt (!@#$%^&*)');
+      return false;
+    }
+    if (password !== confirm) {
+      setError('Mật khẩu xác nhận không khớp');
+      return false;
+    }
+    return true;
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+    if (!validateInput()) return;
+    try {
+      const res = await axios.post('https://localhost:7122/api/Auth/register', {
+        username,
+        password
+      });
+      if (!res.data.message.startsWith('LỖI')) {
+        setMessage('Đăng ký thành công! Vui lòng đăng nhập.');
+        setTimeout(() => navigate('/login'), 1500);
+      } else {
+        setError(res.data.message);
+      }
+    } catch (err) {
+      setError('Lỗi kết nối server');
+    }
+  };
+  return (
+    <div className="auth-container fade-in">
+      <div className="auth-card">
+        <div className="card-header">
+          <div className="auth-icon">📝</div>
+          <h1 className="auth-title">Đăng ký tài khoản</h1>
+          <p className="auth-subtitle">Tạo tài khoản mới để bắt đầu</p>
+        </div>
+        <div className="auth-body">
+          {message && (
+            <div className="alert alert-success alert-custom">
+              <span className="alert-icon">✅</span>
+              <span>{message}</span>
+            </div>
+          )}
+          {error && (
+            <div className="alert alert-danger alert-custom">
+              <span className="alert-icon">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+          <form onSubmit={handleSubmit}>
+            <div className="form-group-custom">
+              <label className="form-label" htmlFor="reg-username">
+                <span className="label-icon">👤</span> Tên đăng nhập
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">@</span>
+                <input
+                  id="reg-username"
+                  type="text"
+                  className="form-control-custom"
+                  placeholder="Ít nhất 5 ký tự, chỉ chữ và số"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <small className="form-hint">Ví dụ: nguoidung123</small>
+            </div>
+            <div className="form-group-custom">
+              <label className="form-label" htmlFor="reg-password">
+                <span className="label-icon">🔒</span> Mật khẩu
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">🔑</span>
+                <input
+                  id="reg-password"
+                  type="password"
+                  className="form-control-custom"
+                  placeholder="Ít nhất 8 ký tự, có ký tự đặc biệt"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <small className="form-hint">Phải có ít nhất 1 ký tự: !@#$%^&*</small>
+            </div>
+            <div className="form-group-custom">
+              <label className="form-label" htmlFor="reg-confirm">
+                <span className="label-icon">✅</span> Xác nhận mật khẩu
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">🔐</span>
+                <input
+                  id="reg-confirm"
+                  type="password"
+                  className="form-control-custom"
+                  placeholder="Nhập lại mật khẩu"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary-custom w-100 mt-4 ripple"
+            >
+              <span className="btn-text">Đăng ký</span>
+              <span className="btn-arrow">→</span>
+            </button>
+          </form>
+          <div className="auth-footer">
+            <span className="text-muted">Đã có tài khoản? </span>
+            <Link to="/login" className="auth-link">
+              Đăng nhập
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default RegisterPage;
+</file>
+
+<file path="vite.config.js">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+export default defineConfig({
+  plugins: [react()],
+})
+</file>
+
+</files>

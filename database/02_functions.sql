@@ -233,7 +233,7 @@ BEGIN
     END IF;
 
     RETURN QUERY
-    SELECT 
+    SELECT
         t.ma_thuoc,
         t.ten_thuoc,
         COALESCE(nt.ten_nhom, 'Chưa phân nhóm'),
@@ -639,7 +639,7 @@ RETURNS TABLE(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE taikhoan.username = p_admin_username AND taikhoan.is_admin = true) THEN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
         RAISE EXCEPTION 'Chỉ admin mới được xem danh sách tài khoản';
     END IF;
 

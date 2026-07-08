@@ -1,0 +1,61 @@
+{
+  "output": {
+    "filePath": "repomix-output.xml",
+    "style": "xml",
+    "removeComments": true,
+    "removeEmptyLines": true,
+    "topFilesLength": 10,
+    "showLineNumbers": false,
+    "copyToClipboard": false
+  },
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": [
+      "**/bin/**",
+      "**/obj/**",
+      "**/wwwroot/lib/**",
+      "**/.vs/**",
+      "**/.vscode/**",
+      "**/Migrations/**",
+      "**/.git/**",
+      "*.db",
+      "*.sqlite",
+      "*.user",
+      "*.sln",
+      "*.slnx",
+      "*.csproj.user",
+      "package-lock.json",
+      "yarn.lock",
+      "pnpm-lock.yaml",
+      "node_modules/**",
+      "**/*.png",
+      "**/*.jpg",
+      "**/*.jpeg",
+      "**/*.gif",
+      "**/*.ico",
+      "**/*.svg",
+      "**/*.log",
+      "**/logs/**",
+      "**/*.tmp",
+      "**/*.temp",
+      "**/launchSettings.json",
+      "**/appsettings.Development.json",
+      "**/*.http",
+      "**/*.md",
+      "**/README.md"
+    ]
+  },
+  "include": [
+    "**/*.cs",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.sql",
+    "**/*.json",
+    "**/*.css",
+    "**/*.html"
+  ],
+  "security": {
+    "enableShieldsCheck": true
+  }
+}

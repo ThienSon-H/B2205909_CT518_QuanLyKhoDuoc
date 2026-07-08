@@ -7,9 +7,7 @@ const API_BASE = 'https://localhost:7122/api/DanhMuc';
 
 function DanhMucPage() {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('nhom'); // 'nhom' hoặc 'ncc'
-
-  // Dữ liệu
+  const [activeTab, setActiveTab] = useState('nhom');
   const [nhomThuoc, setNhomThuoc] = useState([]);
   const [nhaCungCap, setNhaCungCap] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +18,6 @@ function DanhMucPage() {
   const [editingItem, setEditingItem] = useState(null); // null = thêm mới
   const [formData, setFormData] = useState({ ma: '', ten: '', soDienThoai: '' });
 
-  // Lấy dữ liệu khi component mount hoặc khi tab thay đổi
   useEffect(() => {
     fetchData();
   }, [activeTab, user]);
@@ -47,14 +44,12 @@ function DanhMucPage() {
     }
   };
 
-  // Mở form thêm mới
   const handleAdd = () => {
     setEditingItem(null);
     setFormData({ ma: '', ten: '', soDienThoai: '' });
     setShowForm(true);
   };
 
-  // Mở form sửa
   const handleEdit = (item) => {
     setEditingItem(item);
     if (activeTab === 'nhom') {
@@ -65,13 +60,11 @@ function DanhMucPage() {
     setShowForm(true);
   };
 
-  // Đóng form
   const handleCancel = () => {
     setShowForm(false);
     setEditingItem(null);
   };
 
-  // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     const adminUsername = user?.username;
@@ -79,10 +72,8 @@ function DanhMucPage() {
       let res;
       if (activeTab === 'nhom') {
         if (editingItem) {
-          // Cập nhật
           res = await axios.put(`${API_BASE}/nhom-thuoc/${formData.ma}`, { tenNhom: formData.ten }, { params: { adminUsername } });
         } else {
-          // Thêm mới
           res = await axios.post(`${API_BASE}/nhom-thuoc`, { maNhom: formData.ma, tenNhom: formData.ten }, { params: { adminUsername } });
         }
       } else {
@@ -104,7 +95,6 @@ function DanhMucPage() {
     }
   };
 
-  // Xóa
   const handleDelete = async (ma) => {
     if (!window.confirm(`Xóa ${activeTab === 'nhom' ? 'nhóm' : 'NCC'} "${ma}"?`)) return;
     try {
@@ -125,20 +115,23 @@ function DanhMucPage() {
   return (
     <div className="page-wrapper fade-in">
       <div className="dashboard-header">
-        <h2 className="text-primary fw-bold mb-0">📋 Quản lý Danh mục</h2>
-        <Link to="/" className="btn btn-outline-primary-custom">
+        <div>
+          <h2 className="fw-bold mb-1">📋 Quản lý Danh mục</h2>
+          <p className="dashboard-subtitle">Nhóm thuốc và Nhà cung cấp</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
           ← Quay lại Dashboard
         </Link>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs Material Design */}
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
           <button
             className={`nav-link ${activeTab === 'nhom' ? 'active' : ''}`}
             onClick={() => { setActiveTab('nhom'); setShowForm(false); }}
           >
-            Nhóm Thuốc
+            <span className="tab-icon">💊</span> Nhóm Thuốc
           </button>
         </li>
         <li className="nav-item">
@@ -146,13 +139,13 @@ function DanhMucPage() {
             className={`nav-link ${activeTab === 'ncc' ? 'active' : ''}`}
             onClick={() => { setActiveTab('ncc'); setShowForm(false); }}
           >
-            Nhà Cung Cấp
+            <span className="tab-icon">🚚</span> Nhà Cung Cấp
           </button>
         </li>
       </ul>
 
       {/* Nút thêm mới */}
-      <button className="btn btn-success-custom mb-3" onClick={handleAdd}>
+      <button className="btn btn-success-custom mb-3 ripple" onClick={handleAdd}>
         ➕ Thêm {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}
       </button>
 
@@ -160,26 +153,30 @@ function DanhMucPage() {
       {showForm && (
         <div className="card-custom mb-4">
           <div className="card-header">
-            {editingItem ? 'Chỉnh sửa' : 'Thêm mới'} {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}
+            <span>{editingItem ? 'Chỉnh sửa' : 'Thêm mới'} {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}</span>
           </div>
           <div className="card-body p-4">
             <form onSubmit={handleSubmit} className="row g-3">
               <div className="col-md-6">
-                <label className="form-label fw-semibold">Mã {activeTab === 'nhom' ? 'nhóm' : 'NCC'}</label>
+                <label className="form-label fw-semibold">
+                  Mã {activeTab === 'nhom' ? 'nhóm' : 'NCC'}
+                </label>
                 <input
                   type="text"
-                  className="form-control-custom w-100"
+                  className="form-control-custom"
                   value={formData.ma}
                   onChange={e => setFormData({ ...formData, ma: e.target.value.toUpperCase() })}
                   required
-                  disabled={!!editingItem} // không sửa mã khi đang edit
+                  disabled={!!editingItem}
                 />
               </div>
               <div className="col-md-6">
-                <label className="form-label fw-semibold">Tên {activeTab === 'nhom' ? 'nhóm' : 'NCC'}</label>
+                <label className="form-label fw-semibold">
+                  Tên {activeTab === 'nhom' ? 'nhóm' : 'NCC'}
+                </label>
                 <input
                   type="text"
-                  className="form-control-custom w-100"
+                  className="form-control-custom"
                   value={formData.ten}
                   onChange={e => setFormData({ ...formData, ten: e.target.value })}
                   required
@@ -190,7 +187,7 @@ function DanhMucPage() {
                   <label className="form-label fw-semibold">Số điện thoại</label>
                   <input
                     type="text"
-                    className="form-control-custom w-100"
+                    className="form-control-custom"
                     value={formData.soDienThoai}
                     onChange={e => setFormData({ ...formData, soDienThoai: e.target.value })}
                   />
@@ -200,7 +197,7 @@ function DanhMucPage() {
                 <button type="button" className="btn btn-secondary" onClick={handleCancel}>
                   Hủy
                 </button>
-                <button type="submit" className="btn btn-primary-custom">
+                <button type="submit" className="btn btn-primary-custom ripple">
                   {editingItem ? 'Cập nhật' : 'Lưu'}
                 </button>
               </div>
@@ -209,63 +206,79 @@ function DanhMucPage() {
         </div>
       )}
 
-      {/* Bảng dữ liệu */}
-      {error && <div className="alert alert-danger">{error}</div>}
+      {/* Error */}
+      {error && <div className="alert alert-danger alert-custom">{error}</div>}
+
+      {/* Bảng danh sách */}
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
-          <span style={{ display: 'block' }}> Nhóm {activeTab === 'nhom' ? 'Thuốc' : 'Nhà Cung Cấp'}</span>
-          <span className="badge bg-light text-dark">
+          <span>{activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}</span>
+          <span className="badge bg-info badge-custom">
             {activeTab === 'nhom' ? nhomThuoc.length : nhaCungCap.length} mục
           </span>
         </div>
         <div className="card-body p-0">
           {loading ? (
-            <div className="text-center py-5">
+            <div className="loading-section">
               <div className="spinner-border text-primary" role="status" />
               <p className="mt-2">Đang tải...</p>
             </div>
           ) : (
-            <table className="table-custom">
-              <thead>
-                <tr>
-                  <th>Mã</th>
-                  <th>Tên</th>
-                  {activeTab === 'ncc' && <th>Số điện thoại</th>}
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activeTab === 'nhom' && nhomThuoc.map(item => (
-                  <tr key={item.maNhom}>
-                    <td><span className="badge bg-secondary badge-custom">{item.maNhom}</span></td>
-                    <td><strong>{item.tenNhom}</strong></td>
-                    <td>
-                      <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(item)}>✏️ Sửa</button>
-                      <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNhom)}>🗑️ Xóa</button>
-                    </td>
-                  </tr>
-                ))}
-                {activeTab === 'ncc' && nhaCungCap.map(item => (
-                  <tr key={item.maNcc}>
-                    <td><span className="badge bg-secondary badge-custom">{item.maNcc}</span></td>
-                    <td><strong>{item.tenNcc}</strong></td>
-                    <td>{item.soDienThoai || '—'}</td>
-                    <td>
-                      <button className="btn btn-sm btn-outline-primary me-2" onClick={() => handleEdit(item)}>✏️ Sửa</button>
-                      <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNcc)}>🗑️ Xóa</button>
-                    </td>
-                  </tr>
-                ))}
-                {((activeTab === 'nhom' && nhomThuoc.length === 0) ||
-                  (activeTab === 'ncc' && nhaCungCap.length === 0)) && (
+            <div className="table-responsive">
+              <table className="table-custom">
+                <thead>
                   <tr>
-                    <td colSpan={activeTab === 'ncc' ? 4 : 3} className="text-center text-muted py-3">
-                      Chưa có dữ liệu.
-                    </td>
+                    <th>Mã</th>
+                    <th>Tên</th>
+                    {activeTab === 'ncc' && <th>Số điện thoại</th>}
+                    <th>Thao tác</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {activeTab === 'nhom' && nhomThuoc.map(item => (
+                    <tr key={item.maNhom}>
+                      <td><span className="badge bg-secondary badge-custom">{item.maNhom}</span></td>
+                      <td><strong>{item.tenNhom}</strong></td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                            ✏️ Sửa
+                          </button>
+                          <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNhom)}>
+                            🗑️ Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {activeTab === 'ncc' && nhaCungCap.map(item => (
+                    <tr key={item.maNcc}>
+                      <td><span className="badge bg-secondary badge-custom">{item.maNcc}</span></td>
+                      <td><strong>{item.tenNcc}</strong></td>
+                      <td>{item.soDienThoai || '—'}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                            ✏️ Sửa
+                          </button>
+                          <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNcc)}>
+                            🗑️ Xóa
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {((activeTab === 'nhom' && nhomThuoc.length === 0) ||
+                    (activeTab === 'ncc' && nhaCungCap.length === 0)) && (
+                    <tr>
+                      <td colSpan={activeTab === 'ncc' ? 4 : 3} className="text-center text-muted py-3">
+                        Chưa có dữ liệu.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

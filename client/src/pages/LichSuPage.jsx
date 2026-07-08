@@ -19,7 +19,7 @@ function LichSuPage() {
   }, [user]);
 
   if (loading) return (
-    <div className="text-center mt-5 pt-5">
+    <div className="loading-section">
       <div className="spinner-border text-primary" role="status" />
       <p className="mt-3">Đang tải lịch sử giao dịch...</p>
     </div>
@@ -27,53 +27,63 @@ function LichSuPage() {
 
   return (
     <div className="page-wrapper fade-in">
+      {/* Header */}
       <div className="dashboard-header">
-        <h2 className="text-primary fw-bold mb-0">📜 Lịch sử Nhập / Xuất Kho</h2>
-        <Link to="/" className="btn btn-outline-primary-custom">
+        <div>
+          <h2 className="fw-bold mb-1">📜 Lịch sử Nhập / Xuất Kho</h2>
+          <p className="dashboard-subtitle">Danh sách giao dịch gần đây nhất</p>
+        </div>
+        <Link to="/" className="btn btn-outline-primary-custom ripple">
           ← Quay lại Dashboard
         </Link>
       </div>
+
       <div className="card-custom">
-        <div className="card-header d-flex justify-content-between">
-          <span>Danh sách giao dịch gần đây</span>
-          <span className="badge bg-light text-dark">{data.length} giao dịch</span>
+        <div className="card-header d-flex justify-content-between align-items-center">
+          <span>Lịch sử giao dịch</span>
+          <span className="badge bg-info badge-custom">{data.length} giao dịch</span>
         </div>
         <div className="card-body p-0">
           {data.length === 0 ? (
-            <div className="text-center py-5 text-muted">Chưa có giao dịch nào.</div>
+            <div className="empty-state">
+              <div className="empty-icon">📭</div>
+              <p className="empty-text">Chưa có giao dịch nào.</p>
+            </div>
           ) : (
-            <table className="table-custom">
-              <thead>
-                <tr>
-                  <th>Thời gian</th>
-                  <th>Loại</th>
-                  <th>Mã Lô</th>
-                  <th>Mã Thuốc</th>
-                  <th>SL Thay Đổi</th>
-                  <th>Người thực hiện</th>
-                  <th>Ghi chú</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((item) => (
-                  <tr key={item.id}>
-                    <td>{new Date(item.thoiGian).toLocaleString('vi-VN')}</td>
-                    <td>
-                      {item.loaiGiaoDich === 'NHAP' ? (
-                        <span className="badge bg-success badge-custom">NHẬP</span>
-                      ) : (
-                        <span className="badge bg-danger badge-custom">XUẤT</span>
-                      )}
-                    </td>
-                    <td className="text-center">{item.maLo}</td>
-                    <td className="text-center">{item.maThuoc}</td>
-                    <td className="text-center fw-bold">{item.soLuongThayDoi}</td>
-                    <td>{item.nguoiThucHien || '—'}</td>
-                    <td><small>{item.ghiChu}</small></td>
+            <div className="table-responsive">
+              <table className="table-custom">
+                <thead>
+                  <tr>
+                    <th>Thời gian</th>
+                    <th>Loại</th>
+                    <th>Mã Lô</th>
+                    <th>Mã Thuốc</th>
+                    <th>SL Thay Đổi</th>
+                    <th>Người thực hiện</th>
+                    <th>Ghi chú</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {data.map((item) => (
+                    <tr key={item.id}>
+                      <td>{new Date(item.thoiGian).toLocaleString('vi-VN')}</td>
+                      <td>
+                        {item.loaiGiaoDich === 'NHAP' ? (
+                          <span className="badge bg-success badge-custom">NHẬP</span>
+                        ) : (
+                          <span className="badge bg-danger badge-custom">XUẤT</span>
+                        )}
+                      </td>
+                      <td className="text-center">{item.maLo}</td>
+                      <td className="text-center">{item.maThuoc}</td>
+                      <td className="text-center fw-bold">{item.soLuongThayDoi}</td>
+                      <td>{item.nguoiThucHien || '—'}</td>
+                      <td><small>{item.ghiChu}</small></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </div>
       </div>

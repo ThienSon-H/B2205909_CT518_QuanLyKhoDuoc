@@ -20,13 +20,12 @@ function DashboardPage() {
         params: {
           search: search || undefined,
           trangThai: trangThai || undefined,
-          username: user?.username  // gửi username để kiểm tra active
+          username: user?.username
         }
       });
       setItems(res.data);
     } catch (err) {
       console.error(err);
-      // Có thể hiển thị lỗi nếu cần
     } finally {
       setLoading(false);
     }
@@ -54,36 +53,49 @@ function DashboardPage() {
 
   return (
     <div className="page-wrapper fade-in">
+      {/* Header */}
       <div className="dashboard-header">
-        <h2 className="text-primary fw-bold mb-0">📊 Bảng Tồn Kho Dược Phẩm</h2>
-        <Link to="/nhap-lo" className="btn btn-success-custom">
-          ➕ Nhập Lô Mới
+        <div>
+          <h2 className="fw-bold mb-1">📊 Bảng Tồn Kho Dược Phẩm</h2>
+          <p className="dashboard-subtitle">Quản lý lô thuốc theo nguyên tắc FEFO</p>
+        </div>
+        <Link to="/nhap-lo" className="btn btn-success-custom ripple">
+          <span className="btn-icon">➕</span> Nhập Lô Mới
         </Link>
       </div>
 
-      <div className="card-custom mb-4">
-        <div className="card-body p-3">
+      {/* Bộ lọc */}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
           <div className="row g-3 align-items-center">
             <div className="col-md-6">
-              <div className="input-group">
-                <span className="input-group-text bg-white border-end-0">🔍</span>
+              <div className="input-with-icon">
+                <span className="input-icon">🔍</span>
                 <input
                   type="text"
-                  className="form-control-custom border-start-0"
+                  className="form-control-custom"
                   placeholder="Tìm theo mã thuốc, tên thuốc hoặc mã lô..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
+                  aria-label="Tìm kiếm"
                 />
                 {search && (
-                  <button className="btn btn-outline-secondary" onClick={() => setSearch('')}>✕</button>
+                  <button
+                    className="btn btn-outline-secondary input-clear-btn"
+                    onClick={() => setSearch('')}
+                    aria-label="Xóa tìm kiếm"
+                  >
+                    ✕
+                  </button>
                 )}
               </div>
             </div>
             <div className="col-md-4">
               <select
-                className="form-select-custom w-100"
+                className="form-select-custom"
                 value={trangThai}
                 onChange={(e) => setTrangThai(e.target.value)}
+                aria-label="Lọc trạng thái"
               >
                 <option value="">Tất cả trạng thái</option>
                 <option value="con_han">✅ Còn hạn (&gt; 180 ngày)</option>
@@ -92,7 +104,10 @@ function DashboardPage() {
               </select>
             </div>
             <div className="col-md-2">
-              <button className="btn btn-outline-primary-custom w-100" onClick={fetchDashboard}>
+              <button
+                className="btn btn-outline-primary-custom w-100 ripple"
+                onClick={fetchDashboard}
+              >
                 🔄 Làm mới
               </button>
             </div>
@@ -100,8 +115,9 @@ function DashboardPage() {
         </div>
       </div>
 
+      {/* Loading */}
       {loading ? (
-        <div className="text-center mt-5 pt-5">
+        <div className="loading-section">
           <div className="spinner-border text-primary" role="status" />
           <p className="mt-3">Đang tải dữ liệu tồn kho...</p>
         </div>
@@ -109,50 +125,69 @@ function DashboardPage() {
         <div className="card-custom">
           <div className="card-header d-flex justify-content-between align-items-center">
             <span>Danh sách lô thuốc (FEFO) {items.length > 0 && `- ${items.length} lô`}</span>
-            <span className="badge bg-danger badge-custom">Cận date &lt; 180 ngày</span>
+            <span className="badge bg-danger badge-custom">⚠️ Cận date &lt; 180 ngày</span>
           </div>
           <div className="card-body p-0">
             {items.length === 0 ? (
-              <div className="text-center py-5 text-muted">
-                <p className="mb-0">Không tìm thấy lô thuốc nào phù hợp.</p>
+              <div className="empty-state">
+                <div className="empty-icon">📦</div>
+                <p className="empty-text">Không tìm thấy lô thuốc nào phù hợp.</p>
               </div>
             ) : (
-              <table className="table-custom">
-                <thead>
-                  <tr>
-                    <th>Mã Thuốc</th>
-                    <th>Tên Thuốc (Nhóm)</th>
-                    <th>Mã Lô</th>
-                    <th>Nhà Cung Cấp</th>
-                    <th>Tồn Kho</th>
-                    <th>Hạn Sử Dụng</th>
-                    <th>Tình Trạng</th>
-                    <th>Thao Tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map(i => (
-                    <tr key={i.maLo} className={i.ngayConLai < 180 ? "table-danger" : ""}>
-                      <td className="text-center"><span className="badge bg-secondary badge-custom">{i.maThuoc}</span></td>
-                      <td><strong>{i.tenThuoc}</strong><br/><small className="text-muted">{i.tenNhom}</small></td>
-                      <td className="text-center"><span className="badge border text-dark bg-light">{i.maLo}</span></td>
-                      <td>{i.tenNcc}</td>
-                      <td className="text-center fw-bold text-success">{i.soLuong}</td>
-                      <td className="text-center">{new Date(i.hanSuDung).toLocaleDateString('vi-VN')}</td>
-                      <td className="text-center">
-                        {i.ngayConLai < 0 ? <span className="badge bg-dark badge-custom">Hết hạn</span> :
-                         i.ngayConLai < 180 ? <span className="badge bg-danger badge-custom">Cận date ({i.ngayConLai} ngày)</span> :
-                         <span className="badge bg-success badge-custom">An toàn ({i.ngayConLai} ngày)</span>}
-                      </td>
-                      <td className="text-center">
-                        <button className="btn btn-sm btn-danger-custom" onClick={() => handleExport(i.maLo)}>
-                          🗑️ Xuất Kho
-                        </button>
-                      </td>
+              <div className="table-responsive">
+                <table className="table-custom">
+                  <thead>
+                    <tr>
+                      <th>Mã Thuốc</th>
+                      <th>Tên Thuốc (Nhóm)</th>
+                      <th>Mã Lô</th>
+                      <th>Nhà Cung Cấp</th>
+                      <th className="text-center">Tồn Kho</th>
+                      <th className="text-center">Hạn Sử Dụng</th>
+                      <th className="text-center">Tình Trạng</th>
+                      <th className="text-center">Thao Tác</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {items.map(i => (
+                      <tr key={i.maLo} className={i.ngayConLai < 180 ? "table-danger" : ""}>
+                        <td>
+                          <span className="badge bg-secondary badge-custom">{i.maThuoc}</span>
+                        </td>
+                        <td>
+                          <strong>{i.tenThuoc}</strong>
+                          <br />
+                          <small className="text-muted">{i.tenNhom}</small>
+                        </td>
+                        <td className="text-center">
+                          <span className="badge border text-dark bg-light">{i.maLo}</span>
+                        </td>
+                        <td>{i.tenNcc}</td>
+                        <td className="text-center fw-bold text-success">{i.soLuong}</td>
+                        <td className="text-center">{new Date(i.hanSuDung).toLocaleDateString('vi-VN')}</td>
+                        <td className="text-center">
+                          {i.ngayConLai < 0 ? (
+                            <span className="badge bg-dark badge-custom">Hết hạn</span>
+                          ) : i.ngayConLai < 180 ? (
+                            <span className="badge bg-danger badge-custom">Cận date ({i.ngayConLai} ngày)</span>
+                          ) : (
+                            <span className="badge bg-success badge-custom">An toàn ({i.ngayConLai} ngày)</span>
+                          )}
+                        </td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-sm btn-danger-custom ripple"
+                            onClick={() => handleExport(i.maLo)}
+                            title="Xuất kho lô này"
+                          >
+                            🗑️ Xuất Kho
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         </div>

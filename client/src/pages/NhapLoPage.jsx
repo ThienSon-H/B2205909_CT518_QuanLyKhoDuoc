@@ -13,7 +13,6 @@ function NhapLoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [nhaCungCapList, setNhaCungCapList] = useState([]);
   const [nhomThuocList, setNhomThuocList] = useState([]);
-
   const [form, setForm] = useState({
     maLo: '',
     maThuoc: '',
@@ -77,46 +76,70 @@ function NhapLoPage() {
           <div className="card-custom">
             <div className="card-header d-flex justify-content-between align-items-center">
               <span>📦 Tạo Phiếu Nhập Lô Mới</span>
-              <Link to="/" className="btn btn-outline-light btn-sm">
+              <Link to="/" className="btn btn-outline-light btn-sm ripple">
                 ← Quay lại Dashboard
               </Link>
             </div>
             <div className="card-body p-4">
               <form onSubmit={handleSubmit}>
+                {/* Hàng 1: Mã lô - Mã thuốc */}
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="form-group-custom">
-                      <label className="form-label">Mã Lô</label>
-                      <input className="form-control-custom w-100" placeholder="VD: LO-005"
+                      <label className="form-label">
+                        <span className="label-icon">🏷️</span> Mã Lô
+                      </label>
+                      <input
+                        className="form-control-custom"
+                        placeholder="VD: LO-005"
                         value={form.maLo}
                         onChange={e => setForm({...form, maLo: e.target.value.toUpperCase()})}
-                        required />
+                        required
+                      />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group-custom">
-                      <label className="form-label">Mã Thuốc</label>
-                      <input className="form-control-custom w-100" placeholder="VD: PARA"
+                      <label className="form-label">
+                        <span className="label-icon">💊</span> Mã Thuốc
+                      </label>
+                      <input
+                        className="form-control-custom"
+                        placeholder="VD: PARA"
                         value={form.maThuoc}
                         onChange={e => setForm({...form, maThuoc: e.target.value.toUpperCase()})}
-                        required />
+                        required
+                      />
                     </div>
                   </div>
+                </div>
+
+                {/* Hàng 2: Tên thuốc */}
+                <div className="form-group-custom">
+                  <label className="form-label">
+                    <span className="label-icon">📝</span> Tên Thuốc
+                  </label>
+                  <input
+                    className="form-control-custom"
+                    placeholder="Nhập tên thuốc..."
+                    value={form.tenThuoc}
+                    onChange={e => setForm({...form, tenThuoc: e.target.value})}
+                    required
+                  />
+                </div>
+
+                {/* Hàng 3: Nhà cung cấp - Nhóm thuốc */}
+                <div className="row g-4">
                   <div className="col-md-6">
                     <div className="form-group-custom">
-                      <label className="form-label">Tên Thuốc</label>
-                      <input className="form-control-custom w-100" placeholder="Nhập tên thuốc..."
-                        value={form.tenThuoc}
-                        onChange={e => setForm({...form, tenThuoc: e.target.value})}
-                        required />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group-custom">
-                      <label className="form-label">Nhà Cung Cấp</label>
-                      <select className="form-select-custom w-100"
+                      <label className="form-label">
+                        <span className="label-icon">🚚</span> Nhà Cung Cấp
+                      </label>
+                      <select
+                        className="form-select-custom"
                         value={form.maNcc}
-                        onChange={e => setForm({...form, maNcc: e.target.value})}>
+                        onChange={e => setForm({...form, maNcc: e.target.value})}
+                      >
                         {nhaCungCapList.map(ncc => (
                           <option key={ncc.maNcc} value={ncc.maNcc}>
                             {ncc.tenNcc} ({ncc.maNcc})
@@ -127,10 +150,14 @@ function NhapLoPage() {
                   </div>
                   <div className="col-md-6">
                     <div className="form-group-custom">
-                      <label className="form-label">Nhóm Thuốc</label>
-                      <select className="form-select-custom w-100"
+                      <label className="form-label">
+                        <span className="label-icon">📂</span> Nhóm Thuốc
+                      </label>
+                      <select
+                        className="form-select-custom"
                         value={form.maNhom}
-                        onChange={e => setForm({...form, maNhom: e.target.value})}>
+                        onChange={e => setForm({...form, maNhom: e.target.value})}
+                      >
                         {nhomThuocList.map(nhom => (
                           <option key={nhom.maNhom} value={nhom.maNhom}>
                             {nhom.tenNhom} ({nhom.maNhom})
@@ -139,29 +166,59 @@ function NhapLoPage() {
                       </select>
                     </div>
                   </div>
+                </div>
+
+                {/* Hàng 4: Số lượng - Hạn sử dụng */}
+                <div className="row g-4">
                   <div className="col-md-3">
                     <div className="form-group-custom">
-                      <label className="form-label">Số Lượng</label>
-                      <input type="number" className="form-control-custom w-100" min="1"
+                      <label className="form-label">
+                        <span className="label-icon">🔢</span> Số Lượng
+                      </label>
+                      <input
+                        type="number"
+                        className="form-control-custom"
+                        min="1"
                         value={form.soLuong}
                         onChange={e => setForm({...form, soLuong: parseInt(e.target.value) || ''})}
-                        required />
+                        required
+                      />
                     </div>
                   </div>
                   <div className="col-md-3">
                     <div className="form-group-custom">
-                      <label className="form-label">Hạn Sử Dụng</label>
-                      <input type="date" className="form-control-custom w-100"
+                      <label className="form-label">
+                        <span className="label-icon">📅</span> Hạn Sử Dụng
+                      </label>
+                      <input
+                        type="date"
+                        className="form-control-custom"
                         value={form.hanSuDung}
                         onChange={e => setForm({...form, hanSuDung: e.target.value})}
-                        required />
+                        required
+                      />
                     </div>
                   </div>
-                  <div className="col-12 d-flex justify-content-end mt-3">
-                    <button type="submit" className="btn btn-success-custom px-5" disabled={isSubmitting}>
-                      {isSubmitting ? '⏳ Đang xử lý...' : '💾 Lưu Phiếu Nhập'}
-                    </button>
-                  </div>
+                </div>
+
+                {/* Nút Submit */}
+                <div className="d-flex justify-content-end mt-4">
+                  <button
+                    type="submit"
+                    className="btn btn-success-custom px-5 ripple"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" />
+                        Đang xử lý...
+                      </>
+                    ) : (
+                      <>
+                        <span className="btn-icon">💾</span> Lưu Phiếu Nhập
+                      </>
+                    )}
+                  </button>
                 </div>
               </form>
             </div>

@@ -61,51 +61,96 @@ function RegisterPage() {
     <div className="auth-container fade-in">
       <div className="auth-card">
         <div className="card-header">
-          📝 Đăng ký tài khoản
+          <div className="auth-icon">📝</div>
+          <h1 className="auth-title">Đăng ký tài khoản</h1>
+          <p className="auth-subtitle">Tạo tài khoản mới để bắt đầu</p>
         </div>
-        <div className="p-4">
-          {message && <div className="alert alert-success alert-custom">{message}</div>}
-          {error && <div className="alert alert-danger alert-custom">{error}</div>}
+
+        <div className="auth-body">
+          {message && (
+            <div className="alert alert-success alert-custom">
+              <span className="alert-icon">✅</span>
+              <span>{message}</span>
+            </div>
+          )}
+          {error && (
+            <div className="alert alert-danger alert-custom">
+              <span className="alert-icon">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="form-group-custom">
-              <label className="form-label fw-semibold">Tên đăng nhập</label>
-              <input
-                type="text"
-                className="form-control-custom w-100"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <small className="text-muted"><br />Ít nhất 5 ký tự, chỉ chữ và số</small>
+              <label className="form-label" htmlFor="reg-username">
+                <span className="label-icon">👤</span> Tên đăng nhập
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">@</span>
+                <input
+                  id="reg-username"
+                  type="text"
+                  className="form-control-custom"
+                  placeholder="Ít nhất 5 ký tự, chỉ chữ và số"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <small className="form-hint">Ví dụ: nguoidung123</small>
             </div>
+
             <div className="form-group-custom">
-              <label className="form-label fw-semibold">Mật khẩu</label>
-              <input
-                type="password"
-                className="form-control-custom w-100"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <small className="text-muted"><br />Ít nhất 8 ký tự, bao gồm 1 ký tự đặc biệt</small>
+              <label className="form-label" htmlFor="reg-password">
+                <span className="label-icon">🔒</span> Mật khẩu
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">🔑</span>
+                <input
+                  id="reg-password"
+                  type="password"
+                  className="form-control-custom"
+                  placeholder="Ít nhất 8 ký tự, có ký tự đặc biệt"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <small className="form-hint">Phải có ít nhất 1 ký tự: !@#$%^&*</small>
             </div>
+
             <div className="form-group-custom">
-              <label className="form-label fw-semibold">Xác nhận mật khẩu</label>
-              <input
-                type="password"
-                className="form-control-custom w-100"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                required
-              />
+              <label className="form-label" htmlFor="reg-confirm">
+                <span className="label-icon">✅</span> Xác nhận mật khẩu
+              </label>
+              <div className="input-with-icon">
+                <span className="input-icon">🔐</span>
+                <input
+                  id="reg-confirm"
+                  type="password"
+                  className="form-control-custom"
+                  placeholder="Nhập lại mật khẩu"
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <button type="submit" className="btn btn-primary-custom w-100 mt-3">
-              Đăng ký
+
+            <button
+              type="submit"
+              className="btn btn-primary-custom w-100 mt-4 ripple"
+            >
+              <span className="btn-text">Đăng ký</span>
+              <span className="btn-arrow">→</span>
             </button>
           </form>
-          <div className="text-center mt-4">
+
+          <div className="auth-footer">
             <span className="text-muted">Đã có tài khoản? </span>
-            <Link to="/login" className="fw-semibold">Đăng nhập</Link>
+            <Link to="/login" className="auth-link">
+              Đăng nhập
+            </Link>
           </div>
         </div>
       </div>

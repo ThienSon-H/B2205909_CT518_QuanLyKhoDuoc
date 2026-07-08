@@ -1,77 +1,136 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { useAuth, AuthProvider } from './context/AuthContext';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import AccountManagementPage from './pages/AccountManagementPage';
-import ChangePasswordPage from './pages/ChangePasswordPage';
-import DashboardPage from './pages/DashboardPage';
-import NhapLoPage from './pages/NhapLoPage';
-import BaoCaoPage from './pages/BaoCaoPage';
-import LichSuPage from './pages/LichSuPage';
-import DanhMucPage from './pages/DanhMucPage';
-
-function Navbar() {
-  const { user, logout } = useAuth();
-  if (!user) return null;
-  return (
-    <nav className="navbar navbar-expand-lg navbar-custom">
-  <div className="container-fluid">
-    <Link to="/" className="navbar-brand">🏥 Quản lý Kho Dược</Link>
-    <div className="ms-auto d-flex gap-2 align-items-center">
-      <span className="text-white me-2 fw-semibold">👋 {user.username}</span>
-      {user.isAdmin && (
-        <Link to="/admin/users" className="btn btn-outline-warning btn-sm">⚙️ QLTK</Link>,
-      <Link to="/admin/danh-muc" className="btn btn-outline-warning btn-sm">📋 Danh mục</Link>
-      )}    
-      <Link to="/nhap-lo" className="btn btn-outline-success btn-sm">➕ Nhập Lô</Link>
-      <Link to="/bao-cao" className="btn btn-outline-info btn-sm">📊 Báo cáo</Link>
-      <Link to="/lich-su" className="btn btn-outline-info btn-sm">🕒 Lịch sử</Link>
-      <Link to="/doi-mat-khau" className="btn btn-outline-light btn-sm">🔑 Đổi MK</Link>
-      <button onClick={logout} className="btn btn-danger-custom btn-sm">🚪 Đăng xuất</button>
-    </div>
-  </div>
-</nav>
-  );
+/* ============================================================
+   NAVBAR ENHANCEMENTS
+   ============================================================ */
+.navbar-custom .brand-icon {
+  font-size: 1.5rem;
+  margin-right: 0.25rem;
 }
 
-function AppRouter() {
-  const { user, loading } = useAuth();
-  if (loading) return (
-    <div className="text-center mt-5 pt-5">
-      <div className="spinner-border text-primary" role="status" />
-      <p className="mt-3 text-muted">Đang tải ứng dụng...</p>
-    </div>
-  );
-
-  return (
-    <>
-      <Navbar />
-      <div className="container-fluid p-0">
-        <Routes>
-          <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
-          <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
-          <Route path="/admin/users" element={user?.isAdmin ? <AccountManagementPage /> : <Navigate to="/" />} />
-          <Route path="/nhap-lo" element={user ? <NhapLoPage /> : <Navigate to="/login" />} />
-          <Route path="/bao-cao" element={user ? <BaoCaoPage /> : <Navigate to="/login" />} />
-          <Route path="/lich-su" element={user ? <LichSuPage /> : <Navigate to="/login" />} />
-          <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
-          <Route path="/doi-mat-khau" element={user ? <ChangePasswordPage /> : <Navigate to="/login" />} />
-          <Route path="/admin/danh-muc" element={user?.isAdmin ? <DanhMucPage /> : <Navigate to="/" />} />
-        </Routes>
-      </div>
-    </>
-  );
+.navbar-custom .brand-text {
+  font-weight: 700;
 }
 
-function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRouter />
-      </AuthProvider>
-    </BrowserRouter>
-  );
+.navbar-custom .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-export default App;
+.navbar-custom .user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--md-radius-full);
+  backdrop-filter: blur(4px);
+}
+
+.navbar-custom .user-avatar {
+  font-size: 1.2rem;
+}
+
+.navbar-custom .user-name {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  white-space: nowrap;
+}
+
+.navbar-custom .nav-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.navbar-custom .btn .btn-icon {
+  margin-right: 0.2rem;
+}
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: var(--md-background);
+}
+
+.loading-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-content .spinner-border {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.25em;
+  margin-bottom: 1rem;
+}
+
+.loading-text {
+  font-size: var(--md-typescale-body);
+  color: var(--md-on-surface-variant);
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.loading-bar {
+  width: 200px;
+  height: 4px;
+  background: var(--md-surface-container);
+  border-radius: var(--md-radius-full);
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  width: 40%;
+  height: 100%;
+  background: var(--md-secondary);
+  border-radius: var(--md-radius-full);
+  animation: loadingBar 1.2s ease-in-out infinite;
+}
+
+@keyframes loadingBar {
+  0% { transform: translateX(-100%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(-100%); }
+}
+
+.app-container {
+  min-height: calc(100vh - 60px);
+}
+
+/* Responsive Navbar */
+@media (max-width: 992px) {
+  .navbar-custom .nav-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .navbar-custom .nav-links {
+    justify-content: flex-start;
+    gap: 0.3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-custom .container-fluid {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .navbar-custom .nav-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .navbar-custom .nav-links {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

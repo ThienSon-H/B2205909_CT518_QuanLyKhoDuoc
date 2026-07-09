@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-const DASHBOARD_URL = 'https://localhost:7122/api/Thuoc/dashboard';
-const EXPORT_URL = 'https://localhost:7122/api/Thuoc/xuat-lo';
+const DASHBOARD_URL = 'http://localhost:7122/api/Thuoc/dashboard';
+const EXPORT_URL = 'http://localhost:7122/api/Thuoc/xuat-lo';
 
 function DashboardPage() {
   const { user } = useAuth();

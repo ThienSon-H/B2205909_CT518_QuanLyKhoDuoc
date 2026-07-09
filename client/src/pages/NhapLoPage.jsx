@@ -3,9 +3,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-const IMPORT_URL = 'https://localhost:7122/api/Thuoc/nhap-lo';
-const NCC_PUBLIC_URL = 'https://localhost:7122/api/DanhMuc/nha-cung-cap-public';
-const NHOM_PUBLIC_URL = 'https://localhost:7122/api/DanhMuc/nhom-thuoc-public';
+const IMPORT_URL = 'http://localhost:7122/api/Thuoc/nhap-lo';
+const NCC_PUBLIC_URL = 'http://localhost:7122/api/DanhMuc/nha-cung-cap-public';
+const NHOM_PUBLIC_URL = 'http://localhost:7122/api/DanhMuc/nhom-thuoc-public';
 
 function NhapLoPage() {
   const { user } = useAuth();

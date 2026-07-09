@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-const CHANGE_PASSWORD_URL = 'https://localhost:7122/api/Auth/change-password';
+const CHANGE_PASSWORD_URL = 'http://localhost:7122/api/Auth/change-password';
 
 function ChangePasswordPage() {
   const { user } = useAuth();

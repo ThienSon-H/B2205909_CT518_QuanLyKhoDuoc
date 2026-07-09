@@ -1,0 +1,44 @@
+services:
+  # 1. Cơ sở dữ liệu PostgreSQL
+  db:
+    image: postgres:16-alpine
+    container_name: quanlykho_db
+    environment:
+      POSTGRES_DB: QuanLyKhoDuocDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: a1a1
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d QuanLyKhoDuocDB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Ứng dụng Backend .NET
+  backend:
+    build:
+      context: ./server/QuanLyKhoDuoc/QuanLyKhoDuoc
+      dockerfile: Dockerfile
+    container_name: quanlykho_backend
+    ports:
+      - "7122:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=QuanLyKhoDuocDB;Username=postgres;Password=a1a1
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # 3. Ứng dụng Frontend React
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: quanlykho_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

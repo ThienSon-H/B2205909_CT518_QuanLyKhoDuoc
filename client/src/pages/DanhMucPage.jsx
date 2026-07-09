@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const API_BASE = 'https://localhost:7122/api/DanhMuc';
+const API_BASE = 'http://localhost:7122/api/DanhMuc';
 
 function DanhMucPage() {
   const { user } = useAuth();

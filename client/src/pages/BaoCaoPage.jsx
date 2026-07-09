@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-const BAO_CAO_URL = 'https://localhost:7122/api/Thuoc/bao-cao-ton-kho';
+const BAO_CAO_URL = 'http://localhost:7122/api/Thuoc/bao-cao-ton-kho';
 
 function BaoCaoPage() {
   const { user } = useAuth();

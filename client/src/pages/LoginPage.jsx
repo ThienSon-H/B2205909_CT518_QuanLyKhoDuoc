@@ -14,7 +14,7 @@ function LoginPage() {
     e.preventDefault();
     setError('');
     try {
-      const res = await axios.post('https://localhost:7122/api/Auth/login', {
+      const res = await axios.post('http://localhost:7122/api/Auth/login', {
         username,
         password
       });

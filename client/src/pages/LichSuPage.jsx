@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-const LICH_SU_URL = 'https://localhost:7122/api/Thuoc/lich-su';
+const LICH_SU_URL = 'http://localhost:7122/api/Thuoc/lich-su';
 
 function LichSuPage() {
   const { user } = useAuth();

@@ -20,7 +20,7 @@ function AccountManagementPage() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('https://localhost:7122/api/Auth/users', {
+      const res = await axios.get('http://localhost:7122/api/Auth/users', {
         params: { adminUsername: user.username }
       });
       setUsers(res.data);
@@ -34,7 +34,7 @@ function AccountManagementPage() {
   const toggleUser = async (targetUsername) => {
     try {
       const res = await axios.post(
-        'https://localhost:7122/api/Auth/toggle-user',
+        'http://localhost:7122/api/Auth/toggle-user',
         { targetUsername },
         { params: { adminUsername: user.username } }
       );

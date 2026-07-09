@@ -189,30 +189,46 @@ END;
 $$;
 
 -- Xuất lô thuốc – có kiểm tra active và ghi log
-CREATE OR REPLACE FUNCTION fn_xuat_lo_thuoc(p_ma_lo VARCHAR, p_nguoi_thuc_hien VARCHAR DEFAULT NULL)
+CREATE OR REPLACE FUNCTION fn_xuat_lo_thuoc(
+    p_ma_lo VARCHAR,
+    p_so_luong_xuat INTEGER,
+    p_nguoi_thuc_hien VARCHAR DEFAULT NULL
+)
 RETURNS TEXT LANGUAGE plpgsql AS $$
 DECLARE
-    v_so_luong INTEGER;
+    v_so_luong_hien_co INTEGER;
     v_ma_thuoc VARCHAR;
 BEGIN
-    -- Kiểm tra quyền
     IF p_nguoi_thuc_hien IS NOT NULL AND NOT fn_check_user_active(p_nguoi_thuc_hien) THEN
         RETURN 'LỖI: Tài khoản của bạn không tồn tại hoặc đã bị khóa';
     END IF;
 
-    SELECT so_luong, ma_thuoc INTO v_so_luong, v_ma_thuoc
+    IF p_so_luong_xuat IS NULL OR p_so_luong_xuat <= 0 THEN
+        RETURN 'LỖI: Số lượng xuất phải lớn hơn 0';
+    END IF;
+
+    SELECT so_luong, ma_thuoc INTO v_so_luong_hien_co, v_ma_thuoc
     FROM lo_thuoc WHERE ma_lo = p_ma_lo;
-    
+
     IF NOT FOUND THEN
         RETURN 'LỖI: Không tìm thấy mã lô này trong kho!';
     END IF;
 
-    INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
-    VALUES (p_ma_lo, v_ma_thuoc, 'XUAT', v_so_luong, p_nguoi_thuc_hien, 'Xuất toàn bộ lô');
+    IF p_so_luong_xuat > v_so_luong_hien_co THEN
+        RETURN 'LỖI: Số lượng xuất vượt quá số lượng tồn kho (hiện có: ' || v_so_luong_hien_co || ')';
+    END IF;
 
-    DELETE FROM lo_thuoc WHERE ma_lo = p_ma_lo;
-    
-    RETURN 'Thành công: Đã xuất (xóa) toàn bộ lô ' || p_ma_lo;
+    IF p_so_luong_xuat = v_so_luong_hien_co THEN
+        INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+        VALUES (p_ma_lo, v_ma_thuoc, 'XUAT', v_so_luong_hien_co, p_nguoi_thuc_hien, 'Xuất toàn bộ lô');
+        DELETE FROM lo_thuoc WHERE ma_lo = p_ma_lo;
+        RETURN 'Thành công: Đã xuất toàn bộ lô ' || p_ma_lo || ' (' || v_so_luong_hien_co || ' đơn vị)';
+    ELSE
+        UPDATE lo_thuoc SET so_luong = so_luong - p_so_luong_xuat WHERE ma_lo = p_ma_lo;
+        INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+        VALUES (p_ma_lo, v_ma_thuoc, 'XUAT', p_so_luong_xuat, p_nguoi_thuc_hien, 'Xuất một phần');
+        RETURN 'Thành công: Đã xuất ' || p_so_luong_xuat || ' đơn vị từ lô ' || p_ma_lo || ' (còn lại ' || (v_so_luong_hien_co - p_so_luong_xuat) || ')';
+    END IF;
 END;
 $$;
 

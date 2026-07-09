@@ -74,9 +74,9 @@ namespace QuanLyKhoDuoc.Controllers
 
         // Xuất lô (DELETE): nhận nguoiThucHien từ query string
         [HttpDelete("xuat-lo/{maLo}")]
-        public async Task<IActionResult> XuatLo(string maLo, [FromQuery] string nguoiThucHien = null)
+        public async Task<IActionResult> XuatLo(string maLo, [FromQuery] int soLuongXuat, [FromQuery] string nguoiThucHien = null)
         {
-            var result = await _service.XuatLoThuoc(maLo, nguoiThucHien);
+            var result = await _service.XuatLoThuoc(maLo, soLuongXuat, nguoiThucHien);
             if (result.StartsWith("LỖI"))
                 return BadRequest(new { message = result });
             return Ok(new { message = result });

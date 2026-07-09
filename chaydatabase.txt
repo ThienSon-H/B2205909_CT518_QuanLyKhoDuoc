@@ -1,0 +1,1 @@
+docker exec -i quanlykho_db psql -U postgres -d QuanLyKhoDuocDB < ./database/02_functions.sql

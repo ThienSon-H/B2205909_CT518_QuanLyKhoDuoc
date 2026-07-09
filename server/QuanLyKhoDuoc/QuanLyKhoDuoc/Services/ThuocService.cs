@@ -92,11 +92,16 @@ namespace QuanLyKhoDuoc.Services
         }
 
         // Xuất lô (đã tích hợp ghi log, kiểm tra active của người thực hiện)
-        public async Task<string> XuatLoThuoc(string maLo, string nguoiThucHien = null)
+        public async Task<string> XuatLoThuoc(string maLo, int soLuongXuat, string nguoiThucHien = null)
         {
             using var db = new NpgsqlConnection(_connString);
-            var sql = "SELECT fn_xuat_lo_thuoc(@MaLo, @NguoiThucHien)";
-            return await db.ExecuteScalarAsync<string>(sql, new { MaLo = maLo, NguoiThucHien = nguoiThucHien });
+            var sql = "SELECT fn_xuat_lo_thuoc(@MaLo, @SoLuongXuat, @NguoiThucHien)";
+            return await db.ExecuteScalarAsync<string>(sql, new
+            {
+                MaLo = maLo,
+                SoLuongXuat = soLuongXuat,
+                NguoiThucHien = nguoiThucHien
+            });
         }
 
         // Upsert thuốc (giữ nguyên)

@@ -38,18 +38,25 @@ function DashboardPage() {
     return () => clearTimeout(timer);
   }, [fetchDashboard]);
 
-  const handleExport = async (maLo) => {
-    if (!window.confirm(`⚠️ Xuất (xóa) lô ${maLo}? Không thể hoàn tác.`)) return;
-    try {
-      const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
-        params: { nguoiThucHien: user?.username }
-      });
-      if (res.data.message.includes('LỖI')) alert(res.data.message);
-      else { alert(res.data.message); fetchDashboard(); }
-    } catch (err) {
-      alert("Lỗi kết nối server khi xuất kho!");
+  const handleExport = async (maLo, soLuongTon) => {
+    const soLuongNhap = prompt(`Nhập số lượng cần xuất từ lô ${maLo} (tối đa ${soLuongTon}):`, soLuongTon);
+    if (!soLuongNhap) return;
+    const soLuong = parseInt(soLuongNhap);
+    if (isNaN(soLuong) || soLuong <= 0 || soLuong > soLuongTon) {
+        alert(`Vui lòng nhập số từ 1 đến ${soLuongTon}`);
+        return;
     }
-  };
+    if (!window.confirm(`⚠️ Xuất ${soLuong} đơn vị từ lô ${maLo}?`)) return;
+    try {
+        const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
+            params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
+        });
+        if (res.data.message.includes('LỖI')) alert(res.data.message);
+        else { alert(res.data.message); fetchDashboard(); }
+    } catch (err) {
+        alert("Lỗi kết nối server khi xuất kho!");
+    }
+};
 
   return (
     <div className="page-wrapper fade-in">
@@ -176,11 +183,11 @@ function DashboardPage() {
                         </td>
                         <td className="text-center">
                           <button
-                            className="btn btn-sm btn-danger-custom ripple"
-                            onClick={() => handleExport(i.maLo)}
-                            title="Xuất kho lô này"
+                              className="btn btn-sm btn-danger-custom ripple"
+                              onClick={() => handleExport(i.maLo, i.soLuong)}
+                              title="Xuất kho lô này"
                           >
-                            🗑️ Xuất Kho
+                              🗑️ Xuất Kho
                           </button>
                         </td>
                       </tr>

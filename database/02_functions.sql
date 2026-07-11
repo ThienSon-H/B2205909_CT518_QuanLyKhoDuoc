@@ -232,6 +232,176 @@ BEGIN
 END;
 $$;
 
+-- =============================================
+-- Quản lý Thuốc (CRUD)
+-- =============================================
+
+
+-- Function: Lấy danh sách thuốc (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_get_all_thuoc(p_admin_username VARCHAR)
+RETURNS TABLE(
+    out_ma_thuoc VARCHAR,
+    out_ten_thuoc TEXT,
+    out_ten_nhom TEXT,
+    out_don_vi_tinh VARCHAR,
+    out_tong_ton BIGINT,
+    out_so_lo INTEGER
+) LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan
+                   WHERE username = p_admin_username
+                     AND is_admin = true AND is_active = true) THEN
+        RAISE EXCEPTION 'Chỉ admin mới được xem danh sách thuốc';
+    END IF;
+
+    RETURN QUERY
+    SELECT
+        t.ma_thuoc,
+        t.ten_thuoc,
+        COALESCE(nt.ten_nhom, 'Chưa phân nhóm'),
+        COALESCE(t.don_vi_tinh, ''),
+        COALESCE(SUM(l.so_luong), 0)::BIGINT,
+        COUNT(l.ma_lo)::INTEGER
+    FROM thuoc t
+    LEFT JOIN lo_thuoc l ON t.ma_thuoc = l.ma_thuoc
+    LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
+    GROUP BY t.ma_thuoc, t.ten_thuoc, nt.ten_nhom, t.don_vi_tinh
+    ORDER BY t.ten_thuoc ASC;
+END;
+$$;
+
+-- Function: Thêm thuốc mới (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_insert_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_thuoc VARCHAR,
+    p_ten_thuoc TEXT,
+    p_ma_nhom VARCHAR DEFAULT NULL,
+    p_don_vi_tinh VARCHAR DEFAULT NULL
+) RETURNS TEXT LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan
+                   WHERE username = p_admin_username
+                     AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền thêm thuốc';
+    END IF;
+
+    IF p_ma_thuoc IS NULL OR LENGTH(TRIM(p_ma_thuoc)) = 0 THEN
+        RETURN 'LỖI: Mã thuốc không được để trống';
+    END IF;
+
+    IF p_ten_thuoc IS NULL OR LENGTH(TRIM(p_ten_thuoc)) = 0 THEN
+        RETURN 'LỖI: Tên thuốc không được để trống';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
+        RETURN 'LỖI: Mã thuốc đã tồn tại';
+    END IF;
+
+    INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom, don_vi_tinh, so_luong_ton)
+    VALUES (UPPER(p_ma_thuoc), p_ten_thuoc, p_ma_nhom, p_don_vi_tinh, 0);
+
+    RETURN 'Thành công: Đã thêm thuốc ' || p_ten_thuoc;
+END;
+$$;
+
+-- Function: Thêm thuốc mới (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_insert_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_thuoc VARCHAR,
+    p_ten_thuoc TEXT,
+    p_ma_nhom VARCHAR DEFAULT NULL,
+    p_don_vi_tinh VARCHAR DEFAULT NULL
+) RETURNS TEXT LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan
+                   WHERE username = p_admin_username
+                     AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền thêm thuốc';
+    END IF;
+
+    IF p_ma_thuoc IS NULL OR LENGTH(TRIM(p_ma_thuoc)) = 0 THEN
+        RETURN 'LỖI: Mã thuốc không được để trống';
+    END IF;
+
+    IF p_ten_thuoc IS NULL OR LENGTH(TRIM(p_ten_thuoc)) = 0 THEN
+        RETURN 'LỖI: Tên thuốc không được để trống';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
+        RETURN 'LỖI: Mã thuốc đã tồn tại';
+    END IF;
+
+    INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom, don_vi_tinh, so_luong_ton)
+    VALUES (UPPER(p_ma_thuoc), p_ten_thuoc, p_ma_nhom, p_don_vi_tinh, 0);
+
+    RETURN 'Thành công: Đã thêm thuốc ' || p_ten_thuoc;
+END;
+$$;
+
+-- Function: Cập nhật thuốc (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_update_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_thuoc VARCHAR,
+    p_ten_thuoc TEXT,
+    p_ma_nhom VARCHAR DEFAULT NULL,
+    p_don_vi_tinh VARCHAR DEFAULT NULL
+) RETURNS TEXT LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan
+                   WHERE username = p_admin_username
+                     AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền sửa thuốc';
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
+        RETURN 'LỖI: Mã thuốc không tồn tại';
+    END IF;
+
+    IF p_ten_thuoc IS NULL OR LENGTH(TRIM(p_ten_thuoc)) = 0 THEN
+        RETURN 'LỖI: Tên thuốc không được để trống';
+    END IF;
+
+    UPDATE thuoc
+    SET ten_thuoc = p_ten_thuoc,
+        ma_nhom = p_ma_nhom,
+        don_vi_tinh = p_don_vi_tinh
+    WHERE ma_thuoc = p_ma_thuoc;
+
+    RETURN 'Thành công: Đã cập nhật thuốc ' || p_ten_thuoc;
+END;
+$$;
+
+-- Function: Xóa thuốc (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_delete_thuoc(
+    p_admin_username VARCHAR,
+    p_ma_thuoc VARCHAR
+) RETURNS TEXT LANGUAGE plpgsql AS $$
+DECLARE
+    v_ton_kho BIGINT;
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan
+                   WHERE username = p_admin_username
+                     AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Bạn không có quyền xóa thuốc';
+    END IF;
+
+    SELECT COALESCE(SUM(so_luong), 0) INTO v_ton_kho
+    FROM lo_thuoc WHERE ma_thuoc = p_ma_thuoc;
+
+    IF v_ton_kho > 0 THEN
+        RETURN 'LỖI: Không thể xóa thuốc vì còn ' || v_ton_kho || ' đơn vị tồn kho';
+    END IF;
+
+    DELETE FROM thuoc WHERE ma_thuoc = p_ma_thuoc;
+
+    IF NOT FOUND THEN
+        RETURN 'LỖI: Mã thuốc không tồn tại';
+    END IF;
+
+    RETURN 'Thành công: Đã xóa thuốc ' || p_ma_thuoc;
+END;
+$$;
+
 -- Báo cáo tổng tồn kho – có kiểm tra active
 CREATE OR REPLACE FUNCTION fn_bao_cao_ton_kho(p_username VARCHAR DEFAULT NULL)
 RETURNS TABLE (
@@ -261,7 +431,7 @@ BEGIN
     LEFT JOIN lo_thuoc l ON t.ma_thuoc = l.ma_thuoc
     LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
     GROUP BY t.ma_thuoc, t.ten_thuoc, nt.ten_nhom
-    ORDER BY ngay_con_lai ASC NULLS LAST;
+    ORDER BY (MIN(l.han_su_dung) - CURRENT_DATE) ASC NULLS LAST;
 END;
 $$;
 

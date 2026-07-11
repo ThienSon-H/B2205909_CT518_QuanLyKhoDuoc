@@ -10,6 +10,7 @@ import NhapLoPage from './pages/NhapLoPage';
 import BaoCaoPage from './pages/BaoCaoPage';
 import LichSuPage from './pages/LichSuPage';
 import DanhMucPage from './pages/DanhMucPage';
+import QuanLyThuocPage from './pages/QuanLyThuocPage.jsx';
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -37,6 +38,9 @@ function Navbar() {
                 </Link>
                 <Link to="/admin/danh-muc" className="btn btn-outline-warning btn-sm ripple">
                   <span className="btn-icon">📋</span> Danh mục
+                </Link>
+                <Link to="/admin/thuoc" className="btn btn-outline-warning btn-sm ripple">
+                  <span className="btn-icon">💊</span> Thuốc
                 </Link>
               </>
             )}
@@ -95,6 +99,7 @@ function AppRouter() {
           <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
           <Route path="/doi-mat-khau" element={user ? <ChangePasswordPage /> : <Navigate to="/login" />} />
           <Route path="/admin/danh-muc" element={user?.isAdmin ? <DanhMucPage /> : <Navigate to="/" />} />
+          <Route path="/admin/thuoc" element={user?.isAdmin ? <QuanLyThuocPage /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </>

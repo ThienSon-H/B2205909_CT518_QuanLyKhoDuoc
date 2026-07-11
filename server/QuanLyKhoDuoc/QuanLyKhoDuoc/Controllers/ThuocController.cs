@@ -82,12 +82,57 @@ namespace QuanLyKhoDuoc.Controllers
             return Ok(new { message = result });
         }
 
-        // Upsert thuốc (POST) - giữ nguyên
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Thuoc thuoc)
+        // GET: api/Thuoc/admin (chỉ admin)
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetAllThuoc([FromQuery] string adminUsername)
         {
-            var result = await _service.UpsertThuoc(thuoc);
+            try
+            {
+                var data = await _service.GetAllThuoc(adminUsername);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Thuoc (thêm mới - admin)
+        [HttpPost]
+        public async Task<IActionResult> InsertThuoc([FromQuery] string adminUsername, [FromBody] ThuocInput input)
+        {
+            var result = await _service.InsertThuoc(adminUsername, input.MaThuoc, input.TenThuoc, input.MaNhom, input.DonViTinh);
+            if (result.StartsWith("LỖI"))
+                return BadRequest(new { message = result });
             return Ok(new { message = result });
         }
+
+        // PUT: api/Thuoc/{maThuoc} (cập nhật - admin)
+        [HttpPut("{maThuoc}")]
+        public async Task<IActionResult> UpdateThuoc([FromQuery] string adminUsername, string maThuoc, [FromBody] ThuocInput input)
+        {
+            var result = await _service.UpdateThuoc(adminUsername, maThuoc, input.TenThuoc, input.MaNhom, input.DonViTinh);
+            if (result.StartsWith("LỖI"))
+                return BadRequest(new { message = result });
+            return Ok(new { message = result });
+        }
+
+        // DELETE: api/Thuoc/{maThuoc} (xóa - admin)
+        [HttpDelete("{maThuoc}")]
+        public async Task<IActionResult> DeleteThuoc([FromQuery] string adminUsername, string maThuoc)
+        {
+            var result = await _service.DeleteThuoc(adminUsername, maThuoc);
+            if (result.StartsWith("LỖI"))
+                return BadRequest(new { message = result });
+            return Ok(new { message = result });
+        }
+    }
+        // DTO dùng chung cho thêm/sửa thuốc
+    public class ThuocInput
+    {
+        public string MaThuoc { get; set; }
+        public string TenThuoc { get; set; }
+        public string MaNhom { get; set; }
+        public string DonViTinh { get; set; }
     }
 }

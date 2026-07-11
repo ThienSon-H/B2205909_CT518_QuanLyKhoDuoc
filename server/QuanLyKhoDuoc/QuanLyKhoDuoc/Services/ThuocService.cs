@@ -112,5 +112,39 @@ namespace QuanLyKhoDuoc.Services
             return await db.ExecuteScalarAsync<string>(sql, thuoc);
         }
         
+        public async Task<IEnumerable<ThuocAdmin>> GetAllThuoc(string adminUsername)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = @"SELECT
+                            out_ma_thuoc AS MaThuoc,
+                            out_ten_thuoc AS TenThuoc,
+                            out_ten_nhom AS TenNhom,
+                            out_don_vi_tinh AS DonViTinh,
+                            out_tong_ton AS TongTon,
+                            out_so_lo AS SoLo
+                        FROM fn_get_all_thuoc(@AdminUsername)";
+            return await db.QueryAsync<ThuocAdmin>(sql, new { AdminUsername = adminUsername });
+        }
+
+        public async Task<string> InsertThuoc(string adminUsername, string maThuoc, string tenThuoc, string maNhom, string donViTinh)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = "SELECT fn_insert_thuoc(@AdminUsername, @MaThuoc, @TenThuoc, @MaNhom, @DonViTinh)";
+            return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, MaThuoc = maThuoc, TenThuoc = tenThuoc, MaNhom = maNhom, DonViTinh = donViTinh });
+        }
+
+        public async Task<string> UpdateThuoc(string adminUsername, string maThuoc, string tenThuoc, string maNhom, string donViTinh)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = "SELECT fn_update_thuoc(@AdminUsername, @MaThuoc, @TenThuoc, @MaNhom, @DonViTinh)";
+            return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, MaThuoc = maThuoc, TenThuoc = tenThuoc, MaNhom = maNhom, DonViTinh = donViTinh });
+        }
+
+        public async Task<string> DeleteThuoc(string adminUsername, string maThuoc)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = "SELECT fn_delete_thuoc(@AdminUsername, @MaThuoc)";
+            return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, MaThuoc = maThuoc });
+        }
     }
 }

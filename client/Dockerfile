@@ -13,6 +13,7 @@ RUN npm run build
 
 # Stage 2: Sử dụng Nginx để deploy production siêu nhẹ
 FROM nginx:alpine
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

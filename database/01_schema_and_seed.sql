@@ -23,7 +23,6 @@ CREATE TABLE nha_cung_cap (
 CREATE TABLE thuoc (
     ma_thuoc VARCHAR(20) PRIMARY KEY,
     ten_thuoc TEXT NOT NULL,
-    so_luong_ton INTEGER DEFAULT 0,
     don_vi_tinh VARCHAR(50),
     ma_nhom VARCHAR(20) REFERENCES nhom_thuoc(ma_nhom)
 );
@@ -67,10 +66,10 @@ INSERT INTO nha_cung_cap (ma_ncc, ten_ncc, so_dien_thoai) VALUES
 ('DHG', 'Dược Hậu Giang', '19001234'),
 ('SANOFI', 'Sanofi VN', '19005678');
 
-INSERT INTO thuoc (ma_thuoc, ten_thuoc, so_luong_ton, don_vi_tinh, ma_nhom) VALUES
-('PARA', 'Paracetamol 500mg', 100, 'Viên', 'GD'),
-('HAPA', 'Hapacol 650mg', 50, 'Gói', 'GD'),
-('AMOX', 'Amoxicillin 500mg', 200, 'Viên', 'KS');
+INSERT INTO thuoc (ma_thuoc, ten_thuoc, don_vi_tinh, ma_nhom) VALUES
+('PARA', 'Paracetamol 500mg', 'Viên', 'GD'),
+('HAPA', 'Hapacol 650mg', 'Gói', 'GD'),
+('AMOX', 'Amoxicillin 500mg', 'Viên', 'KS');
 
 INSERT INTO lo_thuoc (ma_lo, ma_thuoc, ma_ncc, so_luong, han_su_dung) VALUES
 ('LO-PARA-01', 'PARA', 'DHG', 50, '2027-12-31'),

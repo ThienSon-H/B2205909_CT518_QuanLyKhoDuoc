@@ -103,14 +103,6 @@ namespace QuanLyKhoDuoc.Services
                 NguoiThucHien = nguoiThucHien
             });
         }
-
-        // Upsert thuốc (giữ nguyên)
-        public async Task<string> UpsertThuoc(Thuoc thuoc)
-        {
-            using var db = new NpgsqlConnection(_connString);
-            var sql = "SELECT fn_upsert_thuoc(@MaThuoc, @TenThuoc, @SoLuongTon, @DonViTinh)";
-            return await db.ExecuteScalarAsync<string>(sql, thuoc);
-        }
         
         public async Task<IEnumerable<ThuocAdmin>> GetAllThuoc(string adminUsername)
         {

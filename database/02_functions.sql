@@ -42,39 +42,12 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY 
-    SELECT ma_thuoc, ten_thuoc, so_luong_ton, don_vi_tinh 
+    SELECT ma_thuoc, ten_thuoc, don_vi_tinh 
     FROM thuoc
     ORDER BY ten_thuoc ASC;
 END;
 $$;
 
--- Thêm/cập nhật thuốc đơn lẻ
-CREATE OR REPLACE FUNCTION fn_upsert_thuoc(
-    p_ma_thuoc VARCHAR,
-    p_ten_thuoc TEXT,
-    p_so_luong INTEGER,
-    p_dvt VARCHAR
-)
-RETURNS TEXT 
-LANGUAGE plpgsql
-AS $$
-BEGIN
-    IF p_so_luong <= 0 THEN
-        RETURN 'LỖI: Số lượng nhập vào phải lớn hơn 0!';
-    END IF;
-
-    IF EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
-        UPDATE thuoc 
-        SET so_luong_ton = so_luong_ton + p_so_luong
-        WHERE ma_thuoc = p_ma_thuoc;
-        RETURN 'Đã cập nhật số lượng cho thuốc: ' || p_ten_thuoc;
-    ELSE
-        INSERT INTO thuoc (ma_thuoc, ten_thuoc, so_luong_ton, don_vi_tinh)
-        VALUES (p_ma_thuoc, p_ten_thuoc, p_so_luong, p_dvt);
-        RETURN 'Đã thêm mới thuốc: ' || p_ten_thuoc;
-    END IF;
-END;
-$$;
 
 -- Dashboard kho (FEFO) – có kiểm tra active, hỗ trợ tìm kiếm và lọc
 CREATE OR REPLACE FUNCTION fn_get_dashboard_kho(
@@ -297,42 +270,8 @@ BEGIN
         RETURN 'LỖI: Mã thuốc đã tồn tại';
     END IF;
 
-    INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom, don_vi_tinh, so_luong_ton)
-    VALUES (UPPER(p_ma_thuoc), p_ten_thuoc, p_ma_nhom, p_don_vi_tinh, 0);
-
-    RETURN 'Thành công: Đã thêm thuốc ' || p_ten_thuoc;
-END;
-$$;
-
--- Function: Thêm thuốc mới (chỉ admin)
-CREATE OR REPLACE FUNCTION fn_insert_thuoc(
-    p_admin_username VARCHAR,
-    p_ma_thuoc VARCHAR,
-    p_ten_thuoc TEXT,
-    p_ma_nhom VARCHAR DEFAULT NULL,
-    p_don_vi_tinh VARCHAR DEFAULT NULL
-) RETURNS TEXT LANGUAGE plpgsql AS $$
-BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan
-                   WHERE username = p_admin_username
-                     AND is_admin = true AND is_active = true) THEN
-        RETURN 'LỖI: Bạn không có quyền thêm thuốc';
-    END IF;
-
-    IF p_ma_thuoc IS NULL OR LENGTH(TRIM(p_ma_thuoc)) = 0 THEN
-        RETURN 'LỖI: Mã thuốc không được để trống';
-    END IF;
-
-    IF p_ten_thuoc IS NULL OR LENGTH(TRIM(p_ten_thuoc)) = 0 THEN
-        RETURN 'LỖI: Tên thuốc không được để trống';
-    END IF;
-
-    IF EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
-        RETURN 'LỖI: Mã thuốc đã tồn tại';
-    END IF;
-
-    INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom, don_vi_tinh, so_luong_ton)
-    VALUES (UPPER(p_ma_thuoc), p_ten_thuoc, p_ma_nhom, p_don_vi_tinh, 0);
+    INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom, don_vi_tinh)
+    VALUES (UPPER(p_ma_thuoc), p_ten_thuoc, p_ma_nhom, p_don_vi_tinh);
 
     RETURN 'Thành công: Đã thêm thuốc ' || p_ten_thuoc;
 END;

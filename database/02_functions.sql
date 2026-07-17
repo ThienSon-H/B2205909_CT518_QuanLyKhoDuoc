@@ -341,6 +341,83 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION fn_xuat_thuoc_fefo(
+    p_ma_thuoc VARCHAR,
+    p_so_luong_xuat INTEGER,
+    p_nguoi_thuc_hien VARCHAR DEFAULT NULL
+)
+RETURNS TEXT LANGUAGE plpgsql AS $$
+DECLARE
+    v_ton_kho BIGINT;
+    v_con_lai INTEGER := p_so_luong_xuat;
+    v_lo RECORD;
+    v_ket_qua TEXT := '';
+BEGIN
+    -- Kiểm tra tài khoản active
+    IF p_nguoi_thuc_hien IS NOT NULL AND NOT fn_check_user_active(p_nguoi_thuc_hien) THEN
+        RETURN 'LỖI: Tài khoản của bạn không tồn tại hoặc đã bị khóa';
+    END IF;
+
+    -- Validate số lượng xuất
+    IF p_so_luong_xuat IS NULL OR p_so_luong_xuat <= 0 THEN
+        RETURN 'LỖI: Số lượng xuất phải lớn hơn 0';
+    END IF;
+
+    -- Tính tổng tồn kho của thuốc
+    SELECT COALESCE(SUM(so_luong), 0) INTO v_ton_kho
+    FROM lo_thuoc WHERE ma_thuoc = p_ma_thuoc;
+
+    IF v_ton_kho < p_so_luong_xuat THEN
+        RETURN 'LỖI: Tổng tồn kho không đủ (hiện có: ' || v_ton_kho || ')';
+    END IF;
+
+    -- Duyệt từng lô theo FEFO (hạn sử dụng gần nhất trước)
+    FOR v_lo IN
+        SELECT ma_lo, so_luong, han_su_dung
+        FROM lo_thuoc
+        WHERE ma_thuoc = p_ma_thuoc AND so_luong > 0
+        ORDER BY han_su_dung ASC
+        FOR UPDATE
+    LOOP
+        IF v_con_lai <= 0 THEN
+            EXIT;
+        END IF;
+
+        IF v_lo.so_luong <= v_con_lai THEN
+            -- Xuất toàn bộ lô
+            v_con_lai := v_con_lai - v_lo.so_luong;
+            v_ket_qua := v_ket_qua || 'Lô ' || v_lo.ma_lo || ': xuất ' || v_lo.so_luong || ' (toàn bộ). ';
+            INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+            VALUES (v_lo.ma_lo, p_ma_thuoc, 'XUAT', v_lo.so_luong, p_nguoi_thuc_hien, 'Xuất FEFO toàn bộ lô');
+            DELETE FROM lo_thuoc WHERE ma_lo = v_lo.ma_lo;
+        ELSE
+            -- Xuất một phần lô
+            v_ket_qua := v_ket_qua || 'Lô ' || v_lo.ma_lo || ': xuất ' || v_con_lai || ' (còn lại ' || (v_lo.so_luong - v_con_lai) || '). ';
+            INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
+            VALUES (v_lo.ma_lo, p_ma_thuoc, 'XUAT', v_con_lai, p_nguoi_thuc_hien, 'Xuất FEFO một phần');
+            UPDATE lo_thuoc SET so_luong = so_luong - v_con_lai WHERE ma_lo = v_lo.ma_lo;
+            v_con_lai := 0;
+        END IF;
+    END LOOP;
+
+    RETURN 'Thành công: ' || TRIM(v_ket_qua);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION fn_get_thuoc_list_public(p_username VARCHAR)
+RETURNS TABLE(out_ma_thuoc VARCHAR, out_ten_thuoc TEXT)
+LANGUAGE plpgsql AS $$
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+    RETURN QUERY
+    SELECT ma_thuoc, ten_thuoc
+    FROM thuoc
+    ORDER BY ten_thuoc ASC;
+END;
+$$;
+
 -- Báo cáo tổng tồn kho – có kiểm tra active
 CREATE OR REPLACE FUNCTION fn_bao_cao_ton_kho(p_username VARCHAR DEFAULT NULL)
 RETURNS TABLE (

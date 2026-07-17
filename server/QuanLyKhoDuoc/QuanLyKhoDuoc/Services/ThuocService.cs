@@ -138,5 +138,25 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_delete_thuoc(@AdminUsername, @MaThuoc)";
             return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, MaThuoc = maThuoc });
         }
+
+        public async Task<string> XuatThuocFefo(string maThuoc, int soLuongXuat, string nguoiThucHien)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = "SELECT fn_xuat_thuoc_fefo(@MaThuoc, @SoLuongXuat, @NguoiThucHien)";
+            return await db.ExecuteScalarAsync<string>(sql, new
+            {
+                MaThuoc = maThuoc,
+                SoLuongXuat = soLuongXuat,
+                NguoiThucHien = nguoiThucHien
+            });
+        }
+        
+        public async Task<IEnumerable<ThuocSimple>> GetThuocListPublic(string username)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = @"SELECT out_ma_thuoc AS MaThuoc, out_ten_thuoc AS TenThuoc
+                        FROM fn_get_thuoc_list_public(@Username)";
+            return await db.QueryAsync<ThuocSimple>(sql, new { Username = username });
+        }
     }
 }

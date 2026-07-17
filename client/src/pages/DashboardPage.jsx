@@ -5,6 +5,8 @@ import axios from 'axios';
 
 const DASHBOARD_URL = 'http://localhost:7122/api/Thuoc/dashboard';
 const EXPORT_URL = 'http://localhost:7122/api/Thuoc/xuat-lo';
+const THUOC_LIST_URL = 'http://localhost:7122/api/Thuoc/list-public';
+const XUAT_FEFO_URL = 'http://localhost:7122/api/Thuoc/xuat-fefo';
 
 function DashboardPage() {
   const { user } = useAuth();
@@ -12,7 +14,11 @@ function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [trangThai, setTrangThai] = useState('');
-
+  const [showFefoModal, setShowFefoModal] = useState(false);
+  const [thuocList, setThuocList] = useState([]);
+  const [fefoForm, setFefoForm] = useState({ maThuoc: '', soLuongXuat: '' });
+  const [fefoSubmitting, setFefoSubmitting] = useState(false);
+  
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
     try {
@@ -66,9 +72,23 @@ function DashboardPage() {
           <h2 className="fw-bold mb-1">📊 Bảng Tồn Kho Dược Phẩm</h2>
           <p className="dashboard-subtitle">Quản lý lô thuốc theo nguyên tắc FEFO</p>
         </div>
+        <div className="d-flex gap-2">
         <Link to="/nhap-lo" className="btn btn-success-custom ripple">
           <span className="btn-icon">➕</span> Nhập Lô Mới
         </Link>
+        <button
+          className="btn btn-warning ripple"
+          onClick={() => {
+            setShowFefoModal(true);
+            // Fetch danh sách thuốc cho combobox
+            axios.get(THUOC_LIST_URL, { params: { username: user?.username } })
+              .then(res => setThuocList(res.data))
+              .catch(err => console.error(err));
+          }}
+        >
+          <span className="btn-icon">📤</span> Xuất FEFO
+        </button>
+      </div>
       </div>
 
       {/* Bộ lọc */}
@@ -199,6 +219,106 @@ function DashboardPage() {
           </div>
         </div>
       )}
+      {/* Modal Xuất FEFO */}
+{showFefoModal && (
+  <div className="modal d-block fade-in" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+    <div className="modal-dialog modal-dialog-centered">
+      <div className="modal-content" style={{ borderRadius: 'var(--md-radius-lg)', border: 'none', boxShadow: 'var(--md-elevation-5)' }}>
+        <div className="modal-header" style={{
+          background: 'linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%)',
+          color: '#fff',
+          borderBottom: 'none',
+          borderTopLeftRadius: 'var(--md-radius-lg)',
+          borderTopRightRadius: 'var(--md-radius-lg)'
+        }}>
+          <h5 className="modal-title">
+            <span className="me-2">📤</span>Xuất kho theo FEFO
+          </h5>
+          <button type="button" className="btn-close btn-close-white" onClick={() => setShowFefoModal(false)}></button>
+        </div>
+        <div className="modal-body p-4">
+          <div className="form-group-custom mb-3">
+            <label className="form-label">💊 Chọn thuốc</label>
+            <select
+              className="form-select-custom"
+              value={fefoForm.maThuoc}
+              onChange={e => setFefoForm({ ...fefoForm, maThuoc: e.target.value })}
+              required
+            >
+              <option value="">-- Chọn thuốc --</option>
+              {thuocList.map(t => (
+                <option key={t.maThuoc} value={t.maThuoc}>
+                  {t.tenThuoc} ({t.maThuoc})
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="form-group-custom mb-3">
+            <label className="form-label">🔢 Số lượng cần xuất</label>
+            <input
+              type="number"
+              className="form-control-custom"
+              placeholder="Nhập số lượng..."
+              min="1"
+              value={fefoForm.soLuongXuat}
+              onChange={e => setFefoForm({ ...fefoForm, soLuongXuat: e.target.value })}
+              required
+            />
+          </div>
+        </div>
+        <div className="modal-footer" style={{ borderTop: '1px solid var(--md-outline)' }}>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => setShowFefoModal(false)}
+          >
+            Hủy
+          </button>
+          <button
+            type="button"
+            className="btn btn-success-custom"
+            disabled={fefoSubmitting}
+            onClick={async () => {
+              if (!fefoForm.maThuoc || !fefoForm.soLuongXuat || parseInt(fefoForm.soLuongXuat) <= 0) {
+                alert('Vui lòng chọn thuốc và nhập số lượng hợp lệ');
+                return;
+              }
+              setFefoSubmitting(true);
+              try {
+                const res = await axios.post(XUAT_FEFO_URL, {
+                  maThuoc: fefoForm.maThuoc,
+                  soLuongXuat: parseInt(fefoForm.soLuongXuat),
+                  nguoiThucHien: user?.username
+                });
+                if (res.data.message.startsWith('LỖI')) {
+                  alert(res.data.message);
+                } else {
+                  alert(res.data.message);
+                  setShowFefoModal(false);
+                  setFefoForm({ maThuoc: '', soLuongXuat: '' });
+                  fetchDashboard();
+                }
+              } catch (err) {
+                alert(err.response?.data?.message || 'Lỗi kết nối server');
+              } finally {
+                setFefoSubmitting(false);
+              }
+            }}
+          >
+            {fefoSubmitting ? (
+              <>
+                <span className="spinner-border spinner-border-sm me-2" role="status" />
+                Đang xử lý...
+              </>
+            ) : (
+              'Xác nhận Xuất FEFO'
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

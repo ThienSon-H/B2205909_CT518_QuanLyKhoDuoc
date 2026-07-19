@@ -242,13 +242,14 @@ function QuanLyThuocPage() {
                             ✏️ Sửa
                           </button>
                           <button
-                              className={`btn btn-sm ${item.tongTon > 0 ? 'btn-secondary' : 'btn-danger-custom'}`}
-                              onClick={() => handleDelete(item.maThuoc)}
-                              disabled={item.tongTon > 0}
-                              title={item.tongTon > 0 ? 'Không thể xóa khi còn tồn kho' : 'Xóa thuốc'}
-                            >
-                              🗑️ Xóa
-                            </button>
+                            className={`btn btn-sm ${item.tongTon > 0 ? 'btn-secondary' : 'btn-danger-custom'}`}
+                            style={{ padding: '0.35rem 1rem', fontSize: 'var(--md-typescale-caption)' }}
+                            onClick={() => handleDelete(item.maThuoc)}
+                            disabled={item.tongTon > 0}
+                            title={item.tongTon > 0 ? 'Không thể xóa khi còn tồn kho' : 'Xóa thuốc'}
+                          >
+                            🗑️ Xóa
+                          </button>
                         </div>
                       </td>
                     </tr>

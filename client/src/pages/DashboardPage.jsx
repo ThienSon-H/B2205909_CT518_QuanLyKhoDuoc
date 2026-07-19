@@ -44,25 +44,27 @@ function DashboardPage() {
     return () => clearTimeout(timer);
   }, [fetchDashboard]);
 
-  const handleExport = async (maLo, soLuongTon) => {
-    const soLuongNhap = prompt(`Nhập số lượng cần xuất từ lô ${maLo} (tối đa ${soLuongTon}):`, soLuongTon);
-    if (!soLuongNhap) return;
-    const soLuong = parseInt(soLuongNhap);
-    if (isNaN(soLuong) || soLuong <= 0 || soLuong > soLuongTon) {
-        alert(`Vui lòng nhập số từ 1 đến ${soLuongTon}`);
-        return;
-    }
-    if (!window.confirm(`⚠️ Xuất ${soLuong} đơn vị từ lô ${maLo}?`)) return;
-    try {
-        const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
-            params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
-        });
-        if (res.data.message.includes('LỖI')) alert(res.data.message);
-        else { alert(res.data.message); fetchDashboard(); }
-    } catch (err) {
-        alert("Lỗi kết nối server khi xuất kho!");
-    }
-};
+  const [exportModal, setExportModal] = useState({ show: false, maLo: '', soLuongTon: 0 });
+  const handleExportClick = (maLo, soLuongTon) => {
+      setExportModal({ show: true, maLo, soLuongTon });
+  };
+  const handleExportSubmit = async () => {
+      const { maLo, soLuongTon } = exportModal;
+      const soLuong = parseInt(prompt(`Nhập số lượng cần xuất (tối đa ${soLuongTon}):`, soLuongTon));
+      if (isNaN(soLuong) || soLuong <= 0 || soLuong > soLuongTon) {
+          alert(`Vui lòng nhập số từ 1 đến ${soLuongTon}`);
+          return;
+      }
+      try {
+          const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
+              params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
+          });
+          if (res.data.message.includes('LỖI')) alert(res.data.message);
+          else { alert(res.data.message); fetchDashboard(); setExportModal({ show: false, maLo: '', soLuongTon: 0 }); }
+      } catch (err) {
+          alert("Lỗi kết nối server khi xuất kho!");
+      }
+  };
 
   return (
     <div className="page-wrapper fade-in">
@@ -77,7 +79,7 @@ function DashboardPage() {
           <span className="btn-icon">➕</span> Nhập Lô Mới
         </Link>
         <button
-          className="btn btn-warning ripple"
+          className="btn btn-warning-custom ripple"
           onClick={() => {
             setShowFefoModal(true);
             // Fetch danh sách thuốc cho combobox
@@ -204,7 +206,7 @@ function DashboardPage() {
                         <td className="text-center">
                           <button
                               className="btn btn-sm btn-danger-custom ripple"
-                              onClick={() => handleExport(i.maLo, i.soLuong)}
+                              onClick={() => handleExportClick(i.maLo, i.soLuong)}
                               title="Xuất kho lô này"
                           >
                               🗑️ Xuất Kho
@@ -219,26 +221,21 @@ function DashboardPage() {
           </div>
         </div>
       )}
-      {/* Modal Xuất FEFO */}
+{/* Modal Xuất FEFO */}
 {showFefoModal && (
-  <div className="modal d-block fade-in" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-    <div className="modal-dialog modal-dialog-centered">
-      <div className="modal-content" style={{ borderRadius: 'var(--md-radius-lg)', border: 'none', boxShadow: 'var(--md-elevation-5)' }}>
-        <div className="modal-header" style={{
-          background: 'linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%)',
-          color: '#fff',
-          borderBottom: 'none',
-          borderTopLeftRadius: 'var(--md-radius-lg)',
-          borderTopRightRadius: 'var(--md-radius-lg)'
-        }}>
-          <h5 className="modal-title">
-            <span className="me-2">📤</span>Xuất kho theo FEFO
-          </h5>
-          <button type="button" className="btn-close btn-close-white" onClick={() => setShowFefoModal(false)}></button>
-        </div>
-        <div className="modal-body p-4">
-          <div className="form-group-custom mb-3">
-            <label className="form-label">💊 Chọn thuốc</label>
+  <div className="modal-custom-overlay" onClick={() => setShowFefoModal(false)}>
+    <div className="modal-custom-content" onClick={e => e.stopPropagation()}>
+      <div className="modal-custom-header">
+        <h5 className="modal-custom-title">
+          <span className="me-2">📤</span>Xuất kho theo FEFO
+        </h5>
+        <button className="modal-custom-close ripple" onClick={() => setShowFefoModal(false)}>✕</button>
+      </div>
+      <div className="modal-custom-body">
+        <div className="form-group-custom">
+          <label className="form-label">💊 Chọn thuốc</label>
+          <div className="input-with-icon">
+            <span className="input-icon"> </span>
             <select
               className="form-select-custom"
               value={fefoForm.maThuoc}
@@ -253,8 +250,11 @@ function DashboardPage() {
               ))}
             </select>
           </div>
-          <div className="form-group-custom mb-3">
-            <label className="form-label">🔢 Số lượng cần xuất</label>
+        </div>
+        <div className="form-group-custom mb-0">
+          <label className="form-label">🔢 Số lượng cần xuất</label>
+          <div className="input-with-icon">
+            <span className="input-icon">📦</span>
             <input
               type="number"
               className="form-control-custom"
@@ -266,55 +266,103 @@ function DashboardPage() {
             />
           </div>
         </div>
-        <div className="modal-footer" style={{ borderTop: '1px solid var(--md-outline)' }}>
-          <button
-            type="button"
-            className="btn btn-secondary"
-            onClick={() => setShowFefoModal(false)}
-          >
-            Hủy
-          </button>
-          <button
-            type="button"
-            className="btn btn-success-custom"
-            disabled={fefoSubmitting}
-            onClick={async () => {
-              if (!fefoForm.maThuoc || !fefoForm.soLuongXuat || parseInt(fefoForm.soLuongXuat) <= 0) {
-                alert('Vui lòng chọn thuốc và nhập số lượng hợp lệ');
-                return;
+      </div>
+      <div className="modal-custom-footer">
+        <button className="btn btn-secondary" onClick={() => setShowFefoModal(false)}>Hủy</button>
+        <button
+          className="btn btn-success-custom"
+          disabled={fefoSubmitting}
+          onClick={async () => {
+            if (!fefoForm.maThuoc || !fefoForm.soLuongXuat || parseInt(fefoForm.soLuongXuat) <= 0) {
+              alert('Vui lòng chọn thuốc và nhập số lượng hợp lệ');
+              return;
+            }
+            setFefoSubmitting(true);
+            try {
+              const res = await axios.post(XUAT_FEFO_URL, {
+                maThuoc: fefoForm.maThuoc,
+                soLuongXuat: parseInt(fefoForm.soLuongXuat),
+                nguoiThucHien: user?.username
+              });
+              if (res.data.message.startsWith('LỖI')) {
+                alert(res.data.message);
+              } else {
+                alert(res.data.message);
+                setShowFefoModal(false);
+                setFefoForm({ maThuoc: '', soLuongXuat: '' });
+                fetchDashboard();
               }
-              setFefoSubmitting(true);
-              try {
-                const res = await axios.post(XUAT_FEFO_URL, {
-                  maThuoc: fefoForm.maThuoc,
-                  soLuongXuat: parseInt(fefoForm.soLuongXuat),
-                  nguoiThucHien: user?.username
-                });
-                if (res.data.message.startsWith('LỖI')) {
-                  alert(res.data.message);
-                } else {
-                  alert(res.data.message);
-                  setShowFefoModal(false);
-                  setFefoForm({ maThuoc: '', soLuongXuat: '' });
-                  fetchDashboard();
-                }
-              } catch (err) {
-                alert(err.response?.data?.message || 'Lỗi kết nối server');
-              } finally {
-                setFefoSubmitting(false);
-              }
-            }}
-          >
-            {fefoSubmitting ? (
-              <>
-                <span className="spinner-border spinner-border-sm me-2" role="status" />
-                Đang xử lý...
-              </>
-            ) : (
-              'Xác nhận Xuất FEFO'
-            )}
-          </button>
+            } catch (err) {
+              alert(err.response?.data?.message || 'Lỗi kết nối server');
+            } finally {
+              setFefoSubmitting(false);
+            }
+          }}
+        >
+          {fefoSubmitting ? (
+            <>
+              <span className="spinner-border spinner-border-sm me-2" role="status" />
+              Đang xử lý...
+            </>
+          ) : (
+            'Xác nhận Xuất FEFO'
+          )}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+{/* Modal Xuất một lô */}
+{exportModal.show && (
+  <div className="modal-custom-overlay" onClick={() => setExportModal({ ...exportModal, show: false })}>
+    <div className="modal-custom-content" onClick={e => e.stopPropagation()}>
+      <div className="modal-custom-header">
+        <h5 className="modal-custom-title">
+          <span className="me-2">🗑️</span>Xuất lô {exportModal.maLo}
+        </h5>
+        <button className="modal-custom-close ripple" onClick={() => setExportModal({ ...exportModal, show: false })}>✕</button>
+      </div>
+      <div className="modal-custom-body">
+        <div className="form-group-custom mb-0">
+          <label className="form-label">🔢 Số lượng cần xuất (tối đa {exportModal.soLuongTon})</label>
+          <div className="input-with-icon">
+            <span className="input-icon">📦</span>
+            <input
+              id="xuat-lo-input"
+              type="number"
+              className="form-control-custom"
+              placeholder="Nhập số lượng..."
+              min="1"
+              max={exportModal.soLuongTon}
+              defaultValue={exportModal.soLuongTon}
+              required
+            />
+          </div>
         </div>
+      </div>
+      <div className="modal-custom-footer">
+        <button className="btn btn-secondary" onClick={() => setExportModal({ ...exportModal, show: false })}>Hủy</button>
+        <button
+          className="btn btn-danger-custom"
+          onClick={() => {
+            const input = document.getElementById('xuat-lo-input');
+            const soLuong = parseInt(input.value);
+            if (isNaN(soLuong) || soLuong <= 0 || soLuong > exportModal.soLuongTon) {
+              alert(`Vui lòng nhập số từ 1 đến ${exportModal.soLuongTon}`);
+              return;
+            }
+            axios.delete(`${EXPORT_URL}/${exportModal.maLo}`, {
+              params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
+            })
+            .then(res => {
+              if (res.data.message.includes('LỖI')) alert(res.data.message);
+              else { alert(res.data.message); fetchDashboard(); setExportModal({ show: false, maLo: '', soLuongTon: 0 }); }
+            })
+            .catch(err => { alert(err.response?.data?.message || 'Lỗi kết nối server khi xuất kho!'); });
+          }}
+        >
+          Xác nhận Xuất
+        </button>
       </div>
     </div>
   </div>

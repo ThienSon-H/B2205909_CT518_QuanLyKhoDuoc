@@ -264,6 +264,11 @@ a:hover {
   color: var(--md-on-error);
 }
 
+.btn-danger-custom.btn-sm {
+  padding: 0.35rem 1rem;
+  font-size: var(--md-typescale-caption);
+}
+
 /* ============================================================
    CARDS – Material Surface Container
    ============================================================ */
@@ -530,6 +535,42 @@ a:hover {
 
 .btn-outline-primary-custom:active {
   transform: translateY(0);
+}
+
+.btn-warning-custom {
+  background: #f57c00;
+  border: none;
+  border-radius: var(--md-radius-full);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  padding: 0.65rem 2rem;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-emphasized);
+  box-shadow: var(--md-elevation-1);
+  position: relative;
+  overflow: hidden;
+  text-transform: uppercase;
+}
+.btn-warning-custom:hover {
+  background: #e65100;
+  box-shadow: var(--md-elevation-3);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+.btn-warning-custom:active {
+  transform: translateY(0);
+  box-shadow: var(--md-elevation-1);
+}
+.btn-warning-custom:focus-visible {
+  outline: 3px solid rgba(245, 124, 0, 0.4);
+  outline-offset: 2px;
+}
+
+.btn-danger-custom.btn-sm {
+  padding: 0.35rem 1rem !important;
+  font-size: var(--md-typescale-caption) !important;
 }
 
 /* ============================================================
@@ -1582,4 +1623,89 @@ a:hover {
 /* Định dạng chung cho table-custom text-muted */
 .table-custom .text-muted {
   color: var(--md-on-surface-variant) !important;
+}
+
+/* ============================================================
+   MODAL – Material Dialog
+   ============================================================ */
+.modal-custom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  animation: fadeIn var(--md-duration-medium) var(--md-easing-decelerate);
+}
+.modal-custom-content {
+  background: var(--md-surface);
+  border-radius: var(--md-radius-xl);
+  box-shadow: var(--md-elevation-5);
+  max-width: 480px;
+  width: 90%;
+  animation: modalSlideUp var(--md-duration-long) var(--md-easing-emphasized);
+  overflow: hidden;
+}
+.modal-custom-header {
+  background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-secondary) 100%);
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-custom-title {
+  font-size: var(--md-typescale-title);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+.modal-custom-close {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--md-duration-short) var(--md-easing-standard);
+  position: relative;
+  overflow: hidden;
+}
+.modal-custom-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+.modal-custom-body {
+  padding: 1.5rem;
+}
+.modal-custom-footer {
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  border-top: 1px solid var(--md-outline);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

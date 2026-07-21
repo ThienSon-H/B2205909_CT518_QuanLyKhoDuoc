@@ -804,6 +804,88 @@ a:hover {
 }
 
 /* ============================================================
+   TOAST NOTIFICATIONS – Material Snackbar
+   ============================================================ */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+  width: calc(100% - 2rem);
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--md-radius-md);
+  box-shadow: var(--md-elevation-3);
+  cursor: pointer;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+  font-size: var(--md-typescale-label);
+  font-weight: 500;
+  animation: toastSlideIn var(--md-duration-medium) var(--md-easing-decelerate);
+}
+
+.toast-item:hover {
+  box-shadow: var(--md-elevation-4);
+  transform: translateY(-1px);
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.toast-message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.6;
+  flex-shrink: 0;
+  padding: 0.2rem;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity var(--md-duration-short);
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Dark mode toast adjustments */
+.dark-mode .toast-item {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* ============================================================
    UTILITY CLASSES
    ============================================================ */
 .text-primary { color: var(--md-secondary) !important; }

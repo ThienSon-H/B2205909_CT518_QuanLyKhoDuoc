@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axios from 'axios';
 
 const IMPORT_URL = 'http://localhost:7122/api/Thuoc/nhap-lo';
@@ -9,6 +10,7 @@ const NHOM_PUBLIC_URL = 'http://localhost:7122/api/DanhMuc/nhom-thuoc-public';
 
 function NhapLoPage() {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [nhaCungCapList, setNhaCungCapList] = useState([]);
@@ -24,7 +26,6 @@ function NhapLoPage() {
     nguoiThucHien: user?.username || ''
   });
 
-  // Lấy danh sách nhà cung cấp và nhóm thuốc
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -34,7 +35,6 @@ function NhapLoPage() {
         ]);
         setNhaCungCapList(nccRes.data);
         setNhomThuocList(nhomRes.data);
-        // Đặt giá trị mặc định nếu có dữ liệu
         if (nccRes.data.length > 0) {
           setForm(prev => ({ ...prev, maNcc: nccRes.data[0].maNcc }));
         }
@@ -42,11 +42,11 @@ function NhapLoPage() {
           setForm(prev => ({ ...prev, maNhom: nhomRes.data[0].maNhom }));
         }
       } catch (err) {
-        console.error('Lỗi tải danh mục:', err);
+        addToast('Lỗi tải danh mục', 'error');
       }
     };
     if (user?.username) fetchData();
-  }, [user]);
+  }, [user, addToast]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,13 +57,14 @@ function NhapLoPage() {
         nguoiThucHien: user?.username
       };
       const res = await axios.post(IMPORT_URL, payload);
-      if (res.data.message.includes('LỖI')) alert(res.data.message);
-      else {
-        alert(res.data.message);
+      if (res.data.message.includes('LỖI')) {
+        addToast(res.data.message, 'error');
+      } else {
+        addToast(res.data.message, 'success');
         navigate('/');
       }
     } catch (err) {
-      alert("Lỗi kết nối server khi nhập kho!");
+      addToast("Lỗi kết nối server khi nhập kho!", 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +83,6 @@ function NhapLoPage() {
             </div>
             <div className="card-body p-4">
               <form onSubmit={handleSubmit}>
-                {/* Hàng 1: Mã lô - Mã thuốc */}
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="form-group-custom">
@@ -114,7 +114,6 @@ function NhapLoPage() {
                   </div>
                 </div>
 
-                {/* Hàng 2: Tên thuốc */}
                 <div className="form-group-custom">
                   <label className="form-label">
                     <span className="label-icon">📝</span> Tên Thuốc
@@ -128,7 +127,6 @@ function NhapLoPage() {
                   />
                 </div>
 
-                {/* Hàng 3: Nhà cung cấp - Nhóm thuốc */}
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="form-group-custom">
@@ -168,7 +166,6 @@ function NhapLoPage() {
                   </div>
                 </div>
 
-                {/* Hàng 4: Số lượng - Hạn sử dụng */}
                 <div className="row g-4">
                   <div className="col-md-3">
                     <div className="form-group-custom">
@@ -201,7 +198,6 @@ function NhapLoPage() {
                   </div>
                 </div>
 
-                {/* Nút Submit */}
                 <div className="d-flex justify-content-end mt-4">
                   <button
                     type="submit"

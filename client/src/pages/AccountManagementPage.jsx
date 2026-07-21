@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
 function AccountManagementPage() {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -27,7 +29,6 @@ function AccountManagementPage() {
       });
       const fetchedUsers = res.data;
       setUsers(fetchedUsers);
-      // Khởi tạo trạng thái checkbox từ dữ liệu
       const perms = {};
       fetchedUsers.forEach(u => {
         perms[u.username] = u.isAdmin || u.canManageInventory;
@@ -47,10 +48,10 @@ function AccountManagementPage() {
         { targetUsername },
         { params: { adminUsername: user.username } }
       );
-      alert(res.data.message);
+      addToast(res.data.message, res.data.message.startsWith('LỖI') ? 'error' : 'success');
       fetchUsers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi thao tác');
+      addToast(err.response?.data?.message || 'Lỗi thao tác', 'error');
     }
   };
 
@@ -61,20 +62,18 @@ function AccountManagementPage() {
   const saveInventoryPermissions = async () => {
     setSaving(true);
     try {
-      // Xác định các user cần thay đổi
       const changes = users.filter(u => {
-        if (u.isAdmin) return false; // admin không cần thay đổi
+        if (u.isAdmin) return false;
         const current = inventoryPermissions[u.username];
         return current !== (u.canManageInventory || u.isAdmin);
       });
 
       if (changes.length === 0) {
-        alert('Không có thay đổi nào để lưu.');
+        addToast('Không có thay đổi nào để lưu.', 'info');
         setSaving(false);
         return;
       }
 
-      // Gọi API toggle cho từng user cần thay đổi
       for (const u of changes) {
         await axios.post(
           'http://localhost:7122/api/Auth/toggle-inventory-permission',
@@ -83,10 +82,10 @@ function AccountManagementPage() {
         );
       }
 
-      alert('Lưu quyền QLK thành công!');
-      fetchUsers(); // Tải lại để đồng bộ
+      addToast('Lưu quyền QLK thành công!', 'success');
+      fetchUsers();
     } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi khi lưu quyền');
+      addToast(err.response?.data?.message || 'Lỗi khi lưu quyền', 'error');
     } finally {
       setSaving(false);
     }
@@ -188,7 +187,6 @@ function AccountManagementPage() {
             </table>
           </div>
 
-          {/* Nút Lưu quyền QLK */}
           <div className="p-3 d-flex justify-content-end">
             <button
               className="btn btn-primary-custom ripple"
@@ -201,7 +199,7 @@ function AccountManagementPage() {
                   Đang lưu...
                 </>
               ) : (
-                '💾 LƯU'
+                '💾 Lưu quyền QLK'
               )}
             </button>
           </div>

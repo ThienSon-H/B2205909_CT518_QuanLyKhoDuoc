@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import ConfirmModal from '../components/ConfirmModal';
 
 const API_BASE = 'http://localhost:7122/api/DanhMuc';
 
 function DanhMucPage() {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState('nhom');
   const [nhomThuoc, setNhomThuoc] = useState([]);
   const [nhaCungCap, setNhaCungCap] = useState([]);
@@ -15,8 +18,11 @@ function DanhMucPage() {
 
   // Form state
   const [showForm, setShowForm] = useState(false);
-  const [editingItem, setEditingItem] = useState(null); // null = thêm mới
+  const [editingItem, setEditingItem] = useState(null);
   const [formData, setFormData] = useState({ ma: '', ten: '', soDienThoai: '' });
+
+  // Confirm modal state
+  const [confirmModal, setConfirmModal] = useState({ show: false, message: '', onConfirm: null });
 
   useEffect(() => {
     fetchData();
@@ -83,33 +89,31 @@ function DanhMucPage() {
           res = await axios.post(`${API_BASE}/nha-cung-cap`, { maNcc: formData.ma, tenNcc: formData.ten, soDienThoai: formData.soDienThoai }, { params: { adminUsername } });
         }
       }
-      if (res.data.message?.startsWith('LỖI')) {
-        alert(res.data.message);
-      } else {
-        alert(res.data.message);
-        setShowForm(false);
-        fetchData();
-      }
+      addToast(res.data.message, res.data.message.startsWith('LỖI') ? 'error' : 'success');
+      setShowForm(false);
+      fetchData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi kết nối server');
+      addToast(err.response?.data?.message || 'Lỗi kết nối server', 'error');
     }
   };
 
-  const handleDelete = async (ma) => {
-    if (!window.confirm(`Xóa ${activeTab === 'nhom' ? 'nhóm' : 'NCC'} "${ma}"?`)) return;
-    try {
-      const res = activeTab === 'nhom'
-        ? await axios.delete(`${API_BASE}/nhom-thuoc/${ma}`, { params: { adminUsername: user?.username } })
-        : await axios.delete(`${API_BASE}/nha-cung-cap/${ma}`, { params: { adminUsername: user?.username } });
-      if (res.data.message?.startsWith('LỖI')) {
-        alert(res.data.message);
-      } else {
-        alert(res.data.message);
-        fetchData();
+  const handleDelete = (ma) => {
+    setConfirmModal({
+      show: true,
+      message: `Bạn có chắc chắn muốn xóa "${ma}"?`,
+      onConfirm: async () => {
+        try {
+          const res = activeTab === 'nhom'
+            ? await axios.delete(`${API_BASE}/nhom-thuoc/${ma}`, { params: { adminUsername: user?.username } })
+            : await axios.delete(`${API_BASE}/nha-cung-cap/${ma}`, { params: { adminUsername: user?.username } });
+          addToast(res.data.message, res.data.message.startsWith('LỖI') ? 'error' : 'success');
+          fetchData();
+        } catch (err) {
+          addToast(err.response?.data?.message || 'Lỗi kết nối server', 'error');
+        }
+        setConfirmModal({ show: false, message: '', onConfirm: null });
       }
-    } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi kết nối server');
-    }
+    });
   };
 
   return (
@@ -124,7 +128,7 @@ function DanhMucPage() {
         </Link>
       </div>
 
-      {/* Tabs Material Design */}
+      {/* Tabs */}
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
           <button
@@ -144,12 +148,10 @@ function DanhMucPage() {
         </li>
       </ul>
 
-      {/* Nút thêm mới */}
       <button className="btn btn-success-custom mb-3 ripple" onClick={handleAdd}>
         ➕ Thêm {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}
       </button>
 
-      {/* Form thêm/sửa */}
       {showForm && (
         <div className="card-custom mb-4">
           <div className="card-header">
@@ -206,10 +208,8 @@ function DanhMucPage() {
         </div>
       )}
 
-      {/* Error */}
       {error && <div className="alert alert-danger alert-custom">{error}</div>}
 
-      {/* Bảng danh sách */}
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>{activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}</span>
@@ -282,6 +282,17 @@ function DanhMucPage() {
           )}
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        show={confirmModal.show}
+        title="Xác nhận xóa"
+        message={confirmModal.message}
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ show: false, message: '', onConfirm: null })}
+      />
     </div>
   );
 }

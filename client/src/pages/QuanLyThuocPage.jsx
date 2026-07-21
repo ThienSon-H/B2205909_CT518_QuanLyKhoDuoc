@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import ConfirmModal from '../components/ConfirmModal';
 
 const API_BASE = 'http://localhost:7122/api/Thuoc';
 const NHOM_URL = 'http://localhost:7122/api/DanhMuc/nhom-thuoc-public';
 
 function QuanLyThuocPage() {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const [thuocList, setThuocList] = useState([]);
   const [nhomList, setNhomList] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +23,7 @@ function QuanLyThuocPage() {
     maNhom: '',
     donViTinh: ''
   });
+  const [confirmModal, setConfirmModal] = useState({ show: false, message: '', onConfirm: null });
 
   useEffect(() => {
     fetchData();
@@ -58,15 +62,14 @@ function QuanLyThuocPage() {
 
   const handleEdit = (item) => {
     setEditingItem(item);
+    // Tìm mã nhóm từ tên nhóm
+    const nhom = nhomList.find(n => n.tenNhom === item.tenNhom);
     setFormData({
       maThuoc: item.maThuoc,
       tenThuoc: item.tenThuoc,
-      maNhom: item.tenNhom !== 'Chưa phân nhóm' ? '' : '',
+      maNhom: nhom ? nhom.maNhom : '',
       donViTinh: item.donViTinh
     });
-    // Tìm mã nhóm từ tên nhóm
-    const nhom = nhomList.find(n => n.tenNhom === item.tenNhom);
-    setFormData(prev => ({ ...prev, maNhom: nhom ? nhom.maNhom : '' }));
     setShowForm(true);
   };
 
@@ -89,33 +92,31 @@ function QuanLyThuocPage() {
           params: { adminUsername }
         });
       }
-      if (res.data.message?.startsWith('LỖI')) {
-        alert(res.data.message);
-      } else {
-        alert(res.data.message);
-        setShowForm(false);
-        fetchData();
-      }
+      addToast(res.data.message, res.data.message.startsWith('LỖI') ? 'error' : 'success');
+      setShowForm(false);
+      fetchData();
     } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi kết nối server');
+      addToast(err.response?.data?.message || 'Lỗi kết nối server', 'error');
     }
   };
 
-  const handleDelete = async (maThuoc) => {
-    if (!window.confirm(`Xóa thuốc "${maThuoc}"?`)) return;
-    try {
-      const res = await axios.delete(`${API_BASE}/${maThuoc}`, {
-        params: { adminUsername: user?.username }
-      });
-      if (res.data.message?.startsWith('LỖI')) {
-        alert(res.data.message);
-      } else {
-        alert(res.data.message);
-        fetchData();
+  const handleDelete = (maThuoc) => {
+    setConfirmModal({
+      show: true,
+      message: `Bạn có chắc chắn muốn xóa thuốc "${maThuoc}"?`,
+      onConfirm: async () => {
+        try {
+          const res = await axios.delete(`${API_BASE}/${maThuoc}`, {
+            params: { adminUsername: user?.username }
+          });
+          addToast(res.data.message, res.data.message.startsWith('LỖI') ? 'error' : 'success');
+          fetchData();
+        } catch (err) {
+          addToast(err.response?.data?.message || 'Lỗi kết nối server', 'error');
+        }
+        setConfirmModal({ show: false, message: '', onConfirm: null });
       }
-    } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi kết nối server');
-    }
+    });
   };
 
   return (
@@ -123,7 +124,7 @@ function QuanLyThuocPage() {
       <div className="dashboard-header">
         <div>
           <h2 className="fw-bold mb-1">💊 Quản lý Thuốc</h2>
-          <p className="dashboard-subtitle">Thêm, sửa, xóa danh mục thuốc (chỉ admin)</p>
+          <p className="dashboard-subtitle">Thêm, sửa, xóa danh mục thuốc</p>
         </div>
         <Link to="/" className="btn btn-outline-primary-custom ripple">
           ← Quay lại Dashboard
@@ -243,7 +244,6 @@ function QuanLyThuocPage() {
                           </button>
                           <button
                             className={`btn btn-sm ${item.tongTon > 0 ? 'btn-secondary' : 'btn-danger-custom'}`}
-                            style={{ padding: '0.35rem 1rem', fontSize: 'var(--md-typescale-caption)' }}
                             onClick={() => handleDelete(item.maThuoc)}
                             disabled={item.tongTon > 0}
                             title={item.tongTon > 0 ? 'Không thể xóa khi còn tồn kho' : 'Xóa thuốc'}
@@ -267,6 +267,16 @@ function QuanLyThuocPage() {
           )}
         </div>
       </div>
+
+      <ConfirmModal
+        show={confirmModal.show}
+        title="Xác nhận xóa"
+        message={confirmModal.message}
+        confirmLabel="Xóa"
+        cancelLabel="Hủy"
+        onConfirm={confirmModal.onConfirm}
+        onCancel={() => setConfirmModal({ show: false, message: '', onConfirm: null })}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import axios from 'axios';
 
 const DASHBOARD_URL = 'http://localhost:7122/api/Thuoc/dashboard';
@@ -10,6 +11,7 @@ const XUAT_FEFO_URL = 'http://localhost:7122/api/Thuoc/xuat-fefo';
 
 function DashboardPage() {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -31,11 +33,11 @@ function DashboardPage() {
       });
       setItems(res.data);
     } catch (err) {
-      console.error(err);
+      addToast('Lỗi tải dữ liệu dashboard', 'error');
     } finally {
       setLoading(false);
     }
-  }, [search, trangThai, user]);
+  }, [search, trangThai, user, addToast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -46,24 +48,7 @@ function DashboardPage() {
 
   const [exportModal, setExportModal] = useState({ show: false, maLo: '', soLuongTon: 0 });
   const handleExportClick = (maLo, soLuongTon) => {
-      setExportModal({ show: true, maLo, soLuongTon });
-  };
-  const handleExportSubmit = async () => {
-      const { maLo, soLuongTon } = exportModal;
-      const soLuong = parseInt(prompt(`Nhập số lượng cần xuất (tối đa ${soLuongTon}):`, soLuongTon));
-      if (isNaN(soLuong) || soLuong <= 0 || soLuong > soLuongTon) {
-          alert(`Vui lòng nhập số từ 1 đến ${soLuongTon}`);
-          return;
-      }
-      try {
-          const res = await axios.delete(`${EXPORT_URL}/${maLo}`, {
-              params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
-          });
-          if (res.data.message.includes('LỖI')) alert(res.data.message);
-          else { alert(res.data.message); fetchDashboard(); setExportModal({ show: false, maLo: '', soLuongTon: 0 }); }
-      } catch (err) {
-          alert("Lỗi kết nối server khi xuất kho!");
-      }
+    setExportModal({ show: true, maLo, soLuongTon });
   };
 
   return (
@@ -75,22 +60,21 @@ function DashboardPage() {
           <p className="dashboard-subtitle">Quản lý lô thuốc theo nguyên tắc FEFO</p>
         </div>
         <div className="d-flex gap-2">
-        <Link to="/nhap-lo" className="btn btn-success-custom ripple">
-          <span className="btn-icon">➕</span> Nhập Lô Mới
-        </Link>
-        <button
-          className="btn btn-warning-custom ripple"
-          onClick={() => {
-            setShowFefoModal(true);
-            // Fetch danh sách thuốc cho combobox
-            axios.get(THUOC_LIST_URL, { params: { username: user?.username } })
-              .then(res => setThuocList(res.data))
-              .catch(err => console.error(err));
-          }}
-        >
-          <span className="btn-icon">📤</span> Xuất FEFO
-        </button>
-      </div>
+          <Link to="/nhap-lo" className="btn btn-success-custom ripple">
+            <span className="btn-icon">➕</span> Nhập Lô Mới
+          </Link>
+          <button
+            className="btn btn-warning-custom ripple"
+            onClick={() => {
+              setShowFefoModal(true);
+              axios.get(THUOC_LIST_URL, { params: { username: user?.username } })
+                .then(res => setThuocList(res.data))
+                .catch(() => addToast('Lỗi tải danh sách thuốc', 'error'));
+            }}
+          >
+            <span className="btn-icon">📤</span> Xuất FEFO
+          </button>
+        </div>
       </div>
 
       {/* Bộ lọc */}
@@ -205,11 +189,11 @@ function DashboardPage() {
                         </td>
                         <td className="text-center">
                           <button
-                              className="btn btn-sm btn-danger-custom ripple"
-                              onClick={() => handleExportClick(i.maLo, i.soLuong)}
-                              title="Xuất kho lô này"
+                            className="btn btn-sm btn-danger-custom ripple"
+                            onClick={() => handleExportClick(i.maLo, i.soLuong)}
+                            title="Xuất kho lô này"
                           >
-                              🗑️ Xuất Kho
+                            🗑️ Xuất Kho
                           </button>
                         </td>
                       </tr>
@@ -221,152 +205,161 @@ function DashboardPage() {
           </div>
         </div>
       )}
-{/* Modal Xuất FEFO */}
-{showFefoModal && (
-  <div className="modal-custom-overlay" onClick={() => setShowFefoModal(false)}>
-    <div className="modal-custom-content" onClick={e => e.stopPropagation()}>
-      <div className="modal-custom-header">
-        <h5 className="modal-custom-title">
-          <span className="me-2">📤</span>Xuất kho theo FEFO
-        </h5>
-        <button className="modal-custom-close ripple" onClick={() => setShowFefoModal(false)}>✕</button>
-      </div>
-      <div className="modal-custom-body">
-        <div className="form-group-custom">
-          <label className="form-label">💊 Chọn thuốc</label>
-          <div className="input-with-icon">
-            <span className="input-icon"> </span>
-            <select
-              className="form-select-custom"
-              value={fefoForm.maThuoc}
-              onChange={e => setFefoForm({ ...fefoForm, maThuoc: e.target.value })}
-              required
-            >
-              <option value="">-- Chọn thuốc --</option>
-              {thuocList.map(t => (
-                <option key={t.maThuoc} value={t.maThuoc}>
-                  {t.tenThuoc} ({t.maThuoc})
-                </option>
-              ))}
-            </select>
+
+      {/* Modal Xuất FEFO */}
+      {showFefoModal && (
+        <div className="modal-custom-overlay" onClick={() => setShowFefoModal(false)}>
+          <div className="modal-custom-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-custom-header">
+              <h5 className="modal-custom-title">
+                <span className="me-2">📤</span>Xuất kho theo FEFO
+              </h5>
+              <button className="modal-custom-close ripple" onClick={() => setShowFefoModal(false)}>✕</button>
+            </div>
+            <div className="modal-custom-body">
+              <div className="form-group-custom">
+                <label className="form-label">💊 Chọn thuốc</label>
+                <div className="input-with-icon">
+                  <span className="input-icon"> </span>
+                  <select
+                    className="form-select-custom"
+                    value={fefoForm.maThuoc}
+                    onChange={e => setFefoForm({ ...fefoForm, maThuoc: e.target.value })}
+                    required
+                  >
+                    <option value="">-- Chọn thuốc --</option>
+                    {thuocList.map(t => (
+                      <option key={t.maThuoc} value={t.maThuoc}>
+                        {t.tenThuoc} ({t.maThuoc})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="form-group-custom mb-0">
+                <label className="form-label">🔢 Số lượng cần xuất</label>
+                <div className="input-with-icon">
+                  <span className="input-icon">📦</span>
+                  <input
+                    type="number"
+                    className="form-control-custom"
+                    placeholder="Nhập số lượng..."
+                    min="1"
+                    value={fefoForm.soLuongXuat}
+                    onChange={e => setFefoForm({ ...fefoForm, soLuongXuat: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="modal-custom-footer">
+              <button className="btn btn-secondary" onClick={() => setShowFefoModal(false)}>Hủy</button>
+              <button
+                className="btn btn-success-custom"
+                disabled={fefoSubmitting}
+                onClick={async () => {
+                  if (!fefoForm.maThuoc || !fefoForm.soLuongXuat || parseInt(fefoForm.soLuongXuat) <= 0) {
+                    addToast('Vui lòng chọn thuốc và nhập số lượng hợp lệ', 'warning');
+                    return;
+                  }
+                  setFefoSubmitting(true);
+                  try {
+                    const res = await axios.post(XUAT_FEFO_URL, {
+                      maThuoc: fefoForm.maThuoc,
+                      soLuongXuat: parseInt(fefoForm.soLuongXuat),
+                      nguoiThucHien: user?.username
+                    });
+                    if (res.data.message.startsWith('LỖI')) {
+                      addToast(res.data.message, 'error');
+                    } else {
+                      addToast(res.data.message, 'success');
+                      setShowFefoModal(false);
+                      setFefoForm({ maThuoc: '', soLuongXuat: '' });
+                      fetchDashboard();
+                    }
+                  } catch (err) {
+                    addToast(err.response?.data?.message || 'Lỗi kết nối server', 'error');
+                  } finally {
+                    setFefoSubmitting(false);
+                  }
+                }}
+              >
+                {fefoSubmitting ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    Đang xử lý...
+                  </>
+                ) : (
+                  'Xác nhận Xuất FEFO'
+                )}
+              </button>
+            </div>
           </div>
         </div>
-        <div className="form-group-custom mb-0">
-          <label className="form-label">🔢 Số lượng cần xuất</label>
-          <div className="input-with-icon">
-            <span className="input-icon">📦</span>
-            <input
-              type="number"
-              className="form-control-custom"
-              placeholder="Nhập số lượng..."
-              min="1"
-              value={fefoForm.soLuongXuat}
-              onChange={e => setFefoForm({ ...fefoForm, soLuongXuat: e.target.value })}
-              required
-            />
+      )}
+
+      {/* Modal Xuất một lô */}
+      {exportModal.show && (
+        <div className="modal-custom-overlay" onClick={() => setExportModal({ ...exportModal, show: false })}>
+          <div className="modal-custom-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-custom-header">
+              <h5 className="modal-custom-title">
+                <span className="me-2">🗑️</span>Xuất lô {exportModal.maLo}
+              </h5>
+              <button className="modal-custom-close ripple" onClick={() => setExportModal({ ...exportModal, show: false })}>✕</button>
+            </div>
+            <div className="modal-custom-body">
+              <div className="form-group-custom mb-0">
+                <label className="form-label">🔢 Số lượng cần xuất (tối đa {exportModal.soLuongTon})</label>
+                <div className="input-with-icon">
+                  <span className="input-icon">📦</span>
+                  <input
+                    id="xuat-lo-input"
+                    type="number"
+                    className="form-control-custom"
+                    placeholder="Nhập số lượng..."
+                    min="1"
+                    max={exportModal.soLuongTon}
+                    defaultValue={exportModal.soLuongTon}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="modal-custom-footer">
+              <button className="btn btn-secondary" onClick={() => setExportModal({ ...exportModal, show: false })}>Hủy</button>
+              <button
+                className="btn btn-danger-custom"
+                onClick={() => {
+                  const input = document.getElementById('xuat-lo-input');
+                  const soLuong = parseInt(input.value);
+                  if (isNaN(soLuong) || soLuong <= 0 || soLuong > exportModal.soLuongTon) {
+                    addToast(`Vui lòng nhập số từ 1 đến ${exportModal.soLuongTon}`, 'warning');
+                    return;
+                  }
+                  axios.delete(`${EXPORT_URL}/${exportModal.maLo}`, {
+                    params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
+                  })
+                  .then(res => {
+                    if (res.data.message.includes('LỖI')) {
+                      addToast(res.data.message, 'error');
+                    } else {
+                      addToast(res.data.message, 'success');
+                      fetchDashboard();
+                      setExportModal({ show: false, maLo: '', soLuongTon: 0 });
+                    }
+                  })
+                  .catch(err => {
+                    addToast(err.response?.data?.message || 'Lỗi kết nối server khi xuất kho!', 'error');
+                  });
+                }}
+              >
+                Xác nhận Xuất
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="modal-custom-footer">
-        <button className="btn btn-secondary" onClick={() => setShowFefoModal(false)}>Hủy</button>
-        <button
-          className="btn btn-success-custom"
-          disabled={fefoSubmitting}
-          onClick={async () => {
-            if (!fefoForm.maThuoc || !fefoForm.soLuongXuat || parseInt(fefoForm.soLuongXuat) <= 0) {
-              alert('Vui lòng chọn thuốc và nhập số lượng hợp lệ');
-              return;
-            }
-            setFefoSubmitting(true);
-            try {
-              const res = await axios.post(XUAT_FEFO_URL, {
-                maThuoc: fefoForm.maThuoc,
-                soLuongXuat: parseInt(fefoForm.soLuongXuat),
-                nguoiThucHien: user?.username
-              });
-              if (res.data.message.startsWith('LỖI')) {
-                alert(res.data.message);
-              } else {
-                alert(res.data.message);
-                setShowFefoModal(false);
-                setFefoForm({ maThuoc: '', soLuongXuat: '' });
-                fetchDashboard();
-              }
-            } catch (err) {
-              alert(err.response?.data?.message || 'Lỗi kết nối server');
-            } finally {
-              setFefoSubmitting(false);
-            }
-          }}
-        >
-          {fefoSubmitting ? (
-            <>
-              <span className="spinner-border spinner-border-sm me-2" role="status" />
-              Đang xử lý...
-            </>
-          ) : (
-            'Xác nhận Xuất FEFO'
-          )}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-{/* Modal Xuất một lô */}
-{exportModal.show && (
-  <div className="modal-custom-overlay" onClick={() => setExportModal({ ...exportModal, show: false })}>
-    <div className="modal-custom-content" onClick={e => e.stopPropagation()}>
-      <div className="modal-custom-header">
-        <h5 className="modal-custom-title">
-          <span className="me-2">🗑️</span>Xuất lô {exportModal.maLo}
-        </h5>
-        <button className="modal-custom-close ripple" onClick={() => setExportModal({ ...exportModal, show: false })}>✕</button>
-      </div>
-      <div className="modal-custom-body">
-        <div className="form-group-custom mb-0">
-          <label className="form-label">🔢 Số lượng cần xuất (tối đa {exportModal.soLuongTon})</label>
-          <div className="input-with-icon">
-            <span className="input-icon">📦</span>
-            <input
-              id="xuat-lo-input"
-              type="number"
-              className="form-control-custom"
-              placeholder="Nhập số lượng..."
-              min="1"
-              max={exportModal.soLuongTon}
-              defaultValue={exportModal.soLuongTon}
-              required
-            />
-          </div>
-        </div>
-      </div>
-      <div className="modal-custom-footer">
-        <button className="btn btn-secondary" onClick={() => setExportModal({ ...exportModal, show: false })}>Hủy</button>
-        <button
-          className="btn btn-danger-custom"
-          onClick={() => {
-            const input = document.getElementById('xuat-lo-input');
-            const soLuong = parseInt(input.value);
-            if (isNaN(soLuong) || soLuong <= 0 || soLuong > exportModal.soLuongTon) {
-              alert(`Vui lòng nhập số từ 1 đến ${exportModal.soLuongTon}`);
-              return;
-            }
-            axios.delete(`${EXPORT_URL}/${exportModal.maLo}`, {
-              params: { soLuongXuat: soLuong, nguoiThucHien: user?.username }
-            })
-            .then(res => {
-              if (res.data.message.includes('LỖI')) alert(res.data.message);
-              else { alert(res.data.message); fetchDashboard(); setExportModal({ show: false, maLo: '', soLuongTon: 0 }); }
-            })
-            .catch(err => { alert(err.response?.data?.message || 'Lỗi kết nối server khi xuất kho!'); });
-          }}
-        >
-          Xác nhận Xuất
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 }

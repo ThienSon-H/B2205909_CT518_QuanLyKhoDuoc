@@ -22,7 +22,8 @@ function LoginPage() {
         login({
           username: res.data.username,
           isAdmin: res.data.isAdmin,
-          isActive: res.data.isActive
+          isActive: res.data.isActive,
+          canManageInventory: res.data.canManageInventory
         });
         navigate('/');
       } else {

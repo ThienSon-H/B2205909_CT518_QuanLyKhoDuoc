@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
+    // userData: { username, isAdmin, isActive, canManageInventory }
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
   };

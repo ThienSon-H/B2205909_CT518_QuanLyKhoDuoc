@@ -29,7 +29,6 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_login(@Username, @Password)";
             var jsonResult = await db.ExecuteScalarAsync<string>(sql, new { request.Username, request.Password });
 
-            // Giải mã JSON trả về từ function
             var doc = JsonDocument.Parse(jsonResult);
             var success = doc.RootElement.GetProperty("success").GetBoolean();
 
@@ -44,7 +43,8 @@ namespace QuanLyKhoDuoc.Services
                 Success = true,
                 Username = doc.RootElement.GetProperty("username").GetString(),
                 IsAdmin = doc.RootElement.GetProperty("is_admin").GetBoolean(),
-                IsActive = doc.RootElement.GetProperty("is_active").GetBoolean()
+                IsActive = doc.RootElement.GetProperty("is_active").GetBoolean(),
+                CanManageInventory = doc.RootElement.GetProperty("can_manage_inventory").GetBoolean()
             };
         }
 
@@ -56,6 +56,7 @@ namespace QuanLyKhoDuoc.Services
                 out_username AS Username, 
                 out_is_active AS IsActive, 
                 out_is_admin AS IsAdmin, 
+                out_can_manage_inventory AS CanManageInventory,
                 out_created_at AS CreatedAt 
             FROM fn_get_all_users(@AdminUsername)";
             return await db.QueryAsync<UserInfo>(sql, new { AdminUsername = adminUsername });
@@ -67,6 +68,15 @@ namespace QuanLyKhoDuoc.Services
             var sql = "SELECT fn_toggle_user_active(@AdminUsername, @TargetUsername)";
             return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, TargetUsername = targetUsername });
         }
+
+        // Bật/tắt quyền quản lý kho (chỉ admin)
+        public async Task<string> ToggleInventoryPermission(string adminUsername, string targetUsername)
+        {
+            using var db = new NpgsqlConnection(_connString);
+            var sql = "SELECT fn_toggle_inventory_permission(@AdminUsername, @TargetUsername)";
+            return await db.ExecuteScalarAsync<string>(sql, new { AdminUsername = adminUsername, TargetUsername = targetUsername });
+        }
+
             public async Task<string> ChangePassword(ChangePasswordRequest request)
         {
             using var db = new NpgsqlConnection(_connString);
@@ -88,5 +98,6 @@ namespace QuanLyKhoDuoc.Services
         public string Username { get; set; }
         public bool IsAdmin { get; set; }
         public bool IsActive { get; set; }
+        public bool CanManageInventory { get; set; }
     }
 }

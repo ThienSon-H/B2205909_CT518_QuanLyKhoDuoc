@@ -51,6 +51,7 @@ CREATE TABLE taikhoan (
     password_hash TEXT NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     is_admin BOOLEAN DEFAULT FALSE,
+    can_manage_inventory BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 

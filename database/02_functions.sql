@@ -27,6 +27,20 @@ BEGIN
 END;
 $$;
 
+-- Kiểm tra người dùng có quyền quản lý kho (admin hoặc được cấp can_manage_inventory)
+CREATE OR REPLACE FUNCTION fn_can_manage_inventory(p_username VARCHAR)
+RETURNS BOOLEAN
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN EXISTS (
+        SELECT 1 FROM taikhoan
+        WHERE username = p_username
+          AND is_active = true
+          AND (is_admin = true OR can_manage_inventory = true)
+    );
+END;
+$$;
 
 -- =============================================
 -- A. QUẢN LÝ THUỐC & KHO
@@ -279,7 +293,7 @@ $$;
 -- QUẢN LÝ THUỐC (CRUD – chỉ admin)
 -- =============================================
 
--- Lấy danh sách thuốc (chỉ admin)
+-- Lấy danh sách thuốc (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_get_all_thuoc(p_admin_username VARCHAR)
 RETURNS TABLE(
     out_ma_thuoc VARCHAR,
@@ -290,10 +304,8 @@ RETURNS TABLE(
     out_so_lo INTEGER
 ) LANGUAGE plpgsql AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan
-                   WHERE username = p_admin_username
-                     AND is_admin = true AND is_active = true) THEN
-        RAISE EXCEPTION 'Chỉ admin mới được xem danh sách thuốc';
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
+        RAISE EXCEPTION 'Bạn không có quyền xem danh sách thuốc';
     END IF;
 
     RETURN QUERY
@@ -313,7 +325,7 @@ END;
 $$;
 
 
--- Thêm thuốc mới (chỉ admin)
+-- Thêm thuốc mới (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_insert_thuoc(
     p_admin_username VARCHAR,
     p_ma_thuoc VARCHAR,
@@ -322,9 +334,7 @@ CREATE OR REPLACE FUNCTION fn_insert_thuoc(
     p_don_vi_tinh VARCHAR DEFAULT NULL
 ) RETURNS TEXT LANGUAGE plpgsql AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan
-                   WHERE username = p_admin_username
-                     AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền thêm thuốc';
     END IF;
 
@@ -348,7 +358,7 @@ END;
 $$;
 
 
--- Cập nhật thuốc (chỉ admin)
+-- Cập nhật thuốc (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_update_thuoc(
     p_admin_username VARCHAR,
     p_ma_thuoc VARCHAR,
@@ -357,9 +367,7 @@ CREATE OR REPLACE FUNCTION fn_update_thuoc(
     p_don_vi_tinh VARCHAR DEFAULT NULL
 ) RETURNS TEXT LANGUAGE plpgsql AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan
-                   WHERE username = p_admin_username
-                     AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền sửa thuốc';
     END IF;
 
@@ -382,7 +390,7 @@ END;
 $$;
 
 
--- Xóa thuốc (chỉ admin)
+-- Xóa thuốc (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_delete_thuoc(
     p_admin_username VARCHAR,
     p_ma_thuoc VARCHAR
@@ -390,9 +398,7 @@ CREATE OR REPLACE FUNCTION fn_delete_thuoc(
 DECLARE
     v_ton_kho BIGINT;
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan
-                   WHERE username = p_admin_username
-                     AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền xóa thuốc';
     END IF;
 
@@ -498,7 +504,7 @@ $$;
 -- B. QUẢN LÝ NHÓM THUỐC
 -- =============================================
 
--- Lấy danh sách nhóm thuốc (chỉ admin)
+-- Lấy danh sách nhóm thuốc (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_get_all_nhom_thuoc(p_admin_username VARCHAR)
 RETURNS TABLE(
     out_ma_nhom VARCHAR,
@@ -507,8 +513,8 @@ RETURNS TABLE(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
-        RAISE EXCEPTION 'Chỉ admin mới được xem danh sách nhóm thuốc';
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
+        RAISE EXCEPTION 'Bạn không có quyền xem danh sách nhóm thuốc';
     END IF;
 
     RETURN QUERY
@@ -519,7 +525,7 @@ END;
 $$;
 
 
--- Thêm nhóm thuốc mới (chỉ admin)
+-- Thêm nhóm thuốc mới (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_insert_nhom_thuoc(
     p_admin_username VARCHAR,
     p_ma_nhom VARCHAR,
@@ -529,7 +535,7 @@ RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền thêm nhóm thuốc';
     END IF;
 
@@ -553,7 +559,7 @@ END;
 $$;
 
 
--- Cập nhật nhóm thuốc (chỉ admin)
+-- Cập nhật nhóm thuốc (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_update_nhom_thuoc(
     p_admin_username VARCHAR,
     p_ma_nhom VARCHAR,
@@ -563,7 +569,7 @@ RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền sửa nhóm thuốc';
     END IF;
 
@@ -584,7 +590,7 @@ END;
 $$;
 
 
--- Xóa nhóm thuốc (chỉ admin)
+-- Xóa nhóm thuốc (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_delete_nhom_thuoc(
     p_admin_username VARCHAR,
     p_ma_nhom VARCHAR
@@ -593,7 +599,7 @@ RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền xóa nhóm thuốc';
     END IF;
 
@@ -631,7 +637,7 @@ $$;
 -- C. QUẢN LÝ NHÀ CUNG CẤP
 -- =============================================
 
--- Lấy danh sách nhà cung cấp (chỉ admin)
+-- Lấy danh sách nhà cung cấp (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_get_all_nha_cung_cap(p_admin_username VARCHAR)
 RETURNS TABLE(
     out_ma_ncc VARCHAR,
@@ -641,8 +647,8 @@ RETURNS TABLE(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
-        RAISE EXCEPTION 'Chỉ admin mới được xem danh sách nhà cung cấp';
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
+        RAISE EXCEPTION 'Bạn không có quyền xem danh sách nhà cung cấp';
     END IF;
 
     RETURN QUERY
@@ -653,7 +659,7 @@ END;
 $$;
 
 
--- Thêm nhà cung cấp mới (chỉ admin)
+-- Thêm nhà cung cấp mới (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_insert_nha_cung_cap(
     p_admin_username VARCHAR,
     p_ma_ncc VARCHAR,
@@ -664,7 +670,7 @@ RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền thêm nhà cung cấp';
     END IF;
 
@@ -688,7 +694,7 @@ END;
 $$;
 
 
--- Cập nhật nhà cung cấp (chỉ admin)
+-- Cập nhật nhà cung cấp (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_update_nha_cung_cap(
     p_admin_username VARCHAR,
     p_ma_ncc VARCHAR,
@@ -699,7 +705,7 @@ RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền sửa NCC';
     END IF;
 
@@ -721,7 +727,7 @@ END;
 $$;
 
 
--- Xóa nhà cung cấp (chỉ admin)
+-- Xóa nhà cung cấp (chỉ admin hoặc người có quyền quản lý kho)
 CREATE OR REPLACE FUNCTION fn_delete_nha_cung_cap(
     p_admin_username VARCHAR,
     p_ma_ncc VARCHAR
@@ -730,7 +736,7 @@ RETURNS TEXT
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+    IF NOT fn_can_manage_inventory(p_admin_username) THEN
         RETURN 'LỖI: Bạn không có quyền xóa NCC';
     END IF;
 
@@ -855,7 +861,8 @@ BEGIN
         'success', true,
         'username', v_user.username,
         'is_admin', v_user.is_admin,
-        'is_active', v_user.is_active
+        'is_active', v_user.is_active,
+        'can_manage_inventory', v_user.can_manage_inventory
     );
 END;
 $$;
@@ -867,6 +874,7 @@ RETURNS TABLE(
     out_username VARCHAR,
     out_is_active BOOLEAN,
     out_is_admin BOOLEAN,
+    out_can_manage_inventory BOOLEAN,
     out_created_at TIMESTAMP
 )
 LANGUAGE plpgsql
@@ -877,7 +885,7 @@ BEGIN
     END IF;
 
     RETURN QUERY
-    SELECT t.username, t.is_active, t.is_admin, t.created_at
+    SELECT t.username, t.is_active, t.is_admin, t.can_manage_inventory, t.created_at
     FROM taikhoan t
     ORDER BY t.id;
 END;
@@ -921,6 +929,42 @@ BEGIN
 END;
 $$;
 
+-- Bật/tắt quyền quản lý kho cho user (chỉ admin)
+CREATE OR REPLACE FUNCTION fn_toggle_inventory_permission(
+    p_admin_username VARCHAR,
+    p_target_username VARCHAR
+)
+RETURNS TEXT
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_current_permission BOOLEAN;
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM taikhoan WHERE username = p_admin_username AND is_admin = true AND is_active = true) THEN
+        RETURN 'LỖI: Chỉ admin mới có quyền cấp quyền quản lý kho';
+    END IF;
+
+    IF p_admin_username = p_target_username THEN
+        RETURN 'LỖI: Bạn không thể tự thay đổi quyền của chính mình';
+    END IF;
+
+    SELECT can_manage_inventory INTO v_current_permission
+    FROM taikhoan
+    WHERE username = p_target_username;
+
+    IF NOT FOUND THEN
+        RETURN 'LỖI: Tài khoản không tồn tại';
+    END IF;
+
+    UPDATE taikhoan
+    SET can_manage_inventory = NOT v_current_permission
+    WHERE username = p_target_username;
+
+    RETURN 'Thành công: Đã ' || 
+           CASE WHEN NOT v_current_permission THEN 'cấp' ELSE 'thu hồi' END || 
+           ' quyền quản lý kho cho ' || p_target_username;
+END;
+$$;
 
 -- Đổi mật khẩu
 CREATE OR REPLACE FUNCTION fn_change_password(

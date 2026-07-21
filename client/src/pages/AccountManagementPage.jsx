@@ -45,6 +45,20 @@ function AccountManagementPage() {
     }
   };
 
+  const toggleInventory = async (targetUsername) => {
+    try {
+      const res = await axios.post(
+        'http://localhost:7122/api/Auth/toggle-inventory-permission',
+        { targetUsername },
+        { params: { adminUsername: user.username } }
+      );
+      alert(res.data.message);
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi thao tác');
+    }
+  };
+
   if (loading) return (
     <div className="loading-section">
       <div className="spinner-border text-primary" role="status" />
@@ -83,6 +97,7 @@ function AccountManagementPage() {
                   <th>Tên đăng nhập</th>
                   <th>Trạng thái</th>
                   <th>Quyền Admin</th>
+                  <th>Quyền QLK</th>
                   <th>Ngày tạo</th>
                   <th>Thao tác</th>
                 </tr>
@@ -110,15 +125,34 @@ function AccountManagementPage() {
                         <span className="text-muted">Người dùng</span>
                       )}
                     </td>
+                    <td>
+                      {u.isAdmin ? (
+                        <span className="badge bg-warning text-dark badge-custom">Toàn quyền</span>
+                      ) : u.canManageInventory ? (
+                        <span className="badge bg-primary badge-custom">Được cấp</span>
+                      ) : (
+                        <span className="badge bg-light border text-dark">Không</span>
+                      )}
+                    </td>
                     <td>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
                     <td>
                       {u.username !== user.username ? (
-                        <button
-                          className="btn btn-sm btn-danger-custom ripple"
-                          onClick={() => toggleUser(u.username)}
-                        >
-                          {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
-                        </button>
+                        <div className="action-buttons">
+                          <button
+                            className="btn btn-sm btn-danger-custom"
+                            onClick={() => toggleUser(u.username)}
+                          >
+                            {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
+                          </button>
+                          {!u.isAdmin && (
+                            <button
+                              className={`btn btn-sm ${u.canManageInventory ? 'btn-outline-secondary' : 'btn-outline-primary'}`}
+                              onClick={() => toggleInventory(u.username)}
+                            >
+                              {u.canManageInventory ? '📋 Thu hồi QLK' : '📋 Cấp QLK'}
+                            </button>
+                          )}
+                        </div>
                       ) : (
                         <span className="badge bg-light text-dark border">Chính bạn</span>
                       )}

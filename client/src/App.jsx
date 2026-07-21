@@ -18,6 +18,8 @@ function Navbar() {
   const { darkMode, toggleDarkMode } = useTheme();
   if (!user) return null;
 
+  const canManageInventory = user.isAdmin || user.canManageInventory;
+
   return (
     <nav className="navbar-custom">
       <div className="container-fluid">
@@ -27,7 +29,6 @@ function Navbar() {
         </Link>
 
         <div className="nav-actions">
-          {/* User greeting with hover dropdown */}
           <div className="user-dropdown-wrapper">
             <div className="user-greeting user-dropdown-trigger">
               <span className="user-avatar">👤</span>
@@ -36,10 +37,12 @@ function Navbar() {
             </div>
             <div className="user-dropdown-menu">
               {user.isAdmin && (
+                <Link to="/admin/users" className="dropdown-item">
+                  <span className="btn-icon">⚙️</span> Quản lý tài khoản
+                </Link>
+              )}
+              {canManageInventory && (
                 <>
-                  <Link to="/admin/users" className="dropdown-item">
-                    <span className="btn-icon">⚙️</span> Quản lý tài khoản
-                  </Link>
                   <Link to="/admin/thuoc" className="dropdown-item">
                     <span className="btn-icon">💊</span> Quản lý thuốc
                   </Link>
@@ -103,14 +106,14 @@ function AppRouter() {
         <Routes>
           <Route path="/login" element={!user ? <LoginPage /> : <Navigate to="/" />} />
           <Route path="/register" element={!user ? <RegisterPage /> : <Navigate to="/" />} />
-          <Route path="/admin/users" element={user?.isAdmin ? <AccountManagementPage /> : <Navigate to="/" />} />
           <Route path="/nhap-lo" element={user ? <NhapLoPage /> : <Navigate to="/login" />} />
           <Route path="/bao-cao" element={user ? <BaoCaoPage /> : <Navigate to="/login" />} />
           <Route path="/lich-su" element={user ? <LichSuPage /> : <Navigate to="/login" />} />
           <Route path="/" element={user ? <DashboardPage /> : <Navigate to="/login" />} />
           <Route path="/doi-mat-khau" element={user ? <ChangePasswordPage /> : <Navigate to="/login" />} />
-          <Route path="/admin/danh-muc" element={user?.isAdmin ? <DanhMucPage /> : <Navigate to="/" />} />
-          <Route path="/admin/thuoc" element={user?.isAdmin ? <QuanLyThuocPage /> : <Navigate to="/" />} />
+          <Route path="/admin/users" element={user?.isAdmin ? <AccountManagementPage /> : <Navigate to="/" />} />
+          <Route path="/admin/thuoc" element={(user?.isAdmin || user?.canManageInventory) ? <QuanLyThuocPage /> : <Navigate to="/" />} />
+          <Route path="/admin/danh-muc" element={(user?.isAdmin || user?.canManageInventory) ? <DanhMucPage /> : <Navigate to="/" />} />
         </Routes>
       </div>
     </>

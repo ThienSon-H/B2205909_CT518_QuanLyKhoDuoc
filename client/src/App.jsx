@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { useAuth, AuthProvider } from './context/AuthContext';
+import { useTheme } from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AccountManagementPage from './pages/AccountManagementPage';
@@ -14,6 +15,7 @@ import QuanLyThuocPage from './pages/QuanLyThuocPage.jsx';
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { darkMode, toggleDarkMode } = useTheme();
   if (!user) return null;
 
   return (
@@ -25,25 +27,34 @@ function Navbar() {
         </Link>
 
         <div className="nav-actions">
-          <div className="user-greeting">
-            <span className="user-avatar">👤</span>
-            <span className="user-name">{user.username}</span>
+          {/* User greeting with hover dropdown */}
+          <div className="user-dropdown-wrapper">
+            <div className="user-greeting user-dropdown-trigger">
+              <span className="user-avatar">👤</span>
+              <span className="user-name">{user.username}</span>
+              <span className="dropdown-arrow">▼</span>
+            </div>
+            <div className="user-dropdown-menu">
+              {user.isAdmin && (
+                <>
+                  <Link to="/admin/users" className="dropdown-item">
+                    <span className="btn-icon">⚙️</span> Quản lý tài khoản
+                  </Link>
+                  <Link to="/admin/thuoc" className="dropdown-item">
+                    <span className="btn-icon">💊</span> Quản lý thuốc
+                  </Link>
+                  <Link to="/admin/danh-muc" className="dropdown-item">
+                    <span className="btn-icon">📋</span> Danh mục
+                  </Link>
+                </>
+              )}
+              <Link to="/doi-mat-khau" className="dropdown-item">
+                <span className="btn-icon">🔑</span> Đổi mật khẩu
+              </Link>
+            </div>
           </div>
 
           <div className="nav-links">
-            {user.isAdmin && (
-              <>
-                <Link to="/admin/users" className="btn btn-outline-warning btn-sm ripple">
-                  <span className="btn-icon">⚙️</span> QLTK
-                </Link>
-                <Link to="/admin/danh-muc" className="btn btn-outline-warning btn-sm ripple">
-                  <span className="btn-icon">📋</span> Danh mục
-                </Link>
-                <Link to="/admin/thuoc" className="btn btn-outline-warning btn-sm ripple">
-                  <span className="btn-icon">💊</span> Thuốc
-                </Link>
-              </>
-            )}
             <Link to="/nhap-lo" className="btn btn-outline-success btn-sm ripple">
               <span className="btn-icon">➕</span> Nhập Lô
             </Link>
@@ -53,11 +64,11 @@ function Navbar() {
             <Link to="/lich-su" className="btn btn-outline-info btn-sm ripple">
               <span className="btn-icon">🕒</span> Lịch sử
             </Link>
-            <Link to="/doi-mat-khau" className="btn btn-outline-light btn-sm ripple">
-              <span className="btn-icon">🔑</span> Đổi MK
-            </Link>
             <button onClick={logout} className="btn btn-danger-custom btn-sm ripple">
               <span className="btn-icon">🚪</span> Đăng xuất
+            </button>
+            <button onClick={toggleDarkMode} className="btn btn-outline-light btn-sm ripple" title={darkMode ? 'Chuyển sang Light Mode' : 'Chuyển sang Dark Mode'}>
+              <span className="btn-icon">{darkMode ? '☀️' : '🌙'}</span>
             </button>
           </div>
         </div>

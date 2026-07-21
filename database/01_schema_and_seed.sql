@@ -100,6 +100,7 @@ INSERT INTO lo_thuoc (ma_lo, ma_thuoc, ma_ncc, so_luong, ngay_san_xuat, han_su_d
 -- 3.5. Tài khoản (mật khẩu: admin1, user1)
 INSERT INTO taikhoan (username, password_hash, is_admin, is_active) VALUES
     ('admin1', crypt('admin1', gen_salt('bf')), true, true),
+    ('admin2', crypt('admin2', gen_salt('bf')), true, true),
     ('user1', crypt('user1', gen_salt('bf')), false, true);
 
 -- 3.6. Lịch sử nhập/xuất (minh họa)

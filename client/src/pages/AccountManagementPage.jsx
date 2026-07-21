@@ -4,10 +4,12 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
 function AccountManagementPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [inventoryPermissions, setInventoryPermissions] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +25,14 @@ function AccountManagementPage() {
       const res = await axios.get('http://localhost:7122/api/Auth/users', {
         params: { adminUsername: user.username }
       });
-      setUsers(res.data);
+      const fetchedUsers = res.data;
+      setUsers(fetchedUsers);
+      // Khởi tạo trạng thái checkbox từ dữ liệu
+      const perms = {};
+      fetchedUsers.forEach(u => {
+        perms[u.username] = u.isAdmin || u.canManageInventory;
+      });
+      setInventoryPermissions(perms);
     } catch (err) {
       setError(err.response?.data?.message || 'Lỗi tải danh sách');
     } finally {
@@ -45,17 +54,41 @@ function AccountManagementPage() {
     }
   };
 
-  const toggleInventory = async (targetUsername) => {
+  const handleInventoryChange = (username, checked) => {
+    setInventoryPermissions(prev => ({ ...prev, [username]: checked }));
+  };
+
+  const saveInventoryPermissions = async () => {
+    setSaving(true);
     try {
-      const res = await axios.post(
-        'http://localhost:7122/api/Auth/toggle-inventory-permission',
-        { targetUsername },
-        { params: { adminUsername: user.username } }
-      );
-      alert(res.data.message);
-      fetchUsers();
+      // Xác định các user cần thay đổi
+      const changes = users.filter(u => {
+        if (u.isAdmin) return false; // admin không cần thay đổi
+        const current = inventoryPermissions[u.username];
+        return current !== (u.canManageInventory || u.isAdmin);
+      });
+
+      if (changes.length === 0) {
+        alert('Không có thay đổi nào để lưu.');
+        setSaving(false);
+        return;
+      }
+
+      // Gọi API toggle cho từng user cần thay đổi
+      for (const u of changes) {
+        await axios.post(
+          'http://localhost:7122/api/Auth/toggle-inventory-permission',
+          { targetUsername: u.username },
+          { params: { adminUsername: user.username } }
+        );
+      }
+
+      alert('Lưu quyền QLK thành công!');
+      fetchUsers(); // Tải lại để đồng bộ
     } catch (err) {
-      alert(err.response?.data?.message || 'Lỗi thao tác');
+      alert(err.response?.data?.message || 'Lỗi khi lưu quyền');
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -125,14 +158,14 @@ function AccountManagementPage() {
                         <span className="text-muted">Người dùng</span>
                       )}
                     </td>
-                    <td>
-                      {u.isAdmin ? (
-                        <span className="badge bg-warning text-dark badge-custom">Toàn quyền</span>
-                      ) : u.canManageInventory ? (
-                        <span className="badge bg-primary badge-custom">Được cấp</span>
-                      ) : (
-                        <span className="badge bg-light border text-dark">Không</span>
-                      )}
+                    <td className="text-center">
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        checked={inventoryPermissions[u.username] || false}
+                        disabled={u.isAdmin}
+                        onChange={(e) => handleInventoryChange(u.username, e.target.checked)}
+                      />
                     </td>
                     <td>{new Date(u.createdAt).toLocaleDateString('vi-VN')}</td>
                     <td>
@@ -144,14 +177,6 @@ function AccountManagementPage() {
                           >
                             {u.isActive ? '🔒 Vô hiệu hóa' : '🔓 Mở khóa'}
                           </button>
-                          {!u.isAdmin && (
-                            <button
-                              className={`btn btn-sm ${u.canManageInventory ? 'btn-outline-secondary' : 'btn-outline-primary'}`}
-                              onClick={() => toggleInventory(u.username)}
-                            >
-                              {u.canManageInventory ? '📋 Thu hồi QLK' : '📋 Cấp QLK'}
-                            </button>
-                          )}
                         </div>
                       ) : (
                         <span className="badge bg-light text-dark border">Chính bạn</span>
@@ -161,6 +186,24 @@ function AccountManagementPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Nút Lưu quyền QLK */}
+          <div className="p-3 d-flex justify-content-end">
+            <button
+              className="btn btn-primary-custom ripple"
+              onClick={saveInventoryPermissions}
+              disabled={saving}
+            >
+              {saving ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" />
+                  Đang lưu...
+                </>
+              ) : (
+                '💾 LƯU'
+              )}
+            </button>
           </div>
         </div>
       </div>

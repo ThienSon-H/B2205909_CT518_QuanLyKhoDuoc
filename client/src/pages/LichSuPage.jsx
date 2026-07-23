@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const LICH_SU_URL = 'http://localhost:7122/api/Thuoc/lich-su';
 
@@ -30,6 +31,25 @@ function LichSuPage() {
       (item.ghiChu && item.ghiChu.toLowerCase().includes(keyword))
     );
   });
+
+  const exportToExcel = () => {
+    const exportData = filteredData.map((item, idx) => ({
+      'STT': idx + 1,
+      'Thời gian': new Date(item.thoiGian).toLocaleString('vi-VN'),
+      'Loại': item.loaiGiaoDich,
+      'Mã Lô': item.maLo,
+      'Mã Thuốc': item.maThuoc,
+      'SL Thay Đổi': item.soLuongThayDoi,
+      'Người thực hiện': item.nguoiThucHien || '—',
+      'Ghi chú': item.ghiChu
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Lịch sử nhập xuất');
+    
+    XLSX.writeFile(workbook, `LichSuNhapXuat_${new Date().toISOString().slice(0,10)}.xlsx`);
+  };
 
   if (loading) return (
     <div className="loading-section">
@@ -80,7 +100,16 @@ function LichSuPage() {
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Lịch sử giao dịch</span>
-          <span className="badge bg-info badge-custom">{filteredData.length} giao dịch</span>
+          <div className="d-flex align-items-center gap-2">
+            <span className="badge bg-info badge-custom">{filteredData.length} giao dịch</span>
+            <button 
+              className="btn btn-sm btn-success-custom ripple" 
+              onClick={exportToExcel}
+              disabled={filteredData.length === 0}
+            >
+              📥 Xuất Excel
+            </button>
+          </div>
         </div>
         <div className="card-body p-0">
           {filteredData.length === 0 ? (

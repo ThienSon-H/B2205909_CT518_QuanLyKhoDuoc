@@ -18,7 +18,6 @@ function NhapLoPage() {
   const [nhomThuocList, setNhomThuocList] = useState([]);
   const [thuocList, setThuocList] = useState([]);
   const [form, setForm] = useState({
-    maLo: '',
     maNcc: '',
     maNhom: '',
     soLuong: '',
@@ -57,7 +56,6 @@ function NhapLoPage() {
     if (user?.username) fetchData();
   }, [user, addToast]);
 
-  // Đóng dropdown khi click bên ngoài
   useEffect(() => {
     function handleClickOutside(event) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
@@ -93,14 +91,23 @@ function NhapLoPage() {
       addToast('Vui lòng chọn thuốc từ danh sách', 'warning');
       return;
     }
+
+    // Kiểm tra số lượng hợp lệ
+    const soLuong = parseInt(form.soLuong);
+    if (isNaN(soLuong) || soLuong <= 0) {
+      addToast('Vui lòng nhập số lượng hợp lệ', 'warning');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
+      // Gửi maLo là chuỗi rỗng để backend tự sinh
       const payload = {
-        maLo: form.maLo,
+        maLo: '',
         maThuoc: selectedThuoc.maThuoc,
         tenThuoc: selectedThuoc.tenThuoc,
         maNcc: form.maNcc,
-        soLuong: form.soLuong,
+        soLuong: soLuong,
         hanSuDung: form.hanSuDung,
         nguoiThucHien: user?.username,
         maNhom: form.maNhom
@@ -132,23 +139,9 @@ function NhapLoPage() {
             </div>
             <div className="card-body p-4">
               <form onSubmit={handleSubmit}>
-                {/* Hàng 1: Mã lô - Chọn thuốc */}
+                {/* Chọn thuốc */}
                 <div className="row g-4">
-                  <div className="col-md-6">
-                    <div className="form-group-custom">
-                      <label className="form-label">
-                        <span className="label-icon">🏷️</span> Mã Lô
-                      </label>
-                      <input
-                        className="form-control-custom"
-                        placeholder="VD: LO-005"
-                        value={form.maLo}
-                        onChange={e => setForm({...form, maLo: e.target.value.toUpperCase()})}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6" ref={wrapperRef}>
+                  <div className="col-md-12" ref={wrapperRef}>
                     <div className="form-group-custom" style={{ position: 'relative' }}>
                       <label className="form-label">
                         <span className="label-icon">💊</span> Chọn thuốc

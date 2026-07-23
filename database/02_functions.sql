@@ -123,19 +123,21 @@ END;
 $$;
 
 
--- Nhập lô thuốc – yêu cầu thuốc phải tồn tại (do admin/QLK tạo trước)
+-- Nhập lô thuốc – yêu cầu thuốc phải tồn tại, tự sinh mã lô nếu bỏ trống
 CREATE OR REPLACE FUNCTION fn_nhap_lo_thuoc(
-    p_ma_lo VARCHAR,
     p_ma_thuoc VARCHAR,
     p_ten_thuoc TEXT,
     p_ma_ncc VARCHAR,
     p_so_luong INTEGER,
     p_han_su_dung DATE,
     p_nguoi_thuc_hien VARCHAR DEFAULT NULL,
-    p_ma_nhom VARCHAR DEFAULT NULL
+    p_ma_nhom VARCHAR DEFAULT NULL,
+    p_ma_lo VARCHAR DEFAULT NULL
 ) RETURNS TEXT LANGUAGE plpgsql AS $$
 DECLARE
+    v_ma_lo VARCHAR;
     v_so_luong_cu INTEGER;
+    v_count INTEGER;
 BEGIN
     IF p_nguoi_thuc_hien IS NOT NULL AND NOT fn_check_user_active(p_nguoi_thuc_hien) THEN
         RETURN 'LỖI: Tài khoản của bạn không tồn tại hoặc đã bị khóa';
@@ -145,34 +147,42 @@ BEGIN
         RETURN 'LỖI: Số lượng phải > 0';
     END IF;
 
-    -- Kiểm tra thuốc phải tồn tại
+    -- Thuốc phải được tạo trước trong Quản lý thuốc
     IF NOT EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
         RETURN 'LỖI: Mã thuốc chưa tồn tại. Vui lòng thêm thuốc trong mục Quản lý thuốc trước khi nhập lô.';
     END IF;
 
-    -- Nếu thuốc đã tồn tại và có truyền nhóm mới, cập nhật nhóm
+    -- Tự sinh mã lô nếu không truyền hoặc rỗng
+    IF p_ma_lo IS NULL OR LENGTH(TRIM(p_ma_lo)) = 0 THEN
+        SELECT COUNT(*) INTO v_count FROM lo_thuoc WHERE ma_thuoc = p_ma_thuoc;
+        v_ma_lo := 'LO-' || p_ma_thuoc || '-' || LPAD((v_count + 1)::TEXT, 2, '0');
+    ELSE
+        v_ma_lo := p_ma_lo;
+    END IF;
+
+    -- Cập nhật nhóm nếu có
     IF p_ma_nhom IS NOT NULL THEN
         UPDATE thuoc SET ma_nhom = p_ma_nhom, ten_thuoc = p_ten_thuoc
         WHERE ma_thuoc = p_ma_thuoc;
     END IF;
 
-    -- Xử lý lô
-    IF EXISTS (SELECT 1 FROM lo_thuoc WHERE ma_lo = p_ma_lo) THEN
-        SELECT so_luong INTO v_so_luong_cu FROM lo_thuoc WHERE ma_lo = p_ma_lo;
-        UPDATE lo_thuoc SET so_luong = so_luong + p_so_luong WHERE ma_lo = p_ma_lo;
+    -- Nếu lô đã tồn tại thì cộng dồn
+    IF EXISTS (SELECT 1 FROM lo_thuoc WHERE ma_lo = v_ma_lo) THEN
+        SELECT so_luong INTO v_so_luong_cu FROM lo_thuoc WHERE ma_lo = v_ma_lo;
+        UPDATE lo_thuoc SET so_luong = so_luong + p_so_luong WHERE ma_lo = v_ma_lo;
         
         INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
-        VALUES (p_ma_lo, p_ma_thuoc, 'NHAP', p_so_luong, p_nguoi_thuc_hien, 'Cộng dồn vào lô hiện có');
+        VALUES (v_ma_lo, p_ma_thuoc, 'NHAP', p_so_luong, p_nguoi_thuc_hien, 'Cộng dồn vào lô hiện có');
         
-        RETURN 'Thành công: Đã cộng dồn thêm ' || p_so_luong || ' vào lô ' || p_ma_lo;
+        RETURN 'Thành công: Đã cộng dồn thêm ' || p_so_luong || ' vào lô ' || v_ma_lo;
     ELSE
         INSERT INTO lo_thuoc (ma_lo, ma_thuoc, ma_ncc, so_luong, han_su_dung)
-        VALUES (p_ma_lo, p_ma_thuoc, COALESCE(p_ma_ncc, 'DHG'), p_so_luong, p_han_su_dung);
+        VALUES (v_ma_lo, p_ma_thuoc, COALESCE(p_ma_ncc, 'DHG'), p_so_luong, p_han_su_dung);
         
         INSERT INTO lich_su_nhap_xuat (ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi, nguoi_thuc_hien, ghi_chu)
-        VALUES (p_ma_lo, p_ma_thuoc, 'NHAP', p_so_luong, p_nguoi_thuc_hien, 'Tạo lô mới');
+        VALUES (v_ma_lo, p_ma_thuoc, 'NHAP', p_so_luong, p_nguoi_thuc_hien, 'Tạo lô mới');
         
-        RETURN 'Thành công: Đã tạo lô mới ' || p_ma_lo;
+        RETURN 'Thành công: Đã tạo lô mới ' || v_ma_lo;
     END IF;
 END;
 $$;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import * as XLSX from 'xlsx';
 
 const BAO_CAO_URL = 'http://localhost:7122/api/Thuoc/bao-cao-ton-kho';
 
@@ -28,6 +29,28 @@ function BaoCaoPage() {
       (item.tenNhom && item.tenNhom.toLowerCase().includes(keyword))
     );
   });
+
+  const exportToExcel = () => {
+    const exportData = filteredData.map((item, idx) => ({
+      'STT': idx + 1,
+      'Mã Thuốc': item.maThuoc,
+      'Tên Thuốc': item.tenThuoc,
+      'Nhóm': item.tenNhom,
+      'Tổng SL Tồn': item.tongSoLuong,
+      'Số Lô': item.soLo,
+      'Hạn Sớm Nhất': item.hanSomNhat ? new Date(item.hanSomNhat).toLocaleDateString('vi-VN') : '—',
+      'Tình Trạng': item.ngayConLai == null ? 'Chưa có lô' :
+                    item.ngayConLai < 0 ? 'Có lô hết hạn' :
+                    item.ngayConLai < 180 ? `Cận date (${item.ngayConLai} ngày)` :
+                    `An toàn (${item.ngayConLai} ngày)`
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Báo cáo tồn kho');
+    
+    XLSX.writeFile(workbook, `BaoCaoTonKho_${new Date().toISOString().slice(0,10)}.xlsx`);
+  };
 
   if (loading) return (
     <div className="loading-section">
@@ -78,7 +101,16 @@ function BaoCaoPage() {
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Tổng hợp tồn kho</span>
-          <span className="badge bg-info badge-custom">{filteredData.length} thuốc</span>
+          <div className="d-flex align-items-center gap-2">
+            <span className="badge bg-info badge-custom">{filteredData.length} thuốc</span>
+            <button 
+              className="btn btn-sm btn-success-custom ripple" 
+              onClick={exportToExcel}
+              disabled={filteredData.length === 0}
+            >
+              📥 Xuất Excel
+            </button>
+          </div>
         </div>
         <div className="card-body p-0">
           {filteredData.length === 0 ? (

@@ -12,6 +12,7 @@ function AccountManagementPage() {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
   const [inventoryPermissions, setInventoryPermissions] = useState({});
+  const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,6 +92,12 @@ function AccountManagementPage() {
     }
   };
 
+  const filteredUsers = users.filter(u => {
+    if (!search.trim()) return true;
+    const keyword = search.toLowerCase();
+    return u.username && u.username.toLowerCase().includes(keyword);
+  });
+
   if (loading) return (
     <div className="loading-section">
       <div className="spinner-border text-primary" role="status" />
@@ -116,10 +123,36 @@ function AccountManagementPage() {
         </Link>
       </div>
 
+      {/* Thanh tìm kiếm */}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
+          <div className="input-with-icon">
+            <span className="input-icon">🔍</span>
+            <input
+              type="text"
+              className="form-control-custom"
+              placeholder="Tìm theo tên đăng nhập..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Tìm kiếm"
+            />
+            {search && (
+              <button
+                className="btn btn-outline-secondary input-clear-btn"
+                onClick={() => setSearch('')}
+                aria-label="Xóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Danh sách người dùng</span>
-          <span className="badge bg-info badge-custom">{users.length} tài khoản</span>
+          <span className="badge bg-info badge-custom">{filteredUsers.length} tài khoản</span>
         </div>
         <div className="card-body p-0">
           <div className="table-responsive">
@@ -135,7 +168,7 @@ function AccountManagementPage() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((u) => (
+                {filteredUsers.map((u) => (
                   <tr key={u.username}>
                     <td>
                       <div className="d-flex align-items-center gap-2">
@@ -186,6 +219,13 @@ function AccountManagementPage() {
               </tbody>
             </table>
           </div>
+
+          {filteredUsers.length === 0 && (
+            <div className="empty-state">
+              <div className="empty-icon">🔍</div>
+              <p className="empty-text">Không tìm thấy tài khoản nào phù hợp.</p>
+            </div>
+          )}
 
           <div className="p-3 d-flex justify-content-end">
             <button

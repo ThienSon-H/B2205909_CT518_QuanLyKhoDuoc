@@ -9,6 +9,7 @@ function LichSuPage() {
   const { user } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     axios.get(LICH_SU_URL, {
@@ -17,6 +18,18 @@ function LichSuPage() {
       .then(res => { setData(res.data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
   }, [user]);
+
+  const filteredData = data.filter(item => {
+    if (!search.trim()) return true;
+    const keyword = search.toLowerCase();
+    return (
+      (item.maLo && item.maLo.toLowerCase().includes(keyword)) ||
+      (item.maThuoc && item.maThuoc.toLowerCase().includes(keyword)) ||
+      (item.loaiGiaoDich && item.loaiGiaoDich.toLowerCase().includes(keyword)) ||
+      (item.nguoiThucHien && item.nguoiThucHien.toLowerCase().includes(keyword)) ||
+      (item.ghiChu && item.ghiChu.toLowerCase().includes(keyword))
+    );
+  });
 
   if (loading) return (
     <div className="loading-section">
@@ -38,16 +51,42 @@ function LichSuPage() {
         </Link>
       </div>
 
+      {/* Thanh tìm kiếm */}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
+          <div className="input-with-icon">
+            <span className="input-icon">🔍</span>
+            <input
+              type="text"
+              className="form-control-custom"
+              placeholder="Tìm theo mã lô, mã thuốc, loại giao dịch, người thực hiện hoặc ghi chú..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Tìm kiếm"
+            />
+            {search && (
+              <button
+                className="btn btn-outline-secondary input-clear-btn"
+                onClick={() => setSearch('')}
+                aria-label="Xóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Lịch sử giao dịch</span>
-          <span className="badge bg-info badge-custom">{data.length} giao dịch</span>
+          <span className="badge bg-info badge-custom">{filteredData.length} giao dịch</span>
         </div>
         <div className="card-body p-0">
-          {data.length === 0 ? (
+          {filteredData.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📭</div>
-              <p className="empty-text">Chưa có giao dịch nào.</p>
+              <p className="empty-text">Không tìm thấy giao dịch nào phù hợp.</p>
             </div>
           ) : (
             <div className="table-responsive">
@@ -64,7 +103,7 @@ function LichSuPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item) => (
+                  {filteredData.map((item) => (
                     <tr key={item.id}>
                       <td>{new Date(item.thoiGian).toLocaleString('vi-VN')}</td>
                       <td>

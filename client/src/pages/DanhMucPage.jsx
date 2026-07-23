@@ -24,6 +24,9 @@ function DanhMucPage() {
   // Confirm modal state
   const [confirmModal, setConfirmModal] = useState({ show: false, message: '', onConfirm: null });
 
+  // Search
+  const [search, setSearch] = useState('');
+
   useEffect(() => {
     fetchData();
   }, [activeTab, user]);
@@ -116,6 +119,21 @@ function DanhMucPage() {
     });
   };
 
+  // Lọc dữ liệu theo tab và từ khóa
+  const rawList = activeTab === 'nhom' ? nhomThuoc : nhaCungCap;
+  const filteredList = rawList.filter(item => {
+    if (!search.trim()) return true;
+    const keyword = search.toLowerCase();
+    if (activeTab === 'nhom') {
+      return (item.maNhom && item.maNhom.toLowerCase().includes(keyword)) ||
+             (item.tenNhom && item.tenNhom.toLowerCase().includes(keyword));
+    } else {
+      return (item.maNcc && item.maNcc.toLowerCase().includes(keyword)) ||
+             (item.tenNcc && item.tenNcc.toLowerCase().includes(keyword)) ||
+             (item.soDienThoai && item.soDienThoai.toLowerCase().includes(keyword));
+    }
+  });
+
   return (
     <div className="page-wrapper fade-in">
       <div className="dashboard-header">
@@ -133,7 +151,7 @@ function DanhMucPage() {
         <li className="nav-item">
           <button
             className={`nav-link ${activeTab === 'nhom' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('nhom'); setShowForm(false); }}
+            onClick={() => { setActiveTab('nhom'); setShowForm(false); setSearch(''); }}
           >
             <span className="tab-icon">💊</span> Nhóm Thuốc
           </button>
@@ -141,7 +159,7 @@ function DanhMucPage() {
         <li className="nav-item">
           <button
             className={`nav-link ${activeTab === 'ncc' ? 'active' : ''}`}
-            onClick={() => { setActiveTab('ncc'); setShowForm(false); }}
+            onClick={() => { setActiveTab('ncc'); setShowForm(false); setSearch(''); }}
           >
             <span className="tab-icon">🚚</span> Nhà Cung Cấp
           </button>
@@ -152,6 +170,7 @@ function DanhMucPage() {
         ➕ Thêm {activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}
       </button>
 
+      {/* Form thêm/sửa */}
       {showForm && (
         <div className="card-custom mb-4">
           <div className="card-header">
@@ -208,13 +227,39 @@ function DanhMucPage() {
         </div>
       )}
 
+      {/* Thanh tìm kiếm */}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
+          <div className="input-with-icon">
+            <span className="input-icon">🔍</span>
+            <input
+              type="text"
+              className="form-control-custom"
+              placeholder={`Tìm theo mã, tên${activeTab === 'ncc' ? ', số điện thoại' : ''}...`}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Tìm kiếm"
+            />
+            {search && (
+              <button
+                className="btn btn-outline-secondary input-clear-btn"
+                onClick={() => setSearch('')}
+                aria-label="Xóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {error && <div className="alert alert-danger alert-custom">{error}</div>}
 
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>{activeTab === 'nhom' ? 'Nhóm Thuốc' : 'Nhà Cung Cấp'}</span>
           <span className="badge bg-info badge-custom">
-            {activeTab === 'nhom' ? nhomThuoc.length : nhaCungCap.length} mục
+            {filteredList.length} mục
           </span>
         </div>
         <div className="card-body p-0">
@@ -225,65 +270,65 @@ function DanhMucPage() {
             </div>
           ) : (
             <div className="table-responsive">
-              <table className="table-custom">
-                <thead>
-                  <tr>
-                    <th>Mã</th>
-                    <th>Tên</th>
-                    {activeTab === 'ncc' && <th>Số điện thoại</th>}
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeTab === 'nhom' && nhomThuoc.map(item => (
-                    <tr key={item.maNhom}>
-                      <td><span className="badge bg-secondary badge-custom">{item.maNhom}</span></td>
-                      <td><strong>{item.tenNhom}</strong></td>
-                      <td>
-                        <div className="action-buttons">
-                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
-                            ✏️ Sửa
-                          </button>
-                          <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNhom)}>
-                            🗑️ Xóa
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {activeTab === 'ncc' && nhaCungCap.map(item => (
-                    <tr key={item.maNcc}>
-                      <td><span className="badge bg-secondary badge-custom">{item.maNcc}</span></td>
-                      <td><strong>{item.tenNcc}</strong></td>
-                      <td>{item.soDienThoai || '—'}</td>
-                      <td>
-                        <div className="action-buttons">
-                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
-                            ✏️ Sửa
-                          </button>
-                          <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNcc)}>
-                            🗑️ Xóa
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {((activeTab === 'nhom' && nhomThuoc.length === 0) ||
-                    (activeTab === 'ncc' && nhaCungCap.length === 0)) && (
+              {filteredList.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">🔍</div>
+                  <p className="empty-text">
+                    {search.trim() ? 'Không tìm thấy mục nào phù hợp.' : 'Chưa có dữ liệu.'}
+                  </p>
+                </div>
+              ) : (
+                <table className="table-custom">
+                  <thead>
                     <tr>
-                      <td colSpan={activeTab === 'ncc' ? 4 : 3} className="text-center text-muted py-3">
-                        Chưa có dữ liệu.
-                      </td>
+                      <th>Mã</th>
+                      <th>Tên</th>
+                      {activeTab === 'ncc' && <th>Số điện thoại</th>}
+                      <th>Thao tác</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {activeTab === 'nhom' && filteredList.map(item => (
+                      <tr key={item.maNhom}>
+                        <td><span className="badge bg-secondary badge-custom">{item.maNhom}</span></td>
+                        <td><strong>{item.tenNhom}</strong></td>
+                        <td>
+                          <div className="action-buttons">
+                            <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                              ✏️ Sửa
+                            </button>
+                            <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNhom)}>
+                              🗑️ Xóa
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {activeTab === 'ncc' && filteredList.map(item => (
+                      <tr key={item.maNcc}>
+                        <td><span className="badge bg-secondary badge-custom">{item.maNcc}</span></td>
+                        <td><strong>{item.tenNcc}</strong></td>
+                        <td>{item.soDienThoai || '—'}</td>
+                        <td>
+                          <div className="action-buttons">
+                            <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                              ✏️ Sửa
+                            </button>
+                            <button className="btn btn-sm btn-danger-custom" onClick={() => handleDelete(item.maNcc)}>
+                              🗑️ Xóa
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
         </div>
       </div>
 
-      {/* Confirm Modal */}
       <ConfirmModal
         show={confirmModal.show}
         title="Xác nhận xóa"

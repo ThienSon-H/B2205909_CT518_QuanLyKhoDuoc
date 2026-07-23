@@ -24,6 +24,7 @@ function QuanLyThuocPage() {
     donViTinh: ''
   });
   const [confirmModal, setConfirmModal] = useState({ show: false, message: '', onConfirm: null });
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -62,7 +63,6 @@ function QuanLyThuocPage() {
 
   const handleEdit = (item) => {
     setEditingItem(item);
-    // Tìm mã nhóm từ tên nhóm
     const nhom = nhomList.find(n => n.tenNhom === item.tenNhom);
     setFormData({
       maThuoc: item.maThuoc,
@@ -118,6 +118,16 @@ function QuanLyThuocPage() {
       }
     });
   };
+
+  const filteredList = thuocList.filter(item => {
+    if (!search.trim()) return true;
+    const keyword = search.toLowerCase();
+    return (
+      (item.maThuoc && item.maThuoc.toLowerCase().includes(keyword)) ||
+      (item.tenThuoc && item.tenThuoc.toLowerCase().includes(keyword)) ||
+      (item.tenNhom && item.tenNhom.toLowerCase().includes(keyword))
+    );
+  });
 
   return (
     <div className="page-wrapper fade-in">
@@ -201,12 +211,38 @@ function QuanLyThuocPage() {
         </div>
       )}
 
+      {/* Thanh tìm kiếm */}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
+          <div className="input-with-icon">
+            <span className="input-icon">🔍</span>
+            <input
+              type="text"
+              className="form-control-custom"
+              placeholder="Tìm theo mã thuốc, tên thuốc hoặc nhóm..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Tìm kiếm"
+            />
+            {search && (
+              <button
+                className="btn btn-outline-secondary input-clear-btn"
+                onClick={() => setSearch('')}
+                aria-label="Xóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       {error && <div className="alert alert-danger alert-custom">{error}</div>}
 
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Danh sách Thuốc</span>
-          <span className="badge bg-info badge-custom">{thuocList.length} thuốc</span>
+          <span className="badge bg-info badge-custom">{filteredList.length} thuốc</span>
         </div>
         <div className="card-body p-0">
           {loading ? (
@@ -216,53 +252,55 @@ function QuanLyThuocPage() {
             </div>
           ) : (
             <div className="table-responsive">
-              <table className="table-custom">
-                <thead>
-                  <tr>
-                    <th>Mã Thuốc</th>
-                    <th>Tên Thuốc</th>
-                    <th>Nhóm</th>
-                    <th>Đơn Vị Tính</th>
-                    <th className="text-center">Tổng Tồn</th>
-                    <th className="text-center">Số Lô</th>
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {thuocList.map(item => (
-                    <tr key={item.maThuoc}>
-                      <td><span className="badge bg-secondary badge-custom">{item.maThuoc}</span></td>
-                      <td><strong>{item.tenThuoc}</strong></td>
-                      <td>{item.tenNhom}</td>
-                      <td>{item.donViTinh || '—'}</td>
-                      <td className="text-center fw-bold text-success">{item.tongTon}</td>
-                      <td className="text-center">{item.soLo}</td>
-                      <td>
-                        <div className="action-buttons">
-                          <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
-                            ✏️ Sửa
-                          </button>
-                          <button
-                            className={`btn btn-sm ${item.tongTon > 0 ? 'btn-secondary' : 'btn-danger-custom'}`}
-                            onClick={() => handleDelete(item.maThuoc)}
-                            disabled={item.tongTon > 0}
-                            title={item.tongTon > 0 ? 'Không thể xóa khi còn tồn kho' : 'Xóa thuốc'}
-                          >
-                            🗑️ Xóa
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                  {thuocList.length === 0 && (
+              {filteredList.length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">🔍</div>
+                  <p className="empty-text">
+                    {search.trim() ? 'Không tìm thấy thuốc nào phù hợp.' : 'Chưa có thuốc nào.'}
+                  </p>
+                </div>
+              ) : (
+                <table className="table-custom">
+                  <thead>
                     <tr>
-                      <td colSpan={7} className="text-center text-muted py-3">
-                        Chưa có thuốc nào.
-                      </td>
+                      <th>Mã Thuốc</th>
+                      <th>Tên Thuốc</th>
+                      <th>Nhóm</th>
+                      <th>Đơn Vị Tính</th>
+                      <th className="text-center">Tổng Tồn</th>
+                      <th className="text-center">Số Lô</th>
+                      <th>Thao tác</th>
                     </tr>
-                  )}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredList.map(item => (
+                      <tr key={item.maThuoc}>
+                        <td><span className="badge bg-secondary badge-custom">{item.maThuoc}</span></td>
+                        <td><strong>{item.tenThuoc}</strong></td>
+                        <td>{item.tenNhom}</td>
+                        <td>{item.donViTinh || '—'}</td>
+                        <td className="text-center fw-bold text-success">{item.tongTon}</td>
+                        <td className="text-center">{item.soLo}</td>
+                        <td>
+                          <div className="action-buttons">
+                            <button className="btn btn-sm btn-outline-primary" onClick={() => handleEdit(item)}>
+                              ✏️ Sửa
+                            </button>
+                            <button
+                              className={`btn btn-sm ${item.tongTon > 0 ? 'btn-secondary' : 'btn-danger-custom'}`}
+                              onClick={() => handleDelete(item.maThuoc)}
+                              disabled={item.tongTon > 0}
+                              title={item.tongTon > 0 ? 'Không thể xóa khi còn tồn kho' : 'Xóa thuốc'}
+                            >
+                              🗑️ Xóa
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           )}
         </div>

@@ -9,6 +9,7 @@ function BaoCaoPage() {
   const { user } = useAuth();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     axios.get(BAO_CAO_URL, {
@@ -17,6 +18,16 @@ function BaoCaoPage() {
       .then(res => { setData(res.data); setLoading(false); })
       .catch(err => { console.error(err); setLoading(false); });
   }, [user]);
+
+  const filteredData = data.filter(item => {
+    if (!search.trim()) return true;
+    const keyword = search.toLowerCase();
+    return (
+      (item.maThuoc && item.maThuoc.toLowerCase().includes(keyword)) ||
+      (item.tenThuoc && item.tenThuoc.toLowerCase().includes(keyword)) ||
+      (item.tenNhom && item.tenNhom.toLowerCase().includes(keyword))
+    );
+  });
 
   if (loading) return (
     <div className="loading-section">
@@ -38,16 +49,42 @@ function BaoCaoPage() {
         </Link>
       </div>
 
+      {/* Thanh tìm kiếm */}
+      <div className="card-custom mb-4 filter-card">
+        <div className="card-body">
+          <div className="input-with-icon">
+            <span className="input-icon">🔍</span>
+            <input
+              type="text"
+              className="form-control-custom"
+              placeholder="Tìm theo mã thuốc, tên thuốc hoặc nhóm..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Tìm kiếm"
+            />
+            {search && (
+              <button
+                className="btn btn-outline-secondary input-clear-btn"
+                onClick={() => setSearch('')}
+                aria-label="Xóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
       <div className="card-custom">
         <div className="card-header d-flex justify-content-between align-items-center">
           <span>Tổng hợp tồn kho</span>
-          <span className="badge bg-info badge-custom">{data.length} thuốc</span>
+          <span className="badge bg-info badge-custom">{filteredData.length} thuốc</span>
         </div>
         <div className="card-body p-0">
-          {data.length === 0 ? (
+          {filteredData.length === 0 ? (
             <div className="empty-state">
               <div className="empty-icon">📭</div>
-              <p className="empty-text">Chưa có dữ liệu tồn kho.</p>
+              <p className="empty-text">Không tìm thấy dữ liệu phù hợp.</p>
             </div>
           ) : (
             <div className="table-responsive">
@@ -64,7 +101,7 @@ function BaoCaoPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((item, idx) => (
+                  {filteredData.map((item, idx) => (
                     <tr key={idx} className={item.ngayConLai != null && item.ngayConLai < 180 ? "table-danger" : ""}>
                       <td>
                         <span className="badge bg-secondary badge-custom">{item.maThuoc}</span>

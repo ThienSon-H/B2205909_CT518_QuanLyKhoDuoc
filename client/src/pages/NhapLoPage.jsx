@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -7,6 +7,7 @@ import axios from 'axios';
 const IMPORT_URL = 'http://localhost:7122/api/Thuoc/nhap-lo';
 const NCC_PUBLIC_URL = 'http://localhost:7122/api/DanhMuc/nha-cung-cap-public';
 const NHOM_PUBLIC_URL = 'http://localhost:7122/api/DanhMuc/nhom-thuoc-public';
+const THUOC_LIST_URL = 'http://localhost:7122/api/Thuoc/list-public';
 
 function NhapLoPage() {
   const { user } = useAuth();
@@ -15,10 +16,9 @@ function NhapLoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [nhaCungCapList, setNhaCungCapList] = useState([]);
   const [nhomThuocList, setNhomThuocList] = useState([]);
+  const [thuocList, setThuocList] = useState([]);
   const [form, setForm] = useState({
     maLo: '',
-    maThuoc: '',
-    tenThuoc: '',
     maNcc: '',
     maNhom: '',
     soLuong: '',
@@ -26,15 +26,24 @@ function NhapLoPage() {
     nguoiThucHien: user?.username || ''
   });
 
+  // Combobox state
+  const [thuocSearch, setThuocSearch] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedThuoc, setSelectedThuoc] = useState(null);
+  const wrapperRef = useRef(null);
+  const inputRef = useRef(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [nccRes, nhomRes] = await Promise.all([
+        const [nccRes, nhomRes, thuocRes] = await Promise.all([
           axios.get(NCC_PUBLIC_URL, { params: { username: user?.username } }),
-          axios.get(NHOM_PUBLIC_URL, { params: { username: user?.username } })
+          axios.get(NHOM_PUBLIC_URL, { params: { username: user?.username } }),
+          axios.get(THUOC_LIST_URL, { params: { username: user?.username } })
         ]);
         setNhaCungCapList(nccRes.data);
         setNhomThuocList(nhomRes.data);
+        setThuocList(thuocRes.data);
         if (nccRes.data.length > 0) {
           setForm(prev => ({ ...prev, maNcc: nccRes.data[0].maNcc }));
         }
@@ -48,13 +57,53 @@ function NhapLoPage() {
     if (user?.username) fetchData();
   }, [user, addToast]);
 
+  // Đóng dropdown khi click bên ngoài
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const filteredThuoc = thuocList.filter(t => {
+    if (!thuocSearch.trim()) return true;
+    const keyword = thuocSearch.toLowerCase();
+    return t.maThuoc.toLowerCase().includes(keyword) || t.tenThuoc.toLowerCase().includes(keyword);
+  });
+
+  const handleSelectThuoc = (thuoc) => {
+    setSelectedThuoc(thuoc);
+    setThuocSearch(`${thuoc.tenThuoc} (${thuoc.maThuoc})`);
+    setShowDropdown(false);
+  };
+
+  const clearSelectedThuoc = () => {
+    setSelectedThuoc(null);
+    setThuocSearch('');
+    if (inputRef.current) inputRef.current.focus();
+    setShowDropdown(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedThuoc) {
+      addToast('Vui lòng chọn thuốc từ danh sách', 'warning');
+      return;
+    }
     setIsSubmitting(true);
     try {
       const payload = {
-        ...form,
-        nguoiThucHien: user?.username
+        maLo: form.maLo,
+        maThuoc: selectedThuoc.maThuoc,
+        tenThuoc: selectedThuoc.tenThuoc,
+        maNcc: form.maNcc,
+        soLuong: form.soLuong,
+        hanSuDung: form.hanSuDung,
+        nguoiThucHien: user?.username,
+        maNhom: form.maNhom
       };
       const res = await axios.post(IMPORT_URL, payload);
       if (res.data.message.includes('LỖI')) {
@@ -64,7 +113,7 @@ function NhapLoPage() {
         navigate('/');
       }
     } catch (err) {
-      addToast("Lỗi kết nối server khi nhập kho!", 'error');
+      addToast(err.response?.data?.message || "Lỗi kết nối server khi nhập kho!", 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -83,6 +132,7 @@ function NhapLoPage() {
             </div>
             <div className="card-body p-4">
               <form onSubmit={handleSubmit}>
+                {/* Hàng 1: Mã lô - Chọn thuốc */}
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="form-group-custom">
@@ -98,35 +148,76 @@ function NhapLoPage() {
                       />
                     </div>
                   </div>
-                  <div className="col-md-6">
-                    <div className="form-group-custom">
+                  <div className="col-md-6" ref={wrapperRef}>
+                    <div className="form-group-custom" style={{ position: 'relative' }}>
                       <label className="form-label">
-                        <span className="label-icon">💊</span> Mã Thuốc
+                        <span className="label-icon">💊</span> Chọn thuốc
                       </label>
-                      <input
-                        className="form-control-custom"
-                        placeholder="VD: PARA"
-                        value={form.maThuoc}
-                        onChange={e => setForm({...form, maThuoc: e.target.value.toUpperCase()})}
-                        required
-                      />
+                      <div className="input-with-icon">
+                        <span className="input-icon">🔍</span>
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          className="form-control-custom"
+                          placeholder="Nhập mã hoặc tên thuốc để tìm..."
+                          value={thuocSearch}
+                          onChange={(e) => {
+                            setThuocSearch(e.target.value);
+                            if (selectedThuoc && e.target.value === '') clearSelectedThuoc();
+                            else setShowDropdown(true);
+                          }}
+                          onFocus={() => setShowDropdown(true)}
+                          autoComplete="off"
+                        />
+                        {selectedThuoc && (
+                          <button
+                            type="button"
+                            className="btn btn-outline-secondary input-clear-btn"
+                            onClick={clearSelectedThuoc}
+                            style={{ right: '0.5rem', left: 'auto' }}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+                      {showDropdown && !selectedThuoc && (
+                        <ul className="searchable-dropdown">
+                          {filteredThuoc.length === 0 ? (
+                            <li className="px-3 py-2 text-muted" style={{ fontSize: 'var(--md-typescale-caption)' }}>
+                              Không tìm thấy thuốc. Hãy thêm trong Quản lý thuốc.
+                            </li>
+                          ) : (
+                            filteredThuoc.map(t => (
+                              <li key={t.maThuoc} onClick={() => handleSelectThuoc(t)}>
+                                <strong>{t.tenThuoc}</strong> <small className="text-muted">({t.maThuoc})</small>
+                              </li>
+                            ))
+                          )}
+                        </ul>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <div className="form-group-custom">
-                  <label className="form-label">
-                    <span className="label-icon">📝</span> Tên Thuốc
-                  </label>
-                  <input
-                    className="form-control-custom"
-                    placeholder="Nhập tên thuốc..."
-                    value={form.tenThuoc}
-                    onChange={e => setForm({...form, tenThuoc: e.target.value})}
-                    required
-                  />
-                </div>
+                {/* Thông tin thuốc đã chọn */}
+                {selectedThuoc && (
+                  <div className="row g-4 mt-2">
+                    <div className="col-md-6">
+                      <div className="form-group-custom">
+                        <label className="form-label">Mã Thuốc</label>
+                        <input className="form-control-custom" value={selectedThuoc.maThuoc} disabled />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <div className="form-group-custom">
+                        <label className="form-label">Tên Thuốc</label>
+                        <input className="form-control-custom" value={selectedThuoc.tenThuoc} disabled />
+                      </div>
+                    </div>
+                  </div>
+                )}
 
+                {/* Nhà cung cấp - Nhóm thuốc */}
                 <div className="row g-4">
                   <div className="col-md-6">
                     <div className="form-group-custom">
@@ -166,6 +257,7 @@ function NhapLoPage() {
                   </div>
                 </div>
 
+                {/* Số lượng - Hạn sử dụng */}
                 <div className="row g-4">
                   <div className="col-md-3">
                     <div className="form-group-custom">

@@ -1525,3 +1525,35 @@ a:hover {
 .dark-mode .user-dropdown-menu {
   border: 1px solid var(--md-outline);
 }
+
+/* ============================================================
+   SEARCHABLE DROPDOWN (Dùng cho combobox tùy chỉnh)
+   ============================================================ */
+.searchable-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--md-surface);
+  border: 1px solid var(--md-outline);
+  border-radius: var(--md-radius-sm);
+  box-shadow: var(--md-elevation-3);
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0.25rem 0;
+  margin: 0.25rem 0 0 0;
+}
+
+.searchable-dropdown li {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: var(--md-typescale-label);
+  color: var(--md-on-surface);
+  transition: background 0.15s;
+}
+
+.searchable-dropdown li:hover {
+  background: var(--md-surface-container);
+}

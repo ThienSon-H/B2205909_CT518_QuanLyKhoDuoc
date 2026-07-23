@@ -123,7 +123,7 @@ END;
 $$;
 
 
--- Nhập lô thuốc – có kiểm tra active và ghi log
+-- Nhập lô thuốc – yêu cầu thuốc phải tồn tại (do admin/QLK tạo trước)
 CREATE OR REPLACE FUNCTION fn_nhap_lo_thuoc(
     p_ma_lo VARCHAR,
     p_ma_thuoc VARCHAR,
@@ -144,17 +144,16 @@ BEGIN
     IF p_so_luong <= 0 THEN
         RETURN 'LỖI: Số lượng phải > 0';
     END IF;
-    
-    -- Tự động thêm thuốc nếu chưa có
+
+    -- Kiểm tra thuốc phải tồn tại
     IF NOT EXISTS (SELECT 1 FROM thuoc WHERE ma_thuoc = p_ma_thuoc) THEN
-        INSERT INTO thuoc (ma_thuoc, ten_thuoc, ma_nhom)
-        VALUES (p_ma_thuoc, p_ten_thuoc, p_ma_nhom);
-    ELSE
-        -- Nếu thuốc đã tồn tại và có truyền nhóm mới, cập nhật nhóm
-        IF p_ma_nhom IS NOT NULL THEN
-            UPDATE thuoc SET ma_nhom = p_ma_nhom, ten_thuoc = p_ten_thuoc
-            WHERE ma_thuoc = p_ma_thuoc;
-        END IF;
+        RETURN 'LỖI: Mã thuốc chưa tồn tại. Vui lòng thêm thuốc trong mục Quản lý thuốc trước khi nhập lô.';
+    END IF;
+
+    -- Nếu thuốc đã tồn tại và có truyền nhóm mới, cập nhật nhóm
+    IF p_ma_nhom IS NOT NULL THEN
+        UPDATE thuoc SET ma_nhom = p_ma_nhom, ten_thuoc = p_ten_thuoc
+        WHERE ma_thuoc = p_ma_thuoc;
     END IF;
 
     -- Xử lý lô

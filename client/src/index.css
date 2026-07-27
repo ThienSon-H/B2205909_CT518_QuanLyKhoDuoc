@@ -1557,3 +1557,44 @@ a:hover {
 .searchable-dropdown li:hover {
   background: var(--md-surface-container);
 }
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1rem 1.5rem;
+  flex-wrap: wrap;
+}
+
+.pagination-container .btn {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--md-radius-full);
+  font-weight: 600;
+  font-size: var(--md-typescale-label);
+  padding: 0;
+  transition: all var(--md-duration-short) var(--md-easing-standard);
+}
+
+.pagination-container .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-container .btn-primary-custom {
+  box-shadow: var(--md-elevation-1);
+}
+
+.pagination-ellipsis {
+  padding: 0 0.25rem;
+  color: var(--md-on-surface-variant);
+  font-weight: 600;
+  user-select: none;
+}

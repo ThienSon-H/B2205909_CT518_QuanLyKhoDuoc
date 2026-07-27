@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import axios from 'axios';
+import Pagination from '../components/Pagination';
 
-const DASHBOARD_URL = 'http://localhost:7122/api/Thuoc/dashboard';
+const DASHBOARD_URL = 'http://localhost:7122/api/Thuoc/dashboard-paged';
 const EXPORT_URL = 'http://localhost:7122/api/Thuoc/xuat-lo';
 const THUOC_LIST_URL = 'http://localhost:7122/api/Thuoc/list-public';
 const XUAT_FEFO_URL = 'http://localhost:7122/api/Thuoc/xuat-fefo';
@@ -20,7 +21,13 @@ function DashboardPage() {
   const [thuocList, setThuocList] = useState([]);
   const [fefoForm, setFefoForm] = useState({ maThuoc: '', soLuongXuat: '' });
   const [fefoSubmitting, setFefoSubmitting] = useState(false);
-  
+
+  // Phân trang
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const pageSize = 20;
+
   const fetchDashboard = useCallback(async () => {
     setLoading(true);
     try {
@@ -28,23 +35,32 @@ function DashboardPage() {
         params: {
           search: search || undefined,
           trangThai: trangThai || undefined,
-          username: user?.username
+          username: user?.username,
+          page: page,
+          pageSize: pageSize
         }
       });
-      setItems(res.data);
+      setItems(res.data.data);
+      setTotalCount(res.data.totalCount);
+      setTotalPages(res.data.totalPages);
     } catch (err) {
       addToast('Lỗi tải dữ liệu dashboard', 'error');
     } finally {
       setLoading(false);
     }
-  }, [search, trangThai, user, addToast]);
+  }, [search, trangThai, user, page, addToast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      setPage(1); // reset về trang 1 khi filter thay đổi
       fetchDashboard();
     }, 300);
     return () => clearTimeout(timer);
-  }, [fetchDashboard]);
+  }, [search, trangThai]);
+
+  useEffect(() => {
+    fetchDashboard();
+  }, [page]);
 
   const [exportModal, setExportModal] = useState({ show: false, maLo: '', soLuongTon: 0 });
   const handleExportClick = (maLo, soLuongTon) => {
@@ -137,7 +153,7 @@ function DashboardPage() {
       ) : (
         <div className="card-custom">
           <div className="card-header d-flex justify-content-between align-items-center">
-            <span>Danh sách lô thuốc (FEFO) {items.length > 0 && `- ${items.length} lô`}</span>
+            <span>Danh sách lô thuốc (FEFO) – {totalCount} lô</span>
             <span className="badge bg-danger badge-custom">⚠️ Cận date &lt; 180 ngày</span>
           </div>
           <div className="card-body p-0">
@@ -147,60 +163,64 @@ function DashboardPage() {
                 <p className="empty-text">Không tìm thấy lô thuốc nào phù hợp.</p>
               </div>
             ) : (
-              <div className="table-responsive">
-                <table className="table-custom">
-                  <thead>
-                    <tr>
-                      <th>Mã Thuốc</th>
-                      <th>Tên Thuốc (Nhóm)</th>
-                      <th>Mã Lô</th>
-                      <th>Nhà Cung Cấp</th>
-                      <th className="text-center">Tồn Kho</th>
-                      <th className="text-center">Hạn Sử Dụng</th>
-                      <th className="text-center">Tình Trạng</th>
-                      <th className="text-center">Thao Tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map(i => (
-                      <tr key={i.maLo} className={i.ngayConLai < 180 ? "table-danger" : ""}>
-                        <td>
-                          <span className="badge bg-secondary badge-custom">{i.maThuoc}</span>
-                        </td>
-                        <td>
-                          <strong>{i.tenThuoc}</strong>
-                          <br />
-                          <small className="text-muted">{i.tenNhom}</small>
-                        </td>
-                        <td className="text-center">
-                          <span className="badge border text-dark bg-light">{i.maLo}</span>
-                        </td>
-                        <td>{i.tenNcc}</td>
-                        <td className="text-center fw-bold text-success">{i.soLuong}</td>
-                        <td className="text-center">{new Date(i.hanSuDung).toLocaleDateString('vi-VN')}</td>
-                        <td className="text-center">
-                          {i.ngayConLai < 0 ? (
-                            <span className="badge bg-dark badge-custom">Hết hạn</span>
-                          ) : i.ngayConLai < 180 ? (
-                            <span className="badge bg-danger badge-custom">Cận date ({i.ngayConLai} ngày)</span>
-                          ) : (
-                            <span className="badge bg-success badge-custom">An toàn ({i.ngayConLai} ngày)</span>
-                          )}
-                        </td>
-                        <td className="text-center">
-                          <button
-                            className="btn btn-sm btn-danger-custom ripple"
-                            onClick={() => handleExportClick(i.maLo, i.soLuong)}
-                            title="Xuất kho lô này"
-                          >
-                            🗑️ Xuất Kho
-                          </button>
-                        </td>
+              <>
+                <div className="table-responsive">
+                  <table className="table-custom">
+                    <thead>
+                      <tr>
+                        <th>Mã Thuốc</th>
+                        <th>Tên Thuốc (Nhóm)</th>
+                        <th>Mã Lô</th>
+                        <th>Nhà Cung Cấp</th>
+                        <th className="text-center">Tồn Kho</th>
+                        <th className="text-center">Hạn Sử Dụng</th>
+                        <th className="text-center">Tình Trạng</th>
+                        <th className="text-center">Thao Tác</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {items.map(i => (
+                        <tr key={i.maLo} className={i.ngayConLai < 180 ? "table-danger" : ""}>
+                          <td>
+                            <span className="badge bg-secondary badge-custom">{i.maThuoc}</span>
+                          </td>
+                          <td>
+                            <strong>{i.tenThuoc}</strong>
+                            <br />
+                            <small className="text-muted">{i.tenNhom}</small>
+                          </td>
+                          <td className="text-center">
+                            <span className="badge border text-dark bg-light">{i.maLo}</span>
+                          </td>
+                          <td>{i.tenNcc}</td>
+                          <td className="text-center fw-bold text-success">{i.soLuong}</td>
+                          <td className="text-center">{new Date(i.hanSuDung).toLocaleDateString('vi-VN')}</td>
+                          <td className="text-center">
+                            {i.ngayConLai < 0 ? (
+                              <span className="badge bg-dark badge-custom">Hết hạn</span>
+                            ) : i.ngayConLai < 180 ? (
+                              <span className="badge bg-danger badge-custom">Cận date ({i.ngayConLai} ngày)</span>
+                            ) : (
+                              <span className="badge bg-success badge-custom">An toàn ({i.ngayConLai} ngày)</span>
+                            )}
+                          </td>
+                          <td className="text-center">
+                            <button
+                              className="btn btn-sm btn-danger-custom ripple"
+                              onClick={() => handleExportClick(i.maLo, i.soLuong)}
+                              title="Xuất kho lô này"
+                            >
+                              🗑️ Xuất Kho
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* Phân trang */}
+                <Pagination page={page} totalPages={totalPages} onPageChange={(p) => setPage(p)} />
+              </>
             )}
           </div>
         </div>

@@ -122,6 +122,109 @@ BEGIN
 END;
 $$;
 
+-- Dashboard kho (FEFO) – phiên bản phân trang
+CREATE OR REPLACE FUNCTION fn_get_dashboard_kho_paged(
+    p_search VARCHAR DEFAULT NULL,
+    p_trang_thai VARCHAR DEFAULT NULL,
+    p_username VARCHAR DEFAULT NULL,
+    p_page INTEGER DEFAULT 1,
+    p_page_size INTEGER DEFAULT 20
+)
+RETURNS TABLE (
+    out_ma_thuoc VARCHAR,
+    out_ten_thuoc TEXT,
+    out_ten_nhom TEXT,
+    out_ma_lo VARCHAR,
+    out_ten_ncc TEXT,
+    out_so_luong INTEGER,
+    out_han_su_dung DATE,
+    out_ngay_con_lai INTEGER
+) LANGUAGE plpgsql AS $$
+DECLARE
+    v_search_pattern VARCHAR;
+    v_offset INTEGER;
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+
+    IF p_search IS NOT NULL AND LENGTH(TRIM(p_search)) > 0 THEN
+        v_search_pattern := '%' || TRIM(p_search) || '%';
+    END IF;
+
+    v_offset := (p_page - 1) * p_page_size;
+
+    RETURN QUERY
+    SELECT 
+        t.ma_thuoc,
+        t.ten_thuoc,
+        COALESCE(nt.ten_nhom, 'Chưa phân nhóm'),
+        l.ma_lo,
+        COALESCE(ncc.ten_ncc, 'Khác'),
+        l.so_luong,
+        l.han_su_dung,
+        (l.han_su_dung - CURRENT_DATE)::INTEGER
+    FROM lo_thuoc l
+    JOIN thuoc t ON l.ma_thuoc = t.ma_thuoc
+    LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
+    LEFT JOIN nha_cung_cap ncc ON l.ma_ncc = ncc.ma_ncc
+    WHERE 
+        (v_search_pattern IS NULL 
+         OR t.ma_thuoc ILIKE v_search_pattern 
+         OR t.ten_thuoc ILIKE v_search_pattern 
+         OR l.ma_lo ILIKE v_search_pattern)
+        AND (
+            p_trang_thai IS NULL OR p_trang_thai = '' OR
+            (p_trang_thai = 'con_han' AND (l.han_su_dung - CURRENT_DATE) >= 180) OR
+            (p_trang_thai = 'can_date' AND (l.han_su_dung - CURRENT_DATE) BETWEEN 0 AND 179) OR
+            (p_trang_thai = 'het_han' AND (l.han_su_dung - CURRENT_DATE) < 0)
+        )
+    ORDER BY (l.han_su_dung - CURRENT_DATE) ASC
+    LIMIT p_page_size
+    OFFSET v_offset;
+END;
+$$;
+
+-- Đếm tổng số lô trên dashboard (cùng điều kiện)
+CREATE OR REPLACE FUNCTION fn_get_dashboard_kho_count(
+    p_search VARCHAR DEFAULT NULL,
+    p_trang_thai VARCHAR DEFAULT NULL,
+    p_username VARCHAR DEFAULT NULL
+)
+RETURNS BIGINT
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_search_pattern VARCHAR;
+    v_count BIGINT;
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+
+    IF p_search IS NOT NULL AND LENGTH(TRIM(p_search)) > 0 THEN
+        v_search_pattern := '%' || TRIM(p_search) || '%';
+    END IF;
+
+    SELECT COUNT(*) INTO v_count
+    FROM lo_thuoc l
+    JOIN thuoc t ON l.ma_thuoc = t.ma_thuoc
+    LEFT JOIN nhom_thuoc nt ON t.ma_nhom = nt.ma_nhom
+    LEFT JOIN nha_cung_cap ncc ON l.ma_ncc = ncc.ma_ncc
+    WHERE 
+        (v_search_pattern IS NULL 
+         OR t.ma_thuoc ILIKE v_search_pattern 
+         OR t.ten_thuoc ILIKE v_search_pattern 
+         OR l.ma_lo ILIKE v_search_pattern)
+        AND (
+            p_trang_thai IS NULL OR p_trang_thai = '' OR
+            (p_trang_thai = 'con_han' AND (l.han_su_dung - CURRENT_DATE) >= 180) OR
+            (p_trang_thai = 'can_date' AND (l.han_su_dung - CURRENT_DATE) BETWEEN 0 AND 179) OR
+            (p_trang_thai = 'het_han' AND (l.han_su_dung - CURRENT_DATE) < 0)
+        );
+
+    RETURN v_count;
+END;
+$$;
 
 -- Nhập lô thuốc – yêu cầu thuốc phải tồn tại, tự sinh mã lô nếu bỏ trống
 CREATE OR REPLACE FUNCTION fn_nhap_lo_thuoc(
@@ -508,6 +611,86 @@ BEGIN
 END;
 $$;
 
+-- Lịch sử nhập xuất – phiên bản phân trang (có tìm kiếm)
+CREATE OR REPLACE FUNCTION fn_get_lich_su_nhap_xuat_paged(
+    p_username VARCHAR DEFAULT NULL,
+    p_search VARCHAR DEFAULT NULL,
+    p_page INTEGER DEFAULT 1,
+    p_page_size INTEGER DEFAULT 20
+)
+RETURNS TABLE (
+    out_id INTEGER,
+    out_ma_lo VARCHAR,
+    out_ma_thuoc VARCHAR,
+    out_loai_giao_dich VARCHAR,
+    out_so_luong_thay_doi INTEGER,
+    out_nguoi_thuc_hien VARCHAR,
+    out_thoi_gian TIMESTAMP,
+    out_ghi_chu TEXT
+) LANGUAGE plpgsql AS $$
+DECLARE
+    v_search_pattern VARCHAR;
+    v_offset INTEGER;
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+
+    IF p_search IS NOT NULL AND LENGTH(TRIM(p_search)) > 0 THEN
+        v_search_pattern := '%' || TRIM(p_search) || '%';
+    END IF;
+
+    v_offset := (p_page - 1) * p_page_size;
+
+    RETURN QUERY
+    SELECT id, ma_lo, ma_thuoc, loai_giao_dich, so_luong_thay_doi,
+           nguoi_thuc_hien, thoi_gian, ghi_chu
+    FROM lich_su_nhap_xuat
+    WHERE 
+        v_search_pattern IS NULL
+        OR ma_lo ILIKE v_search_pattern
+        OR ma_thuoc ILIKE v_search_pattern
+        OR loai_giao_dich ILIKE v_search_pattern
+        OR nguoi_thuc_hien ILIKE v_search_pattern
+        OR ghi_chu ILIKE v_search_pattern
+    ORDER BY thoi_gian DESC
+    LIMIT p_page_size
+    OFFSET v_offset;
+END;
+$$;
+
+-- Đếm tổng số giao dịch lịch sử (có tìm kiếm)
+CREATE OR REPLACE FUNCTION fn_get_lich_su_nhap_xuat_count(
+    p_username VARCHAR DEFAULT NULL,
+    p_search VARCHAR DEFAULT NULL
+)
+RETURNS BIGINT
+LANGUAGE plpgsql AS $$
+DECLARE
+    v_search_pattern VARCHAR;
+    v_count BIGINT;
+BEGIN
+    IF NOT fn_check_user_active(p_username) THEN
+        RAISE EXCEPTION 'Tài khoản không tồn tại hoặc đã bị khóa';
+    END IF;
+
+    IF p_search IS NOT NULL AND LENGTH(TRIM(p_search)) > 0 THEN
+        v_search_pattern := '%' || TRIM(p_search) || '%';
+    END IF;
+
+    SELECT COUNT(*) INTO v_count
+    FROM lich_su_nhap_xuat
+    WHERE 
+        v_search_pattern IS NULL
+        OR ma_lo ILIKE v_search_pattern
+        OR ma_thuoc ILIKE v_search_pattern
+        OR loai_giao_dich ILIKE v_search_pattern
+        OR nguoi_thuc_hien ILIKE v_search_pattern
+        OR ghi_chu ILIKE v_search_pattern;
+
+    RETURN v_count;
+END;
+$$;
 
 -- =============================================
 -- B. QUẢN LÝ NHÓM THUỐC

@@ -32,6 +32,25 @@ namespace QuanLyKhoDuoc.Controllers
             }
         }
 
+        [HttpGet("dashboard-paged")]
+        public async Task<IActionResult> GetDashboardPaged(
+            [FromQuery] string search = null,
+            [FromQuery] string trangThai = null,
+            [FromQuery] string username = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            try
+            {
+                var result = await _service.GetDashboardDataPaged(search, trangThai, username, page, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpGet("bao-cao-ton-kho")]
         public async Task<IActionResult> GetBaoCaoTonKho([FromQuery] string username = null)
         {
@@ -53,6 +72,24 @@ namespace QuanLyKhoDuoc.Controllers
             {
                 var data = await _service.GetLichSu(username);
                 return Ok(data);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("lich-su-paged")]
+        public async Task<IActionResult> GetLichSuPaged(
+            [FromQuery] string username = null,
+            [FromQuery] string search = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 20)
+        {
+            try
+            {
+                var result = await _service.GetLichSuPaged(username, search, page, pageSize);
+                return Ok(result);
             }
             catch (Exception ex)
             {
